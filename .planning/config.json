@@ -1,0 +1,37 @@
+{
+  "project_name": "Reflector",
+  "project_type": "web-app",
+  "start_date": "2026-03-28",
+  "target_completion": "2026-04-11",
+  "timeline_weeks": 2,
+  "primary_user": "osmol",
+  "current_phase": 0,
+  "total_phases": 6,
+  "tech_stack": {
+    "frontend": "React 18 + Vite",
+    "backend": "Supabase (Postgres)",
+    "ai": "Claude API (Anthropic SDK)",
+    "deployment": "Vercel + Supabase",
+    "styling": "Custom CSS (no Tailwind defaults)"
+  },
+  "design_constraints": {
+    "aesthetic": "restrained, editorial, premium craft",
+    "primary_colors": "off-white/white bg, dark charcoal text, one accent color",
+    "reference_design": ["Anthropic product design", "whitehouse.gov 2024 redesign", "Brian Chesky aesthetic"],
+    "non_negotiable": "no Tailwind defaults, no AI scaffolding feel, every pixel deliberate"
+  },
+  "key_features_mvp": [
+    "Voice check-in with parsing",
+    "Timeline visualization",
+    "Journal entries",
+    "Chat analytics",
+    "Supabase persistence",
+    "User auth"
+  ],
+  "workflow_settings": {
+    "research_enabled": false,
+    "auto_plan_phases": true,
+    "parallel_phases_allowed": true,
+    "commit_frequency": "per-phase"
+  }
+}
