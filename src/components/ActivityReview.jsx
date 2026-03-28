@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import './ActivityReview.css';
 
 export function ActivityReview({
   activities,
@@ -44,27 +45,20 @@ export function ActivityReview({
 
   if (isLoading) {
     return (
-      <div style={{ padding: '20px', textAlign: 'center' }}>
+      <div className="activity-review-loading">
         <p>Parsing your speech...</p>
-        <div style={{ marginTop: '10px', fontSize: '18px' }}>Loading...</div>
+        <div className="activity-review-loading-spinner">Loading...</div>
       </div>
     );
   }
 
   if (editedActivities.length === 0) {
     return (
-      <div style={{ padding: '20px' }}>
+      <div className="activity-review-empty">
         <p>No activities parsed. Try recording again or edit your transcript.</p>
         <button
           onClick={onDiscard}
-          style={{
-            padding: '10px 20px',
-            backgroundColor: '#95a5a6',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-          }}
+          aria-label="Start over with a new recording"
         >
           Start Over
         </button>
@@ -73,154 +67,112 @@ export function ActivityReview({
   }
 
   return (
-    <div style={{ padding: '20px' }}>
-      <h3>Review Parsed Activities</h3>
-      <div style={{ marginTop: '20px' }}>
+    <div className="activity-review">
+      <h3 className="activity-review-title">Review Parsed Activities</h3>
+
+      <div>
         {editedActivities.map((activity, index) => (
           <div
             key={index}
-            style={{
-              border: '1px solid #ddd',
-              borderRadius: '4px',
-              padding: '12px',
-              marginBottom: '10px',
-              backgroundColor: editingIndex === index ? '#f0f0f0' : '#fff',
-            }}
+            className={`activity-item ${editingIndex === index ? 'editing' : ''}`}
           >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '10px' }}>
-              <div style={{ flex: 1 }}>
+            <div className="activity-item-header">
+              <div className="activity-item-content">
                 {editingIndex === index ? (
-                  <div>
-                    <div style={{ marginBottom: '8px' }}>
-                      <label style={{ display: 'block', fontSize: '12px', marginBottom: '4px' }}>Activity name:</label>
+                  <form className="activity-item-form" onSubmit={(e) => { e.preventDefault(); setEditingIndex(null); }}>
+                    <div className="activity-item-form-group">
+                      <label htmlFor={`activity-name-${index}`}>Activity name</label>
                       <input
+                        id={`activity-name-${index}`}
                         type="text"
                         value={activity.activity}
                         onChange={(e) => handleEdit(index, 'activity', e.target.value)}
-                        style={{
-                          padding: '6px',
-                          fontSize: '14px',
-                          width: '100%',
-                          border: '1px solid #ccc',
-                          borderRadius: '4px',
-                          boxSizing: 'border-box',
-                        }}
                         placeholder="Activity name"
+                        aria-label="Activity name"
                       />
                     </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '8px' }}>
-                      <div>
-                        <label style={{ display: 'block', fontSize: '12px', marginBottom: '4px' }}>Duration (min):</label>
+
+                    <div className="activity-item-form-row">
+                      <div className="activity-item-form-group">
+                        <label htmlFor={`duration-${index}`}>Duration (min)</label>
                         <input
+                          id={`duration-${index}`}
                           type="number"
                           value={activity.duration_minutes}
                           onChange={(e) =>
                             handleEdit(index, 'duration_minutes', Number(e.target.value))
                           }
-                          style={{
-                            padding: '6px',
-                            fontSize: '14px',
-                            width: '100%',
-                            border: '1px solid #ccc',
-                            borderRadius: '4px',
-                            boxSizing: 'border-box',
-                          }}
+                          aria-label="Duration in minutes"
                         />
                       </div>
-                      <div>
-                        <label style={{ display: 'block', fontSize: '12px', marginBottom: '4px' }}>Start time:</label>
+                      <div className="activity-item-form-group">
+                        <label htmlFor={`start-time-${index}`}>Start time</label>
                         <input
+                          id={`start-time-${index}`}
                           type="text"
                           value={activity.start_time_inferred}
                           onChange={(e) => handleEdit(index, 'start_time_inferred', e.target.value)}
-                          style={{
-                            padding: '6px',
-                            fontSize: '14px',
-                            width: '100%',
-                            border: '1px solid #ccc',
-                            borderRadius: '4px',
-                            boxSizing: 'border-box',
-                          }}
                           placeholder="HH:MM AM/PM"
+                          aria-label="Start time"
                         />
                       </div>
                     </div>
-                    <div style={{ marginBottom: '8px' }}>
-                      <label style={{ display: 'block', fontSize: '12px', marginBottom: '4px' }}>Category (optional):</label>
+
+                    <div className="activity-item-form-group">
+                      <label htmlFor={`category-${index}`}>Category (optional)</label>
                       <input
+                        id={`category-${index}`}
                         type="text"
                         value={activity.category || ''}
                         onChange={(e) => handleEdit(index, 'category', e.target.value || undefined)}
-                        style={{
-                          padding: '6px',
-                          fontSize: '14px',
-                          width: '100%',
-                          border: '1px solid #ccc',
-                          borderRadius: '4px',
-                          boxSizing: 'border-box',
-                        }}
                         placeholder="e.g., work, personal, exercise"
+                        aria-label="Activity category"
                       />
                     </div>
-                    <button
-                      onClick={() => setEditingIndex(null)}
-                      style={{
-                        marginTop: '8px',
-                        padding: '6px 12px',
-                        backgroundColor: '#27ae60',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: 'pointer',
-                        fontSize: '14px',
-                      }}
-                    >
-                      Done Editing
-                    </button>
-                  </div>
+
+                    <div className="activity-item-edit-actions">
+                      <button
+                        type="submit"
+                        className="btn-save"
+                        aria-label="Done editing this activity"
+                      >
+                        Done Editing
+                      </button>
+                    </div>
+                  </form>
                 ) : (
-                  <div>
-                    <strong style={{ fontSize: '16px' }}>{activity.activity}</strong>
-                    <div style={{ fontSize: '14px', color: '#666', marginTop: '4px' }}>
-                      {activity.duration_minutes} min • {activity.start_time_inferred}
-                      {activity.category && ` • ${activity.category}`}
+                  <>
+                    <div className="activity-item-name">{activity.activity}</div>
+                    <div className="activity-item-meta">
+                      <span className="activity-item-duration">{activity.duration_minutes}m</span>
+                      <span className="activity-item-time">{activity.start_time_inferred}</span>
+                      {activity.category && (
+                        <span className="activity-item-category">{activity.category}</span>
+                      )}
                     </div>
                     {activity.notes && (
-                      <div style={{ fontSize: '12px', color: '#e74c3c', marginTop: '4px' }}>
+                      <div style={{ fontSize: '0.8125rem', color: 'var(--error)', marginTop: 'var(--space-xs)' }}>
                         Note: {activity.notes}
                       </div>
                     )}
-                  </div>
+                  </>
                 )}
               </div>
-              <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
+
+              <div className="activity-item-actions">
                 {editingIndex !== index && (
                   <button
                     onClick={() => handleEditStart(index)}
-                    style={{
-                      padding: '6px 12px',
-                      backgroundColor: '#3498db',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '4px',
-                      cursor: 'pointer',
-                      fontSize: '14px',
-                    }}
+                    className="btn-edit"
+                    aria-label={`Edit ${activity.activity}`}
                   >
                     Edit
                   </button>
                 )}
                 <button
                   onClick={() => handleDelete(index)}
-                  style={{
-                    padding: '6px 12px',
-                    backgroundColor: '#e74c3c',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    fontSize: '14px',
-                  }}
+                  className="btn-delete"
+                  aria-label={`Delete ${activity.activity}`}
                 >
                   Delete
                 </button>
@@ -231,39 +183,24 @@ export function ActivityReview({
       </div>
 
       {saveError && (
-        <div style={{ color: '#c0392b', marginTop: '10px', padding: '10px', backgroundColor: '#ffe6e6', borderRadius: '4px' }}>
+        <div className="activity-review-error" role="alert">
           Error: {saveError}
         </div>
       )}
 
-      <div style={{ marginTop: '20px', display: 'flex', gap: '10px' }}>
+      <div className="activity-review-controls">
         <button
           onClick={handleSave}
           disabled={isSaving || editedActivities.length === 0}
-          style={{
-            padding: '10px 20px',
-            backgroundColor: isSaving ? '#95a5a6' : '#27ae60',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: isSaving ? 'not-allowed' : 'pointer',
-            fontSize: '14px',
-            fontWeight: 'bold',
-          }}
+          className="btn-save-activities"
+          aria-label={isSaving ? 'Saving activities' : 'Save activities to timeline'}
         >
           {isSaving ? 'Saving...' : 'Save to Timeline'}
         </button>
         <button
           onClick={onDiscard}
-          style={{
-            padding: '10px 20px',
-            backgroundColor: '#95a5a6',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            fontSize: '14px',
-          }}
+          className="btn-discard"
+          aria-label="Discard and start over"
         >
           Discard & Start Over
         </button>
