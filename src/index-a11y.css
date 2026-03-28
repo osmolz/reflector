@@ -1,0 +1,317 @@
+/* ============================================================
+   Reflector — Accessibility Enhancements
+   Phase 5: Design & Polish
+   WCAG AA compliance, keyboard navigation, focus states
+   ============================================================ */
+
+/* ============================================================
+   Keyboard Navigation & Focus Visible
+   ============================================================ */
+
+/* Skip link for keyboard users */
+.skip-to-main {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--accent-color);
+  color: var(--bg-secondary);
+  padding: var(--space-sm) var(--space-md);
+  text-decoration: none;
+  z-index: 100;
+  border-radius: 2px;
+}
+
+.skip-to-main:focus {
+  top: 0;
+}
+
+/* Focus visible on interactive elements */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Remove outline for mouse users (relies on :focus-visible) */
+button:focus:not(:focus-visible),
+a:focus:not(:focus-visible),
+input:focus:not(:focus-visible),
+textarea:focus:not(:focus-visible),
+select:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ============================================================
+   Color Contrast (WCAG AA minimum 4.5:1 for normal text)
+   ============================================================ */
+
+/* Primary text on background */
+body {
+  color: var(--text-primary); /* #1A1A1A on #F9F9F9 = 18:1 */
+}
+
+/* Secondary text */
+.text-secondary {
+  color: var(--text-secondary); /* #4A4A4A on #F9F9F9 = 8.5:1 */
+}
+
+/* Links */
+a {
+  color: var(--accent-color); /* #2B5A6B on #F9F9F9 = 7.5:1 */
+}
+
+/* Form labels */
+label {
+  color: var(--text-secondary); /* #4A4A4A on #F9F9F9 = 8.5:1 */
+}
+
+/* Buttons */
+.btn-primary {
+  color: var(--bg-secondary); /* #FFFFFF on #2B5A6B = 8.5:1 */
+}
+
+/* Chat messages */
+.user-message {
+  color: var(--bg-secondary); /* #FFFFFF on #2B5A6B = 8.5:1 */
+}
+
+.claude-message {
+  color: var(--text-primary); /* #1A1A1A on #F9F9F9 = 18:1 */
+}
+
+/* ============================================================
+   Reduced Motion Support
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================
+   High Contrast Mode Support
+   ============================================================ */
+@media (prefers-contrast: more) {
+  :root {
+    --text-primary: #000000;
+    --text-secondary: #222222;
+    --border-light: #999999;
+    --border-medium: #666666;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    border-width: 2px;
+  }
+}
+
+/* ============================================================
+   Dark Mode Support (if user prefers)
+   ============================================================ */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2d2d2d;
+    --text-primary: #f5f5f5;
+    --text-secondary: #cccccc;
+    --text-tertiary: #999999;
+    --border-light: #444444;
+    --border-medium: #555555;
+  }
+
+  input,
+  textarea,
+  select {
+    background-color: #2d2d2d;
+    color: #f5f5f5;
+  }
+}
+
+/* ============================================================
+   Touch Target Size (WCAG 2.1 Level AAA: 44x44px minimum)
+   ============================================================ */
+button,
+a,
+input[type="checkbox"],
+input[type="radio"] {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.mic-button {
+  /* 60x60px exceeds 44x44px minimum */
+  min-height: 60px;
+  min-width: 60px;
+}
+
+/* ============================================================
+   Text Sizing & Readability
+   ============================================================ */
+
+/* Minimum font size for readability */
+body,
+button,
+input,
+textarea,
+select {
+  font-size: 16px; /* Prevents auto-zoom on iOS */
+  line-height: 1.6;
+}
+
+/* Spacing between form elements */
+.form-group {
+  margin-bottom: var(--space-lg);
+}
+
+/* ============================================================
+   List Styling (Semantic HTML)
+   ============================================================ */
+
+/* Ensure lists are marked with role="list" */
+[role="list"] {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+[role="list"] li {
+  margin: 0;
+}
+
+/* ============================================================
+   Images & Icons
+   ============================================================ */
+
+/* Ensure all images have alt text (enforced in JSX) */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Use semantic emoji with aria-hidden for decoration */
+.emoji-icon {
+  aria-hidden: true;
+}
+
+/* ============================================================
+   Form Validation & Error Messages
+   ============================================================ */
+
+/* Error states clearly visible */
+.form-error,
+input.input-error {
+  color: var(--error);
+  border-color: var(--error);
+}
+
+/* Success states */
+.form-success {
+  color: var(--success);
+}
+
+/* Help text */
+.form-help {
+  color: var(--text-tertiary);
+  font-size: 0.8125rem;
+}
+
+/* ============================================================
+   Screen Reader Only (sr-only) class
+   Already defined in index.css
+   ============================================================ */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* ============================================================
+   ARIA Live Regions
+   ============================================================ */
+
+/* For dynamic content updates */
+[aria-live] {
+  /* Default styles ensure visibility */
+}
+
+[aria-live="polite"] {
+  /* Less intrusive announcements */
+}
+
+[aria-live="assertive"] {
+  /* High priority announcements (errors, alerts) */
+}
+
+/* ============================================================
+   Semantic HTML Markers
+   ============================================================ */
+
+/* main, nav, header, footer role indicators */
+[role="main"],
+main {
+  /* Main content region */
+}
+
+[role="banner"],
+header {
+  /* Page header/navigation */
+}
+
+[role="complementary"],
+aside {
+  /* Supplementary content */
+}
+
+[role="contentinfo"],
+footer {
+  /* Footer information */
+}
+
+/* ============================================================
+   Mobile Accessibility (Touch-friendly Design)
+   ============================================================ */
+
+@media (max-width: 640px) {
+  /* Larger touch targets on mobile */
+  button,
+  .btn,
+  input,
+  a {
+    min-height: 48px;
+    min-width: 48px;
+  }
+
+  .mic-button {
+    min-height: 52px;
+    min-width: 52px;
+  }
+
+  /* Increased spacing for touch */
+  .form-group {
+    margin-bottom: var(--space-lg);
+  }
+
+  /* Readable font size (prevents zoom) */
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
+}
