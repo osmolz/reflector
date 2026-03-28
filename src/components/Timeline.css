@@ -1,0 +1,319 @@
+/* ============================================================
+   Reflector — Timeline Component
+   Phase 5: Design & Polish
+   Editorial aesthetic: Financial Times, not SaaS dashboard.
+   ============================================================ */
+
+/* ============================================================
+   Timeline Wrapper
+   ============================================================ */
+.timeline-wrapper {
+  padding-top: var(--space-sm);
+}
+
+.timeline-header {
+  margin-bottom: var(--space-3xl);
+}
+
+.timeline-page-title {
+  font-family: var(--font-serif);
+  font-size: 2.5rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  line-height: 1.1;
+  margin-bottom: var(--space-sm);
+}
+
+.timeline-count {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 500;
+}
+
+/* ============================================================
+   Day Group
+   ============================================================ */
+.timeline-day {
+  margin-bottom: var(--space-3xl);
+}
+
+.timeline-day-header {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+  padding-bottom: var(--space-md);
+  border-bottom: 1px solid var(--border-medium);
+}
+
+.timeline-day-name {
+  font-family: var(--font-serif);
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.timeline-day-date {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ============================================================
+   Timeline List
+   ============================================================ */
+.timeline-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* ============================================================
+   Timeline Item
+   ============================================================ */
+.timeline-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-lg);
+  padding: var(--space-lg) var(--space-md);
+  margin-left: calc(-1 * var(--space-md));
+  margin-right: calc(-1 * var(--space-md));
+  border-bottom: 1px solid var(--border-light);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  border-radius: 2px;
+}
+
+.timeline-item:last-child {
+  border-bottom: none;
+}
+
+.timeline-item:hover {
+  background-color: var(--bg-secondary);
+}
+
+.timeline-item:hover .timeline-activity-name {
+  color: var(--accent-color);
+}
+
+/* ============================================================
+   Timeline Indicator (dot)
+   ============================================================ */
+.timeline-indicator {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--border-medium);
+  margin-top: 6px;
+  transition: background-color 0.15s ease;
+}
+
+.timeline-item:hover .timeline-indicator {
+  background-color: var(--accent-color);
+}
+
+/* ============================================================
+   Timeline Time
+   ============================================================ */
+.timeline-time {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--text-tertiary);
+  font-weight: 400;
+  min-width: 48px;
+  padding-top: 2px;
+  letter-spacing: 0.01em;
+}
+
+/* ============================================================
+   Timeline Content
+   ============================================================ */
+.timeline-content {
+  flex: 1;
+  min-width: 0; /* Allow text truncation */
+}
+
+.timeline-activity-name {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: var(--space-xs);
+  line-height: 1.4;
+  transition: color 0.15s ease;
+  /* Graceful long text */
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.timeline-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.timeline-duration {
+  font-size: 0.8125rem;
+  color: var(--text-tertiary);
+  font-family: var(--font-mono);
+  letter-spacing: 0.01em;
+}
+
+.timeline-category {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--accent-color);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 1px var(--space-sm);
+  border: 1px solid rgba(43, 90, 107, 0.25);
+  border-radius: 2px;
+}
+
+/* ============================================================
+   Edit hint (right side)
+   ============================================================ */
+.timeline-edit-hint {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  padding-top: 2px;
+  letter-spacing: 0.02em;
+}
+
+.timeline-item:hover .timeline-edit-hint {
+  opacity: 1;
+  color: var(--accent-color);
+}
+
+/* ============================================================
+   Gap Indicator
+   ============================================================ */
+.timeline-gap {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  margin: var(--space-xs) calc(-1 * var(--space-md));
+  background-color: #fdf8f2;
+  border-left: 2px solid var(--warning);
+}
+
+.timeline-gap-label {
+  font-size: 0.75rem;
+  color: var(--warning);
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.timeline-gap-duration {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--warning);
+}
+
+/* ============================================================
+   Gap Summary (bottom of timeline)
+   ============================================================ */
+.timeline-gaps-summary {
+  margin-top: var(--space-2xl);
+  padding: var(--space-lg);
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: 2px;
+}
+
+.timeline-gaps-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-md);
+}
+
+.timeline-gaps-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.timeline-gap-row {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--text-tertiary);
+}
+
+/* ============================================================
+   Loading / Empty States
+   ============================================================ */
+.timeline-loading {
+  padding: var(--space-2xl) 0;
+  color: var(--text-tertiary);
+  font-size: 0.875rem;
+  font-style: italic;
+}
+
+.timeline-empty {
+  padding: var(--space-3xl) 0;
+  text-align: center;
+}
+
+.timeline-empty-message {
+  font-size: 1rem;
+  color: var(--text-tertiary);
+  font-style: italic;
+  margin: 0;
+}
+
+.timeline-error {
+  padding: var(--space-md) var(--space-lg);
+  background-color: #fdf2f2;
+  border-left: 2px solid var(--error);
+  color: var(--error);
+  font-size: 0.875rem;
+  border-radius: 0 2px 2px 0;
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 640px) {
+  .timeline-item {
+    gap: var(--space-md);
+    padding: var(--space-md) var(--space-sm);
+    margin-left: calc(-1 * var(--space-sm));
+    margin-right: calc(-1 * var(--space-sm));
+  }
+
+  .timeline-time {
+    font-size: 0.75rem;
+    min-width: 40px;
+  }
+
+  .timeline-activity-name {
+    font-size: 0.9375rem;
+  }
+
+  .timeline-edit-hint {
+    display: none;
+  }
+
+  .timeline-page-title {
+    font-size: 2rem;
+  }
+}
