@@ -1,52 +1,222 @@
-* {
+/* ============================================================
+   Reflector — Global CSS & Design System
+   Phase 5: Design & Polish
+   ============================================================ */
+
+/* Google Fonts: Crimson Text (serif, editorial) + Inter (sans, modern) */
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap');
+
+/* ============================================================
+   CSS Reset
+   ============================================================ */
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+/* ============================================================
+   Design Tokens (CSS Custom Properties)
+   ============================================================ */
+:root {
+  /* Color Palette */
+  --bg-primary:    #F9F9F9;
+  --bg-secondary:  #FFFFFF;
+  --text-primary:  #1A1A1A;
+  --text-secondary: #4A4A4A;
+  --text-tertiary: #757575;
+  --accent-color:  #2B5A6B;
+  --accent-dark:   #1a3d4d;
+  --border-light:  #E8E8E8;
+  --border-medium: #D0D0D0;
+
+  /* Functional Colors */
+  --success:  #2E7D32;
+  --error:    #C62828;
+  --warning:  #F57C00;
+
+  /* Shadows — minimal, purposeful */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.12);
+
+  /* Spacing Scale (8px base unit) */
+  --space-xs:  4px;
+  --space-sm:  8px;
+  --space-md:  16px;
+  --space-lg:  24px;
+  --space-xl:  32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+
+  /* Typography */
+  --font-serif: 'Crimson Text', Georgia, 'Times New Roman', serif;
+  --font-sans:  'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono:  'Courier New', 'Courier', monospace;
+
+  /* Layout */
+  --max-width: 900px;
+  --header-height: 64px;
+}
+
+/* ============================================================
+   Base HTML & Body
+   ============================================================ */
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #fafaf9;
-  color: #292422;
+  text-rendering: optimizeLegibility;
 }
 
+/* ============================================================
+   Typography Scale
+   ============================================================ */
+h1, h2, h3 {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+h4, h5, h6 {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+h1 {
+  font-size: 3rem;
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-lg);
+}
+
+h2 {
+  font-size: 2rem;
+  letter-spacing: -0.01em;
+  margin-bottom: var(--space-md);
+}
+
+h3 {
+  font-size: 1.375rem;
+  margin-bottom: var(--space-md);
+}
+
+h4 {
+  font-size: 1rem;
+  letter-spacing: 0.01em;
+  margin-bottom: var(--space-sm);
+}
+
+p {
+  line-height: 1.7;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-md);
+}
+
+p:last-child {
+  margin-bottom: 0;
+}
+
+/* ============================================================
+   Links
+   ============================================================ */
+a {
+  color: var(--accent-color);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--accent-dark);
+  text-decoration: underline;
+}
+
+/* ============================================================
+   Base Form Elements — inherit font
+   ============================================================ */
+input,
+textarea,
+button,
+select {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+}
+
+/* ============================================================
+   Code
+   ============================================================ */
 code {
-  background-color: #f5f5f5;
-  padding: 2px 4px;
-  border-radius: 3px;
-  font-family: 'Courier New', monospace;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  background-color: var(--border-light);
+  padding: 2px 6px;
+  border-radius: 2px;
+  color: var(--text-primary);
 }
 
-button {
-  background-color: #292422;
-  color: white;
-  border: none;
-  padding: 10px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.2s;
+/* ============================================================
+   Images
+   ============================================================ */
+img {
+  max-width: 100%;
+  display: block;
 }
 
-button:hover {
-  background-color: #3d3b38;
+/* ============================================================
+   Focus Visible — Accessibility
+   ============================================================ */
+:focus {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
 }
 
-input {
-  border: 1px solid #d6d6d6;
-  padding: 8px 12px;
-  border-radius: 4px;
-  font-size: 14px;
-  width: 100%;
-  margin-bottom: 12px;
-}
-
-input:focus {
+:focus:not(:focus-visible) {
   outline: none;
-  border-color: #292422;
-  box-shadow: 0 0 0 2px rgba(41, 36, 34, 0.1);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   Responsive Typography
+   ============================================================ */
+@media (max-width: 1024px) {
+  h1 { font-size: 2.5rem; }
+  h2 { font-size: 1.75rem; }
+}
+
+@media (max-width: 640px) {
+  html { font-size: 15px; }
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.5rem; }
+  h3 { font-size: 1.25rem; }
+}
+
+/* ============================================================
+   Utility: Screen-reader only
+   ============================================================ */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }
