@@ -1,0 +1,158 @@
+/* ============================================================
+   Reflector — Mic Button Component
+   Phase 5: Design & Polish
+   Premium custom object, not Bootstrap component
+   ============================================================ */
+
+/* ============================================================
+   Mic Button Wrapper
+   ============================================================ */
+.mic-button-wrapper {
+  margin-bottom: var(--space-lg);
+}
+
+/* ============================================================
+   Mic Button (Primary Interactive Element)
+   ============================================================ */
+.mic-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-dark) 100%);
+  border: 2px solid var(--accent-color);
+  color: var(--bg-secondary);
+  font-size: 1.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: var(--shadow-md);
+  padding: 0;
+  text-decoration: none;
+  font-family: var(--font-sans);
+}
+
+.mic-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.16);
+}
+
+.mic-button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Recording state — pulsing red */
+.mic-button.recording {
+  animation: mic-pulse 1.5s infinite;
+  background: linear-gradient(135deg, var(--error) 0%, #8b0000 100%);
+  border-color: var(--error);
+}
+
+@keyframes mic-pulse {
+  0%, 100% {
+    box-shadow: 0 4px 8px rgba(198, 40, 40, 0.3);
+  }
+  50% {
+    box-shadow: 0 4px 20px rgba(198, 40, 40, 0.6);
+  }
+}
+
+/* Disabled state */
+.mic-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Keyboard focus (accessibility) */
+.mic-button:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   Mic Button Container (Layout)
+   ============================================================ */
+.mic-button-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-lg);
+  margin: var(--space-2xl) 0;
+  padding: var(--space-lg) 0;
+}
+
+/* ============================================================
+   Mic Status Label
+   ============================================================ */
+.mic-status {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  text-align: center;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+.mic-status.recording {
+  color: var(--accent-color);
+  font-weight: 500;
+  animation: status-fade 1.2s ease-in-out infinite;
+}
+
+@keyframes status-fade {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+.mic-status.error {
+  color: var(--error);
+}
+
+/* ============================================================
+   Mic Button Text Label (below button)
+   ============================================================ */
+.mic-button-label {
+  font-size: 0.875rem;
+  color: var(--text-tertiary);
+  margin-top: var(--space-sm);
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ============================================================
+   Error Message
+   ============================================================ */
+.mic-error {
+  padding: var(--space-md) var(--space-lg);
+  background-color: #fdf2f2;
+  border-left: 2px solid var(--error);
+  color: var(--error);
+  font-size: 0.875rem;
+  border-radius: 0 2px 2px 0;
+  margin-top: var(--space-md);
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 640px) {
+  .mic-button {
+    width: 52px;
+    height: 52px;
+    font-size: 1.25rem;
+  }
+
+  .mic-button-container {
+    margin: var(--space-lg) 0;
+    gap: var(--space-md);
+  }
+}

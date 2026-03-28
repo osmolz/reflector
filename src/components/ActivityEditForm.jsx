@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { supabase } from '../lib/supabase';
+import './Modal.css';
 
 export function ActivityEditForm({ activity, onClose, onSave }) {
   const [name, setName] = useState(activity.activity_name);
@@ -34,7 +35,7 @@ export function ActivityEditForm({ activity, onClose, onSave }) {
 
       if (updateError) throw updateError;
 
-      onSave(); // Notify parent to refresh timeline
+      onSave();
       onClose();
     } catch (err) {
       setError(err.message || 'Failed to update activity');
@@ -54,7 +55,7 @@ export function ActivityEditForm({ activity, onClose, onSave }) {
 
       if (deleteError) throw deleteError;
 
-      onSave(); // Refresh timeline
+      onSave();
       onClose();
     } catch (err) {
       setError(err.message || 'Failed to delete activity');
@@ -65,156 +66,79 @@ export function ActivityEditForm({ activity, onClose, onSave }) {
 
   return (
     <>
-      {/* Modal backdrop */}
-      <div
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'rgba(0, 0, 0, 0.5)',
-          zIndex: 999,
-        }}
-        onClick={onClose}
-      />
+      <div className="modal-backdrop" onClick={onClose} aria-hidden="true" />
 
-      {/* Modal */}
-      <div
-        style={{
-          position: 'fixed',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          background: 'white',
-          padding: '2rem',
-          borderRadius: '8px',
-          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-          zIndex: 1000,
-          minWidth: '300px',
-          maxWidth: '500px',
-          maxHeight: '90vh',
-          overflowY: 'auto',
-        }}
-      >
-        <h2 style={{ marginTop: 0, marginBottom: '1.5rem' }}>Edit Activity</h2>
+      <div className="modal" role="dialog" aria-labelledby="edit-activity-title">
+        <div className="modal-header">
+          <h2 className="modal-title" id="edit-activity-title">Edit Activity</h2>
+        </div>
 
-        <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: '1rem' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-              Activity Name:
-            </label>
+        <form onSubmit={handleSubmit} className="modal-form">
+          <div className="modal-form-group">
+            <label htmlFor="activity-name">Activity Name</label>
             <input
+              id="activity-name"
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               disabled={loading}
               required
-              style={{
-                width: '100%',
-                padding: '0.5rem',
-                borderRadius: '4px',
-                border: '1px solid #ccc',
-                boxSizing: 'border-box',
-                fontFamily: 'inherit',
-                fontSize: '1rem',
-              }}
+              aria-label="Activity name"
             />
           </div>
 
-          <div style={{ marginBottom: '1rem' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-              Duration (minutes):
-            </label>
+          <div className="modal-form-group">
+            <label htmlFor="activity-duration">Duration (minutes)</label>
             <input
+              id="activity-duration"
               type="number"
               value={duration}
               onChange={(e) => setDuration(parseInt(e.target.value, 10))}
               min="1"
               disabled={loading}
               required
-              style={{
-                width: '100%',
-                padding: '0.5rem',
-                borderRadius: '4px',
-                border: '1px solid #ccc',
-                boxSizing: 'border-box',
-                fontFamily: 'inherit',
-                fontSize: '1rem',
-              }}
+              aria-label="Duration in minutes"
             />
           </div>
 
-          <div style={{ marginBottom: '1rem' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>Category:</label>
+          <div className="modal-form-group">
+            <label htmlFor="activity-category">Category</label>
             <input
+              id="activity-category"
               type="text"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               placeholder="e.g., work, personal, sleep"
               disabled={loading}
-              style={{
-                width: '100%',
-                padding: '0.5rem',
-                borderRadius: '4px',
-                border: '1px solid #ccc',
-                boxSizing: 'border-box',
-                fontFamily: 'inherit',
-                fontSize: '1rem',
-              }}
+              aria-label="Activity category"
             />
           </div>
 
-          <div style={{ marginBottom: '1.5rem' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>Start Time:</label>
+          <div className="modal-form-group">
+            <label htmlFor="activity-start-time">Start Time</label>
             <input
+              id="activity-start-time"
               type="datetime-local"
               value={startTime}
               onChange={(e) => setStartTime(e.target.value)}
               disabled={loading}
               required
-              style={{
-                width: '100%',
-                padding: '0.5rem',
-                borderRadius: '4px',
-                border: '1px solid #ccc',
-                boxSizing: 'border-box',
-                fontFamily: 'inherit',
-                fontSize: '1rem',
-              }}
+              aria-label="Activity start time"
             />
           </div>
 
           {error && (
-            <div
-              style={{
-                color: '#d00',
-                marginBottom: '1rem',
-                padding: '0.75rem',
-                background: '#ffe6e6',
-                borderRadius: '4px',
-              }}
-            >
+            <div className="modal-error" role="alert">
               {error}
             </div>
           )}
 
-          <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
+          <div className="modal-actions">
             <button
               type="submit"
               disabled={loading}
-              style={{
-                flex: 1,
-                padding: '0.5rem 1rem',
-                borderRadius: '4px',
-                border: '1px solid #0066cc',
-                background: '#0066cc',
-                color: 'white',
-                cursor: loading ? 'not-allowed' : 'pointer',
-                opacity: loading ? 0.5 : 1,
-                fontFamily: 'inherit',
-                fontSize: '1rem',
-              }}
+              className="btn-primary"
+              aria-label={loading ? 'Saving activity' : 'Save activity'}
             >
               {loading ? 'Saving...' : 'Save'}
             </button>
@@ -222,17 +146,8 @@ export function ActivityEditForm({ activity, onClose, onSave }) {
               type="button"
               onClick={onClose}
               disabled={loading}
-              style={{
-                flex: 1,
-                padding: '0.5rem 1rem',
-                borderRadius: '4px',
-                border: '1px solid #ccc',
-                background: '#f5f5f5',
-                cursor: loading ? 'not-allowed' : 'pointer',
-                opacity: loading ? 0.5 : 1,
-                fontFamily: 'inherit',
-                fontSize: '1rem',
-              }}
+              className="btn-secondary"
+              aria-label="Cancel editing"
             >
               Cancel
             </button>
@@ -242,18 +157,8 @@ export function ActivityEditForm({ activity, onClose, onSave }) {
             type="button"
             onClick={handleDelete}
             disabled={loading}
-            style={{
-              width: '100%',
-              padding: '0.5rem 1rem',
-              borderRadius: '4px',
-              border: '1px solid #d00',
-              background: '#ffe6e6',
-              color: '#d00',
-              cursor: loading ? 'not-allowed' : 'pointer',
-              opacity: loading ? 0.5 : 1,
-              fontFamily: 'inherit',
-              fontSize: '1rem',
-            }}
+            className="modal-danger-button"
+            aria-label="Delete activity"
           >
             Delete Activity
           </button>

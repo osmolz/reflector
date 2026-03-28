@@ -1,0 +1,303 @@
+/* ============================================================
+   Reflector — Journal Component
+   Phase 5: Design & Polish
+   Editorial, intentional journaling interface
+   ============================================================ */
+
+/* ============================================================
+   Journal Entry (Card)
+   ============================================================ */
+.journal-entry {
+  padding: var(--space-lg);
+  margin-bottom: var(--space-lg);
+  border: 1px solid var(--border-light);
+  background-color: var(--bg-secondary);
+  border-radius: 2px;
+  transition: all 0.2s ease;
+}
+
+.journal-entry:hover {
+  border-color: var(--accent-color);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ============================================================
+   Entry Metadata (Date, time)
+   ============================================================ */
+.journal-entry-date {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-sm);
+  font-weight: 500;
+}
+
+/* ============================================================
+   Entry Title / Heading
+   ============================================================ */
+.journal-entry-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-sm);
+  line-height: 1.4;
+}
+
+/* ============================================================
+   Entry Content (Body text)
+   ============================================================ */
+.journal-entry-content {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+.journal-entry-content p {
+  margin-bottom: var(--space-md);
+}
+
+.journal-entry-content p:last-child {
+  margin-bottom: 0;
+}
+
+/* ============================================================
+   Entry Actions (Buttons)
+   ============================================================ */
+.journal-entry-actions {
+  margin-top: var(--space-lg);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.journal-entry-actions button {
+  font-size: 0.875rem;
+  padding: var(--space-sm) var(--space-md);
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   Journal Form
+   ============================================================ */
+.journal-form {
+  margin-bottom: var(--space-2xl);
+  padding: var(--space-lg);
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: 2px;
+}
+
+.journal-form-title {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-lg);
+  letter-spacing: -0.01em;
+}
+
+.journal-form-group {
+  margin-bottom: var(--space-lg);
+}
+
+.journal-form-group:last-child {
+  margin-bottom: 0;
+}
+
+.journal-textarea {
+  width: 100%;
+  padding: var(--space-md);
+  border: 1px solid var(--border-light);
+  border-radius: 2px;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  line-height: 1.6;
+  resize: vertical;
+  min-height: 120px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.journal-textarea:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: inset 0 0 0 1px var(--accent-color);
+}
+
+.journal-textarea:disabled {
+  background-color: var(--bg-primary);
+  color: var(--text-tertiary);
+  opacity: 0.6;
+}
+
+.journal-textarea::placeholder {
+  color: var(--text-tertiary);
+}
+
+/* Character count */
+.journal-char-count {
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+  margin-top: var(--space-xs);
+  text-align: right;
+  letter-spacing: 0.02em;
+}
+
+/* ============================================================
+   Journal Form Controls (Buttons)
+   ============================================================ */
+.journal-form-controls {
+  display: flex;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+  margin-top: var(--space-lg);
+}
+
+.journal-voice-button {
+  padding: var(--space-sm) var(--space-md);
+  background-color: transparent;
+  border: 1px solid var(--border-medium);
+  border-radius: 2px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-family: var(--font-sans);
+  transition: all 0.2s ease;
+}
+
+.journal-voice-button:hover:not(:disabled) {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+  background-color: var(--bg-primary);
+}
+
+.journal-voice-button.listening {
+  background-color: #fdf2f2;
+  border-color: var(--error);
+  color: var(--error);
+  font-weight: 500;
+}
+
+.journal-submit-button {
+  padding: var(--space-md) var(--space-lg);
+  background-color: var(--accent-color);
+  color: var(--bg-secondary);
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+  font-family: var(--font-sans);
+  transition: all 0.2s ease;
+}
+
+.journal-submit-button:hover:not(:disabled) {
+  background-color: var(--accent-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.journal-submit-button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.journal-submit-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ============================================================
+   Transcript Display
+   ============================================================ */
+.journal-transcript {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-left: var(--space-md);
+  padding: var(--space-sm) var(--space-md);
+  background-color: var(--bg-primary);
+  border-radius: 2px;
+  border-left: 2px solid var(--accent-color);
+}
+
+/* ============================================================
+   Journal List (Empty State)
+   ============================================================ */
+.journal-empty {
+  padding: var(--space-3xl) var(--space-lg);
+  text-align: center;
+  color: var(--text-tertiary);
+}
+
+.journal-empty-message {
+  font-size: 1rem;
+  font-style: italic;
+  line-height: 1.6;
+}
+
+/* ============================================================
+   Journal Error
+   ============================================================ */
+.journal-error {
+  padding: var(--space-md) var(--space-lg);
+  background-color: #fdf2f2;
+  border-left: 2px solid var(--error);
+  color: var(--error);
+  font-size: 0.875rem;
+  border-radius: 0 2px 2px 0;
+  margin-bottom: var(--space-lg);
+}
+
+/* ============================================================
+   Journal Loading
+   ============================================================ */
+.journal-loading {
+  padding: var(--space-lg) 0;
+  color: var(--text-tertiary);
+  font-size: 0.875rem;
+  font-style: italic;
+}
+
+/* ============================================================
+   Responsive Design
+   ============================================================ */
+@media (max-width: 640px) {
+  .journal-form {
+    padding: var(--space-md);
+  }
+
+  .journal-form-title {
+    font-size: 1.1rem;
+    margin-bottom: var(--space-md);
+  }
+
+  .journal-form-controls {
+    flex-direction: column;
+  }
+
+  .journal-voice-button,
+  .journal-submit-button {
+    width: 100%;
+  }
+
+  .journal-textarea {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  .journal-entry {
+    padding: var(--space-md);
+    margin-bottom: var(--space-md);
+  }
+
+  .journal-entry-actions {
+    flex-direction: column;
+  }
+
+  .journal-entry-actions button {
+    width: 100%;
+  }
+}

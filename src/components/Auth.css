@@ -1,150 +1,235 @@
+/* ============================================================
+   Reflector — Auth Component
+   Phase 5: Design & Polish
+   Intentional, cohesive login/register interface
+   ============================================================ */
+
+/* ============================================================
+   Auth Container
+   ============================================================ */
 .auth-container {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: #f5f5f5;
-  padding: 1rem;
+  background-color: var(--bg-primary);
+  padding: var(--space-lg);
 }
 
+/* ============================================================
+   Auth Card
+   ============================================================ */
 .auth-card {
-  background: white;
-  border-radius: 8px;
-  padding: 2rem;
-  max-width: 400px;
+  background-color: var(--bg-secondary);
+  border-radius: 2px;
+  padding: var(--space-2xl);
+  max-width: 420px;
   width: 100%;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-md);
 }
 
+/* ============================================================
+   Auth Title
+   ============================================================ */
 .auth-title {
-  margin: 0 0 1.5rem 0;
-  font-size: 1.5rem;
-  color: #333;
+  font-family: var(--font-serif);
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--text-primary);
   text-align: center;
+  margin-bottom: var(--space-lg);
+  letter-spacing: -0.01em;
 }
 
+/* ============================================================
+   Auth Form
+   ============================================================ */
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--space-lg);
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: var(--space-sm);
 }
 
 .form-group label {
   font-weight: 500;
-  color: #333;
-  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .form-group input {
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  padding: var(--space-md);
+  border: 1px solid var(--border-light);
+  border-radius: 2px;
   font-size: 1rem;
-  font-family: inherit;
-  transition: border-color 0.2s;
+  font-family: var(--font-sans);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+  border-color: var(--accent-color);
+  box-shadow: inset 0 0 0 1px var(--accent-color);
 }
 
 .form-group input:disabled {
-  background-color: #f5f5f5;
-  color: #999;
+  background-color: var(--bg-primary);
+  color: var(--text-tertiary);
+  opacity: 0.6;
 }
 
+.form-group input::placeholder {
+  color: var(--text-tertiary);
+}
+
+/* ============================================================
+   Auth Buttons
+   ============================================================ */
 .auth-button {
-  padding: 0.75rem 1rem;
-  background-color: #007bff;
-  color: white;
+  padding: var(--space-md) var(--space-lg);
+  background-color: var(--accent-color);
+  color: var(--bg-secondary);
   border: none;
-  border-radius: 4px;
+  border-radius: 2px;
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 600;
+  font-family: var(--font-sans);
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.2s ease;
+  letter-spacing: 0.01em;
 }
 
 .auth-button:hover:not(:disabled) {
-  background-color: #0056b3;
+  background-color: var(--accent-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.auth-button:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .auth-button:disabled {
-  background-color: #ccc;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
 .logout-button {
-  margin-top: 1rem;
+  margin-top: var(--space-lg);
 }
 
+/* ============================================================
+   Auth Messages (Error, Success)
+   ============================================================ */
 .auth-error {
-  background-color: #f8d7da;
-  color: #721c24;
-  padding: 0.75rem;
-  border-radius: 4px;
-  border: 1px solid #f5c6cb;
-  font-size: 0.9rem;
-  margin-bottom: 1rem;
+  background-color: #fdf2f2;
+  color: var(--error);
+  padding: var(--space-md) var(--space-lg);
+  border-radius: 2px;
+  border-left: 2px solid var(--error);
+  font-size: 0.875rem;
+  margin-bottom: var(--space-lg);
+  line-height: 1.5;
 }
 
 .auth-success-message {
-  background-color: #d4edda;
-  color: #155724;
-  padding: 0.75rem;
-  border-radius: 4px;
-  border: 1px solid #c3e6cb;
-  font-size: 0.9rem;
-  margin-bottom: 1rem;
+  background-color: #f0f9f7;
+  color: var(--success);
+  padding: var(--space-md) var(--space-lg);
+  border-radius: 2px;
+  border-left: 2px solid var(--success);
+  font-size: 0.875rem;
+  margin-bottom: var(--space-lg);
+  line-height: 1.5;
 }
 
+/* ============================================================
+   Auth Success State
+   ============================================================ */
 .auth-success {
   text-align: center;
 }
 
 .auth-success h2 {
-  margin: 0 0 1rem 0;
-  color: #333;
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-md);
 }
 
 .auth-success p {
-  margin: 0 0 1.5rem 0;
-  color: #666;
+  color: var(--text-secondary);
   font-size: 0.95rem;
+  margin-bottom: var(--space-lg);
+  line-height: 1.6;
 }
 
+/* ============================================================
+   Auth Toggle (Sign In / Sign Up)
+   ============================================================ */
 .auth-toggle {
-  margin-top: 1.5rem;
+  margin-top: var(--space-lg);
   text-align: center;
-  border-top: 1px solid #eee;
-  padding-top: 1rem;
+  border-top: 1px solid var(--border-light);
+  padding-top: var(--space-lg);
 }
 
 .auth-toggle p {
   margin: 0;
-  font-size: 0.9rem;
-  color: #666;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
 }
 
 .toggle-link {
   background: none;
   border: none;
-  color: #007bff;
+  color: var(--accent-color);
   cursor: pointer;
-  font-weight: 500;
+  font-weight: 600;
   text-decoration: none;
   padding: 0;
   font-size: inherit;
+  font-family: var(--font-sans);
+  transition: color 0.2s ease;
 }
 
 .toggle-link:hover {
+  color: var(--accent-dark);
   text-decoration: underline;
+}
+
+/* ============================================================
+   Responsive Design
+   ============================================================ */
+@media (max-width: 640px) {
+  .auth-container {
+    padding: var(--space-md);
+  }
+
+  .auth-card {
+    padding: var(--space-lg);
+    border: none;
+    box-shadow: none;
+  }
+
+  .auth-title {
+    font-size: 1.5rem;
+    margin-bottom: var(--space-md);
+  }
+
+  .form-group input {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
 }

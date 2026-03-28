@@ -1,21 +1,36 @@
+/* ============================================================
+   Reflector — Chat Component
+   Phase 5: Design & Polish
+   Editorial aesthetic, cohesive with timeline
+   ============================================================ */
+
+/* ============================================================
+   Chat Container
+   ============================================================ */
 .chat-container {
   display: flex;
   flex-direction: column;
   height: 100%;
-  max-width: 600px;
-  margin: 0 auto;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
+  max-height: 600px;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: 2px;
   overflow: hidden;
-  background-color: #fafafa;
+  box-shadow: var(--shadow-sm);
 }
 
+/* ============================================================
+   Chat History (Message Area)
+   ============================================================ */
 .chat-history {
   flex: 1;
   overflow-y: auto;
-  padding: 1rem;
-  border-bottom: 1px solid #e0e0e0;
-  background-color: white;
+  padding: var(--space-lg);
+  border-bottom: 1px solid var(--border-light);
+  background-color: var(--bg-secondary);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
 }
 
 .chat-history::-webkit-scrollbar {
@@ -23,62 +38,80 @@
 }
 
 .chat-history::-webkit-scrollbar-track {
-  background: #f0f0f0;
+  background: var(--bg-primary);
 }
 
 .chat-history::-webkit-scrollbar-thumb {
-  background: #ccc;
+  background: var(--border-medium);
   border-radius: 3px;
 }
 
 .chat-history::-webkit-scrollbar-thumb:hover {
-  background: #999;
+  background: var(--border-light);
 }
 
+/* ============================================================
+   Chat Message
+   ============================================================ */
 .chat-message {
-  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0;
 }
 
+/* User message bubble */
 .user-message {
-  background-color: #f0f0f0;
-  padding: 0.75rem;
-  border-radius: 6px;
-  margin-bottom: 0.5rem;
+  align-self: flex-end;
+  max-width: 85%;
+  background-color: var(--accent-color);
+  color: var(--bg-secondary);
+  padding: var(--space-md) var(--space-lg);
+  border-radius: 2px;
   word-wrap: break-word;
-  line-height: 1.4;
+  line-height: 1.6;
 }
 
 .user-message strong {
-  color: #333;
   display: block;
-  margin-bottom: 0.25rem;
-  font-size: 0.9rem;
+  margin-bottom: var(--space-xs);
+  font-size: 0.875rem;
+  font-weight: 600;
+  opacity: 0.9;
 }
 
+/* Assistant (Claude) message bubble */
 .claude-message {
-  background-color: #e8f5e9;
-  padding: 0.75rem;
-  border-radius: 6px;
+  align-self: flex-start;
+  max-width: 85%;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  padding: var(--space-md) var(--space-lg);
+  border: 1px solid var(--border-light);
+  border-radius: 2px;
   word-wrap: break-word;
-  line-height: 1.5;
-  border-left: 3px solid #4caf50;
+  line-height: 1.6;
 }
 
 .claude-message strong {
-  color: #2e7d32;
   display: block;
-  margin-bottom: 0.25rem;
-  font-size: 0.9rem;
+  margin-bottom: var(--space-xs);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--accent-color);
 }
 
+/* ============================================================
+   Status Messages
+   ============================================================ */
 .loading-indicator {
   font-style: italic;
-  color: #666;
-  padding: 0.75rem;
-  animation: pulse 1.5s ease-in-out infinite;
+  color: var(--text-tertiary);
+  padding: var(--space-md);
+  text-align: center;
+  animation: chat-fade 1.2s ease-in-out infinite;
 }
 
-@keyframes pulse {
+@keyframes chat-fade {
   0%, 100% {
     opacity: 0.6;
   }
@@ -88,87 +121,133 @@
 }
 
 .error-banner {
-  background-color: #ffebee;
-  color: #c62828;
-  padding: 0.75rem;
-  border-radius: 4px;
-  margin-bottom: 0.5rem;
-  border-left: 3px solid #c62828;
+  background-color: #fdf2f2;
+  color: var(--error);
+  padding: var(--space-md) var(--space-lg);
+  border-radius: 2px;
+  border-left: 2px solid var(--error);
+  margin-bottom: var(--space-sm);
+  font-size: 0.875rem;
 }
 
 .chat-not-logged-in {
-  padding: 1rem;
-  color: #666;
+  padding: var(--space-lg);
+  color: var(--text-tertiary);
   text-align: center;
+  font-style: italic;
 }
 
 .chat-empty {
-  padding: 1rem;
-  color: #999;
+  padding: var(--space-lg);
+  color: var(--text-tertiary);
   text-align: center;
   font-size: 0.95rem;
 }
 
 .chat-loading {
-  padding: 1rem;
-  color: #666;
+  padding: var(--space-lg);
+  color: var(--text-tertiary);
   text-align: center;
   font-size: 0.95rem;
 }
 
+/* ============================================================
+   Chat Input Section
+   ============================================================ */
 .chat-input-container {
   display: flex;
-  gap: 0.75rem;
-  padding: 1rem;
-  background-color: #fafafa;
-  border-top: 1px solid #e0e0e0;
+  gap: var(--space-md);
+  padding: var(--space-lg);
+  background-color: var(--bg-secondary);
+  border-top: 1px solid var(--border-light);
 }
 
 .chat-input {
   flex: 1;
-  padding: 0.75rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  padding: var(--space-md);
+  border: 1px solid var(--border-light);
+  border-radius: 2px;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
   font-size: 0.95rem;
+  line-height: 1.5;
   resize: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  min-height: 40px;
+  max-height: 100px;
 }
 
 .chat-input:focus {
   outline: none;
-  border-color: #1976d2;
-  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
+  border-color: var(--accent-color);
+  box-shadow: inset 0 0 0 1px var(--accent-color);
 }
 
 .chat-input:disabled {
-  background-color: #f5f5f5;
-  color: #ccc;
+  background-color: var(--bg-primary);
+  color: var(--text-tertiary);
   cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.chat-input::placeholder {
+  color: var(--text-tertiary);
 }
 
 .chat-send-button {
-  padding: 0.75rem 1.5rem;
-  background-color: #1976d2;
-  color: white;
+  padding: var(--space-md) var(--space-lg);
+  background-color: var(--accent-color);
+  color: var(--bg-secondary);
   border: none;
-  border-radius: 6px;
+  border-radius: 2px;
   cursor: pointer;
-  font-weight: 500;
-  transition: background-color 0.2s, box-shadow 0.2s;
+  font-weight: 600;
+  font-size: 0.875rem;
+  font-family: var(--font-sans);
+  transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
 .chat-send-button:hover:not(:disabled) {
-  background-color: #1565c0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: var(--accent-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
 }
 
 .chat-send-button:active:not(:disabled) {
-  background-color: #0d47a1;
+  transform: translateY(0);
 }
 
 .chat-send-button:disabled {
-  background-color: #ccc;
+  opacity: 0.5;
   cursor: not-allowed;
-  opacity: 0.6;
+}
+
+/* ============================================================
+   Responsive Design
+   ============================================================ */
+@media (max-width: 640px) {
+  .chat-container {
+    max-height: none;
+    height: 100%;
+  }
+
+  .chat-history {
+    padding: var(--space-md);
+  }
+
+  .user-message,
+  .claude-message {
+    max-width: 100%;
+  }
+
+  .chat-input-container {
+    padding: var(--space-md);
+    gap: var(--space-sm);
+  }
+
+  .chat-input {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
 }

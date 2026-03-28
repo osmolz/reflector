@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import './MicButton.css';
 
 export function MicButton({ onTranscriptReady }) {
   const [isRecording, setIsRecording] = useState(false);
@@ -67,24 +68,22 @@ export function MicButton({ onTranscriptReady }) {
   };
 
   return (
-    <div style={{ marginBottom: '16px' }}>
-      <button
-        onClick={handleClick}
-        style={{
-          padding: '12px 24px',
-          fontSize: '16px',
-          cursor: 'pointer',
-          backgroundColor: isRecording ? '#e74c3c' : '#3498db',
-          color: 'white',
-          border: 'none',
-          borderRadius: '4px',
-          fontWeight: 'bold',
-          transition: 'background-color 0.2s',
-        }}
-      >
-        {isRecording ? '🔴 Recording...' : '🎤 Start Recording'}
-      </button>
-      {error && <p style={{ color: 'red', marginTop: '8px' }}>{error}</p>}
+    <div className="mic-button-wrapper">
+      <div className="mic-button-container">
+        <button
+          onClick={handleClick}
+          className={`mic-button ${isRecording ? 'recording' : ''}`}
+          aria-label={isRecording ? 'Stop recording' : 'Start recording'}
+          aria-pressed={isRecording}
+          title={isRecording ? 'Click to stop recording' : 'Click to start recording'}
+        >
+          {isRecording ? '🔴' : '🎤'}
+        </button>
+        <div className={`mic-status ${isRecording ? 'recording' : ''}`}>
+          {isRecording ? 'Recording...' : 'Ready to record'}
+        </div>
+      </div>
+      {error && <div className="mic-error">{error}</div>}
     </div>
   );
 }
