@@ -24,3 +24,4 @@ Thumbs.db
 # Runtime
 .supabase/
 supabase/.branches/
+.env
