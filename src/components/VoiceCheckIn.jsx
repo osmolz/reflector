@@ -18,7 +18,13 @@ export function VoiceCheckIn({ onActivitiesSaved }) {
     setIsLoading(true);
 
     try {
-      const activities = await parseTranscript(text);
+      // Get auth token from Supabase session
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        throw new Error('Not authenticated. Please log in again.');
+      }
+
+      const activities = await parseTranscript(text, session.access_token);
       setParsedActivities(activities);
       setStage('review');
     } catch (err) {

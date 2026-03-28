@@ -127,7 +127,7 @@ Please answer the user's question based on this data. Be specific with numbers, 
 
     // Call Claude API
     const anthropic = new Anthropic({
-      apiKey: Deno.env.get('VITE_ANTHROPIC_API_KEY'),
+      apiKey: Deno.env.get('ANTHROPIC_API_KEY'),
     });
 
     const message = await anthropic.messages.create({
