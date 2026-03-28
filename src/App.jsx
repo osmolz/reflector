@@ -6,81 +6,97 @@ import { Journal } from './pages/Journal'
 import Chat from './components/Chat'
 import { useAuthStore } from './store/authStore'
 import { useState } from 'react'
+import './components/Layout.css'
 
 function App() {
   const user = useAuthStore((state) => state.user);
+  const { signOut } = useAuthStore();
   const [timelineRefreshKey, setTimelineRefreshKey] = useState(0);
-  const [currentView, setCurrentView] = useState('dashboard'); // 'dashboard', 'timeline', 'journal'
+  const [currentView, setCurrentView] = useState('dashboard');
 
   const handleActivitiesSaved = () => {
     setTimelineRefreshKey((k) => k + 1);
   };
 
+  const handleSignOut = async () => {
+    await signOut();
+  };
+
   return (
     <AuthProvider>
-      <div style={{ padding: '40px', maxWidth: '900px', margin: '0 auto' }}>
-        <h1>Reflector</h1>
-        <p>Personal time tracking and journaling</p>
-
-        {user ? (
-          <div>
-            {/* Navigation */}
-            <div style={{ marginBottom: '2rem', display: 'flex', gap: '1rem', borderBottom: '1px solid #ddd', paddingBottom: '1rem' }}>
-              <button
-                onClick={() => setCurrentView('dashboard')}
-                style={{
-                  padding: '0.5rem 1rem',
-                  background: currentView === 'dashboard' ? '#0066cc' : '#f5f5f5',
-                  color: currentView === 'dashboard' ? 'white' : '#000',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  fontWeight: currentView === 'dashboard' ? 'bold' : 'normal',
-                }}
-              >
-                Dashboard
-              </button>
-              <button
-                onClick={() => setCurrentView('timeline')}
-                style={{
-                  padding: '0.5rem 1rem',
-                  background: currentView === 'timeline' ? '#0066cc' : '#f5f5f5',
-                  color: currentView === 'timeline' ? 'white' : '#000',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  fontWeight: currentView === 'timeline' ? 'bold' : 'normal',
-                }}
-              >
-                Timeline
-              </button>
-              <button
-                onClick={() => setCurrentView('journal')}
-                style={{
-                  padding: '0.5rem 1rem',
-                  background: currentView === 'journal' ? '#0066cc' : '#f5f5f5',
-                  color: currentView === 'journal' ? 'white' : '#000',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  fontWeight: currentView === 'journal' ? 'bold' : 'normal',
-                }}
-              >
-                Journal
-              </button>
+      {user ? (
+        <div className="app-shell">
+          {/* Header */}
+          <header className="header" role="banner">
+            <div className="header-brand">
+              <span className="header-title">Reflector</span>
+              <span className="header-tagline">Time &amp; Journal</span>
             </div>
 
+            <nav aria-label="Main navigation">
+              <ul className="header-nav" role="list">
+                <li className="header-nav-item">
+                  <button
+                    className={`header-nav-link${currentView === 'dashboard' ? ' active' : ''}`}
+                    onClick={() => setCurrentView('dashboard')}
+                    aria-current={currentView === 'dashboard' ? 'page' : undefined}
+                  >
+                    Dashboard
+                  </button>
+                </li>
+                <li className="header-nav-item">
+                  <button
+                    className={`header-nav-link${currentView === 'timeline' ? ' active' : ''}`}
+                    onClick={() => setCurrentView('timeline')}
+                    aria-current={currentView === 'timeline' ? 'page' : undefined}
+                  >
+                    Timeline
+                  </button>
+                </li>
+                <li className="header-nav-item">
+                  <button
+                    className={`header-nav-link${currentView === 'journal' ? ' active' : ''}`}
+                    onClick={() => setCurrentView('journal')}
+                    aria-current={currentView === 'journal' ? 'page' : undefined}
+                  >
+                    Journal
+                  </button>
+                </li>
+              </ul>
+            </nav>
+
+            <div className="header-actions">
+              <span className="header-user-email">{user.email}</span>
+              <button className="header-sign-out" onClick={handleSignOut}>
+                Sign out
+              </button>
+            </div>
+          </header>
+
+          {/* Main Content */}
+          <main className="main-container" role="main">
             {/* Dashboard View */}
             {currentView === 'dashboard' && (
               <div>
-                <div style={{ marginBottom: '40px' }}>
-                  <h2>Voice Check-in</h2>
+                <div className="page-header">
+                  <h1 className="page-title">Good morning</h1>
+                  <p className="page-subtitle">Track your time. Understand your day.</p>
+                </div>
+
+                <section className="section" aria-labelledby="checkin-heading">
+                  <div className="section-header">
+                    <h2 className="section-title" id="checkin-heading">Voice Check-in</h2>
+                  </div>
                   <VoiceCheckIn onActivitiesSaved={handleActivitiesSaved} />
-                </div>
-                <div>
-                  <h2>Chat Analytics</h2>
+                </section>
+
+                <section className="section" aria-labelledby="chat-heading">
+                  <div className="section-header">
+                    <h2 className="section-title" id="chat-heading">Chat Analytics</h2>
+                    <span className="section-meta">Ask about your time</span>
+                  </div>
                   <Chat />
-                </div>
+                </section>
               </div>
             )}
 
@@ -89,11 +105,11 @@ function App() {
 
             {/* Journal View */}
             {currentView === 'journal' && <Journal />}
-          </div>
-        ) : (
-          <Auth />
-        )}
-      </div>
+          </main>
+        </div>
+      ) : (
+        <Auth />
+      )}
     </AuthProvider>
   )
 }
