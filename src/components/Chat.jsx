@@ -89,7 +89,7 @@ const Chat = () => {
         throw new Error('Not authenticated');
       }
 
-      // Call backend API
+      // Call backend API (Supabase Edge Function)
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
 
@@ -100,7 +100,7 @@ const Chat = () => {
           'Authorization': `Bearer ${session.access_token}`,
         },
         body: JSON.stringify({
-          question: input,
+          question: userMessage.question,
           dateRange: { days: 30 }, // Default 30 days
         }),
         signal: controller.signal,
