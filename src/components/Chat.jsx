@@ -63,6 +63,12 @@ const Chat = () => {
       return;
     }
 
+    // Validate input length
+    if (input.length > 500) {
+      setError('Question is too long (max 500 characters)');
+      return;
+    }
+
     const now = Date.now();
     if (now - lastSendTime < MIN_SEND_INTERVAL) {
       setError('Please wait before sending another message');
@@ -128,6 +134,14 @@ const Chat = () => {
       if (err instanceof Error) {
         if (err.name === 'AbortError') {
           errorMsg = 'Request timed out. Please try again.';
+        } else if (err.message === 'Not authenticated') {
+          errorMsg = 'Please log in to use chat.';
+        } else if (err.message.includes('No time entries')) {
+          errorMsg = 'No time entries found for this period. Start logging activities to enable analytics.';
+        } else if (err.message.includes('rate limit')) {
+          errorMsg = 'API rate limit exceeded. Please wait a moment and try again.';
+        } else if (err.message.includes('API')) {
+          errorMsg = 'Claude API is temporarily unavailable. Please try again later.';
         } else {
           errorMsg = err.message;
         }

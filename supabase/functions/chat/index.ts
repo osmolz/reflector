@@ -141,9 +141,18 @@ Please answer the user's question based on this data. Be specific with numbers, 
       ],
     });
 
-    // Extract response text
-    const responseText =
-      message.content[0].type === 'text' ? message.content[0].text : '';
+    // Extract response text with validation
+    let responseText = '';
+    if (message.content && message.content.length > 0 && message.content[0].type === 'text') {
+      responseText = message.content[0].text;
+    } else {
+      responseText = 'Claude returned an unexpected response. Please try again.';
+    }
+
+    // Validate response is not empty
+    if (!responseText || responseText.trim().length === 0) {
+      responseText = 'Claude could not generate a response. Please try again with a different question.';
+    }
 
     // Save question + response to chat_messages table
     const { error: saveError } = await supabase.from('chat_messages').insert([
