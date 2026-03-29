@@ -5,51 +5,92 @@ import './Chat.css';
 
 const Chat = () => {
   const { user } = useAuthStore();
+
+  // Session state
+  const [sessions, setSessions] = useState([]);
+  const [sessionId, setSessionId] = useState(null);
+  const [sessionLoading, setSessionLoading] = useState(true);
+
+  // Message state
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [historyLoading, setHistoryLoading] = useState(true);
   const chatHistoryRef = useRef(null);
   const [lastSendTime, setLastSendTime] = useState(0);
 
   const MIN_SEND_INTERVAL = 1000; // 1 second between sends
 
-  // Load chat history from Supabase on component mount
+  // Load sessions on mount
   useEffect(() => {
-    const loadChatHistory = async () => {
+    const loadSessions = async () => {
       if (!user) {
-        setHistoryLoading(false);
+        setSessionLoading(false);
+        return;
+      }
+
+      try {
+        const { data, error: fetchError } = await supabase
+          .from('chat_sessions')
+          .select('id, title, created_at')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(20);
+
+        if (fetchError) throw fetchError;
+
+        setSessions(data || []);
+
+        // Set active session to most recent, or null if none exist
+        if (data && data.length > 0) {
+          setSessionId(data[0].id);
+        }
+      } catch (err) {
+        console.error('Failed to load sessions:', err);
+        setError('Failed to load sessions');
+      } finally {
+        setSessionLoading(false);
+      }
+    };
+
+    loadSessions();
+  }, [user]);
+
+  // Load messages when session changes
+  useEffect(() => {
+    const loadMessages = async () => {
+      if (!user || !sessionId) {
+        setMessages([]);
         return;
       }
 
       try {
         const { data, error: fetchError } = await supabase
           .from('chat_messages')
-          .select('*')
+          .select('id, role, content, question, response, created_at')
           .eq('user_id', user.id)
+          .eq('session_id', sessionId)
           .order('created_at', { ascending: true });
 
         if (fetchError) throw fetchError;
 
-        setMessages(
-          (data || []).map((msg) => ({
-            id: msg.id,
-            question: msg.question,
-            response: msg.response,
-            created_at: msg.created_at,
-          }))
-        );
+        // Convert to unified message format
+        const formattedMessages = (data || []).map((msg) => ({
+          id: msg.id,
+          role: msg.role || (msg.question ? 'user' : 'assistant'),
+          content: msg.content || msg.question || msg.response || '',
+          created_at: msg.created_at,
+        }));
+
+        setMessages(formattedMessages);
       } catch (err) {
-        console.error('Failed to load chat history:', err);
-        setError('Failed to load chat history');
-      } finally {
-        setHistoryLoading(false);
+        console.error('Failed to load messages:', err);
+        setError('Failed to load messages');
       }
     };
 
-    loadChatHistory();
-  }, [user]);
+    loadMessages();
+  }, [user, sessionId]);
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -57,6 +98,27 @@ const Chat = () => {
       chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight;
     }
   }, [messages, loading]);
+
+  // Create a new session
+  const createNewSession = async () => {
+    try {
+      const { data, error: createError } = await supabase
+        .from('chat_sessions')
+        .insert({ user_id: user.id })
+        .select()
+        .single();
+
+      if (createError) throw createError;
+
+      setSessions((prev) => [data, ...prev]);
+      setSessionId(data.id);
+      setMessages([]);
+      setError(null);
+    } catch (err) {
+      console.error('Failed to create session:', err);
+      setError('Failed to create new chat');
+    }
+  };
 
   const handleSend = async () => {
     if (!input.trim() || !user) {
@@ -75,10 +137,33 @@ const Chat = () => {
       return;
     }
 
+    // If no session, create one first
+    let activeSessionId = sessionId;
+    if (!activeSessionId) {
+      try {
+        const { data, error: createError } = await supabase
+          .from('chat_sessions')
+          .insert({ user_id: user.id })
+          .select()
+          .single();
+
+        if (createError) throw createError;
+
+        setSessions((prev) => [data, ...prev]);
+        activeSessionId = data.id;
+        setSessionId(data.id);
+      } catch (err) {
+        console.error('Failed to create session:', err);
+        setError('Failed to create new chat');
+        return;
+      }
+    }
+
+    // Optimistically add user message to state
     const userMessage = {
       id: Date.now().toString(),
-      question: input,
-      response: '', // Will be filled by streaming
+      role: 'user',
+      content: input,
       created_at: new Date().toISOString(),
     };
 
@@ -105,8 +190,9 @@ const Chat = () => {
           'Authorization': `Bearer ${session.access_token}`,
         },
         body: JSON.stringify({
-          question: userMessage.question,
-          dateRange: { days: 30 }, // Default 30 days
+          question: userMessage.content,
+          sessionId: activeSessionId,
+          dateRange: { days: 30 },
         }),
       });
 
@@ -115,18 +201,16 @@ const Chat = () => {
         throw new Error(errorData.error || 'Failed to get response');
       }
 
-      // Check if response is streaming (Server-Sent Events)
+      // Handle streaming response
       const contentType = response.headers.get('content-type');
       if (contentType && contentType.includes('text/event-stream')) {
-        // Handle streaming response
         await handleStreamingResponse(userMessage, response);
       } else {
-        // Fallback: handle as JSON (non-streaming)
         const data = await response.json();
         setMessages((prev) =>
           prev.map((msg) =>
             msg.id === userMessage.id
-              ? { ...msg, response: data.response }
+              ? { ...msg, role: 'assistant', content: data.response }
               : msg
           )
         );
@@ -166,7 +250,6 @@ const Chat = () => {
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
     let accumulatedText = '';
-    let streamCharCount = 0;
 
     try {
       while (true) {
@@ -185,21 +268,34 @@ const Chat = () => {
               if (eventData.type === 'content_block_delta' && eventData.delta?.type === 'text_delta') {
                 const text = eventData.delta.text;
                 accumulatedText += text;
-                streamCharCount = accumulatedText.length;
 
-                // Update message with streaming text
-                setMessages((prev) =>
-                  prev.map((msg) =>
-                    msg.id === userMessage.id
-                      ? { ...msg, response: accumulatedText }
-                      : msg
-                  )
-                );
+                // Create or update assistant message with streaming text
+                setMessages((prev) => {
+                  const lastMsg = prev[prev.length - 1];
+                  if (lastMsg && lastMsg.role === 'assistant' && lastMsg.id.startsWith('streaming-')) {
+                    // Update existing streaming message
+                    return prev.map((msg, idx) =>
+                      idx === prev.length - 1
+                        ? { ...msg, content: accumulatedText }
+                        : msg
+                    );
+                  } else {
+                    // Add new assistant message
+                    return [
+                      ...prev,
+                      {
+                        id: 'streaming-' + Date.now(),
+                        role: 'assistant',
+                        content: accumulatedText,
+                        created_at: new Date().toISOString(),
+                      },
+                    ];
+                  }
+                });
               }
 
               // Handle message_stop (stream complete)
               if (eventData.type === 'message_stop') {
-                // Stream is complete, message is now finalized
                 break;
               }
             } catch (parseErr) {
@@ -220,27 +316,70 @@ const Chat = () => {
     }
   };
 
+  const switchSession = (sid) => {
+    setSessionId(sid);
+    setError(null);
+  };
+
+  const getSessionTitle = (session) => {
+    if (!session.title) {
+      return 'New Chat';
+    }
+    // Truncate title if too long
+    return session.title.length > 30 ? session.title.substring(0, 30) + '…' : session.title;
+  };
+
   if (!user) {
     return <p className="chat-not-logged-in">Please log in to use chat.</p>;
   }
 
+  if (sessionLoading) {
+    return <p className="chat-loading">Loading chats...</p>;
+  }
+
   return (
     <div className="chat-container">
+      {/* Session strip */}
+      <div className="session-strip">
+        <button
+          className="session-new-btn"
+          onClick={createNewSession}
+          title="Start a new conversation"
+        >
+          + New
+        </button>
+        <div className="session-list">
+          {sessions.map((session) => (
+            <button
+              key={session.id}
+              className={`session-chip ${sessionId === session.id ? 'active' : ''}`}
+              onClick={() => switchSession(session.id)}
+              title={session.title || 'New Chat'}
+            >
+              {getSessionTitle(session)}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Chat history */}
       <div className="chat-history" ref={chatHistoryRef}>
-        {historyLoading && <p className="chat-loading">Loading chat history...</p>}
-        {!historyLoading && messages.length === 0 && (
+        {messages.length === 0 && !loading && (
           <p className="chat-empty">No messages yet. Ask a question to get started.</p>
         )}
         {messages.map((msg) => (
-          <div key={msg.id} className="chat-message">
-            <div className="user-message">
-              <strong>You:</strong> {msg.question}
+          <div key={msg.id} className={`chat-message ${msg.role}`}>
+            <div className={msg.role === 'user' ? 'user-message' : 'claude-message'}>
+              {msg.role === 'user' ? (
+                <>
+                  <strong>You:</strong> {msg.content}
+                </>
+              ) : (
+                <>
+                  <strong>Claude:</strong> {msg.content}
+                </>
+              )}
             </div>
-            {msg.response && (
-              <div className="claude-message">
-                <strong>Claude:</strong> {msg.response}
-              </div>
-            )}
           </div>
         ))}
         {loading && (
@@ -249,11 +388,15 @@ const Chat = () => {
           </div>
         )}
       </div>
+
+      {/* Error banner */}
       {error && (
         <div className="error-banner">
           Error: {error}
         </div>
       )}
+
+      {/* Input section */}
       <div className="chat-input-container">
         <input
           type="text"
