@@ -184,6 +184,7 @@ const Chat = () => {
       )
     );
 
+
     try {
       // Get user's session token
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
