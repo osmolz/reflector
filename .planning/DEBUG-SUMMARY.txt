@@ -1,0 +1,84 @@
+ROOT CAUSE ANALYSIS COMPLETE
+============================
+
+Two Session Persistence Bugs Found and Diagnosed
+
+FILES CREATED:
+- .planning/debug/session-persistence.md (internal debug workings)
+- .planning/debug/SESSION-PERSISTENCE-ROOT-CAUSES.md (detailed analysis)
+
+ISSUE 1: Session Titles Not Auto-Generating
+--------------------------------------------
+Expected: First message becomes session title
+Actual: Always shows "New Chat"
+
+Root Cause: Two-part problem
+  1. Edge Function title update is fire-and-forget (line 172-176)
+     - Not awaited, may complete after stream closes
+     - Title might not persist to database
+
+  2. Chat.jsx never reloads sessions after message send
+     - Sessions loaded once on mount (line 26-58)
+     - useEffect dependency is [user], not [messages]
+     - Even if title updates on server, client never sees it
+
+Fix Strategy:
+  - Edge Function: Add await to title update (move before streaming)
+  - Chat.jsx: Reload sessions after message send completes
+  - Or: Return updated session in response, update local state
+
+
+ISSUE 2: Messages Disappearing on Session Switch
+-------------------------------------------------
+Expected: Send message in session A, switch to B, back to A, message is there
+Actual: Message vanishes when switching away and back
+
+Root Cause: Race condition + missing error handling
+  1. Edge Function saves assistant message AFTER streaming completes (line 302-315)
+     - Not awaited, message insert may still be pending
+     - Stream closes before database write finishes
+
+  2. Chat.jsx has no error handling for failed saves
+     - Optimistic update shows message in UI immediately
+     - If database save fails, message lost silently
+     - No error displayed to user
+
+Fix Strategy:
+  - Edge Function: Move assistant message save BEFORE closing stream
+  - Add await to message insert operation
+  - Add error handling if insert fails
+  - Chat.jsx: After streaming, reload messages to verify persistence
+
+
+CODE LOCATIONS:
+
+Edge Function (supabase/functions/chat/index.ts):
+  Line 172-176: Title update (fire-and-forget)
+  Line 288: Stream close (happens too early)
+  Line 302-315: Assistant message save (fire-and-forget, wrong order)
+
+Chat.jsx (src/components/Chat.jsx):
+  Line 26-58: Sessions loaded once on mount
+  Line 73: Message query filter using session_id
+  Line 171: Optimistic message update (hides persistence failures)
+  Line 208: After streaming completes (add reload here)
+
+
+VERIFICATION STEPS:
+
+1. Send message to new session
+   - Check title updates within 2 seconds
+   - Refresh page - title persists
+
+2. Send message in session A
+   - Switch to session B
+   - Switch back to A
+   - Message still visible
+
+3. Check browser network tab
+   - Verify request body includes sessionId
+   - Verify response shows streaming events
+
+4. Check database directly
+   - chat_messages.session_id should NOT be NULL
+   - Should have both user and assistant messages with same session_id

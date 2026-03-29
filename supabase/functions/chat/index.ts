@@ -169,7 +169,7 @@ Please answer the user's question based on this data. Be specific with numbers, 
 
       if (sessionData && !sessionData.title) {
         const title = truncateUtf8(question, 60);
-        supabase
+        await supabase
           .from('chat_sessions')
           .update({ title })
           .eq('id', sessionId)
@@ -280,13 +280,6 @@ Remember: this is a conversation with someone who wants to understand themselves
               }
             }
 
-            // Emit completion event
-            const completionEvent = { type: 'message_stop' };
-            const finalData = `data: ${JSON.stringify(completionEvent)}\n\n`;
-            controller.enqueue(encoder.encode(finalData));
-
-            controller.close();
-
             // Clean markdown artifacts from full response
             const cleanedResponse = removeMarkdownArtifacts(fullResponse);
 
@@ -297,9 +290,9 @@ Remember: this is a conversation with someone who wants to understand themselves
                 'Claude could not generate a response. Please try again with a different question.';
             }
 
-            // Save assistant message (fire and forget)
+            // Save assistant message BEFORE closing stream (must complete before response ends)
             if (sessionId) {
-              supabase
+              await supabase
                 .from('chat_messages')
                 .insert({
                   user_id: user.id,
@@ -315,7 +308,7 @@ Remember: this is a conversation with someone who wants to understand themselves
                 });
             } else {
               // Backward compat: save without session_id
-              supabase
+              await supabase
                 .from('chat_messages')
                 .insert({
                   user_id: user.id,
@@ -327,6 +320,13 @@ Remember: this is a conversation with someone who wants to understand themselves
                   console.error('[Chat API] Error saving chat message:', saveError);
                 });
             }
+
+            // Emit completion event
+            const completionEvent = { type: 'message_stop' };
+            const finalData = `data: ${JSON.stringify(completionEvent)}\n\n`;
+            controller.enqueue(encoder.encode(finalData));
+
+            controller.close();
           } catch (streamError: any) {
             console.error('[Chat API] Stream error:', streamError);
             controller.close();

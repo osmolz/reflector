@@ -240,6 +240,28 @@ const Chat = () => {
       );
     } finally {
       setLoading(false);
+      // Reload sessions to update titles after message is saved
+      await reloadSessions();
+      // Reload messages to verify persistence (confirms DB save completed)
+      if (sessionId) {
+        const { data } = await supabase
+          .from('chat_messages')
+          .select('id, role, content, question, response, created_at')
+          .eq('user_id', user.id)
+          .eq('session_id', sessionId)
+          .order('created_at', { ascending: true });
+
+        if (data) {
+          setMessages(
+            data.map((msg) => ({
+              id: msg.id,
+              role: msg.role || (msg.question ? 'user' : 'assistant'),
+              content: msg.content || msg.question || msg.response || '',
+              created_at: msg.created_at,
+            }))
+          );
+        }
+      }
     }
   };
 
@@ -330,6 +352,24 @@ const Chat = () => {
     }
     // Truncate title if too long
     return session.title.length > 30 ? session.title.substring(0, 30) + '…' : session.title;
+  };
+
+  // Reload sessions (useful after sending message to refresh titles)
+  const reloadSessions = async () => {
+    if (!user) return;
+    try {
+      const { data, error: fetchError } = await supabase
+        .from('chat_sessions')
+        .select('id, title, created_at')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(20);
+
+      if (fetchError) throw fetchError;
+      setSessions(data || []);
+    } catch (err) {
+      console.error('Failed to reload sessions:', err);
+    }
   };
 
   if (!user) {
