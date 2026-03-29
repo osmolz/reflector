@@ -273,6 +273,10 @@ Remember: this is a conversation with someone who wants to understand themselves
 
                 const data = `data: ${JSON.stringify(sseEvent)}\n\n`;
                 controller.enqueue(encoder.encode(data));
+
+                // Small delay between chunks to prevent network buffering all at once
+                // This allows the client to receive chunks in separate packets for smooth streaming
+                await new Promise(resolve => setTimeout(resolve, 5));
               }
             }
 
