@@ -251,14 +251,13 @@ const Chat = () => {
       );
     } finally {
       setLoading(false);
-      // DON'T reload sessions here - it overwrites the optimistic title update!
-      // The edge function will update the DB title, but by the time reloadSessions runs,
-      // there may be replication lag. Instead we keep the optimistic update we already made.
 
       // Reload messages to verify persistence (confirms DB save completed)
       // Use activeSessionId to ensure we reload messages for the session that received the message
       // (not the session the user may have switched to during send)
-      if (activeSessionId) {
+      // CRITICAL: Only update messages if user is still viewing the same session
+      // Otherwise we'll overwrite correct messages with stale data from a different session
+      if (activeSessionId && sessionId === activeSessionId) {
         const { data } = await supabase
           .from('chat_messages')
           .select('id, role, content, question, response, created_at')
@@ -276,6 +275,25 @@ const Chat = () => {
             }))
           );
         }
+
+        // Also reload the session to get the updated title from the database
+        // (the edge function updates the title to the first message content)
+        if (user) {
+          const { data: sessionData } = await supabase
+            .from('chat_sessions')
+            .select('id, title, created_at')
+            .eq('user_id', user.id)
+            .eq('id', activeSessionId)
+            .single();
+
+          if (sessionData) {
+            setSessions((prev) =>
+              prev.map((s) =>
+                s.id === activeSessionId ? { ...s, title: sessionData.title } : s
+              )
+            );
+          }
+        }
       }
     }
   };
@@ -288,16 +306,26 @@ const Chat = () => {
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
     let accumulatedText = '';
+    let buffer = ''; // Buffer for partial lines across chunks
 
     try {
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
 
-        const chunk = decoder.decode(value, { stream: true });
-        const lines = chunk.split('\n');
+        // Decode chunk and append to buffer
+        buffer += decoder.decode(value, { stream: true });
 
-        for (const line of lines) {
+        // Process complete lines (separated by \n\n for SSE events)
+        const lines = buffer.split('\n');
+
+        // Keep the last incomplete line in buffer for next chunk
+        buffer = lines[lines.length - 1];
+
+        // Process all complete lines
+        for (let i = 0; i < lines.length - 1; i++) {
+          const line = lines[i];
+
           if (line.startsWith('data: ')) {
             try {
               const eventData = JSON.parse(line.slice(6));
@@ -341,7 +369,7 @@ const Chat = () => {
 
               // Handle message_stop (stream complete)
               if (eventData.type === 'message_stop') {
-                break;
+                return; // Exit the function completely
               }
             } catch (parseErr) {
               // Silently skip unparseable events
