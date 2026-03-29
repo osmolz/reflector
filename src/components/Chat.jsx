@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { flushSync } from 'react-dom';
 import { useAuthStore } from '../store/authStore';
 import { supabase } from '../lib/supabase';
 import './Chat.css';
@@ -269,28 +270,30 @@ const Chat = () => {
                 const text = eventData.delta.text;
                 accumulatedText += text;
 
-                // Create or update assistant message with streaming text
-                setMessages((prev) => {
-                  const lastMsg = prev[prev.length - 1];
-                  if (lastMsg && lastMsg.role === 'assistant' && lastMsg.id.startsWith('streaming-')) {
-                    // Update existing streaming message
-                    return prev.map((msg, idx) =>
-                      idx === prev.length - 1
-                        ? { ...msg, content: accumulatedText }
-                        : msg
-                    );
-                  } else {
-                    // Add new assistant message
-                    return [
-                      ...prev,
-                      {
-                        id: 'streaming-' + Date.now(),
-                        role: 'assistant',
-                        content: accumulatedText,
-                        created_at: new Date().toISOString(),
-                      },
-                    ];
-                  }
+                // Force synchronous update to prevent React batching (allows true character-by-character streaming)
+                flushSync(() => {
+                  setMessages((prev) => {
+                    const lastMsg = prev[prev.length - 1];
+                    if (lastMsg && lastMsg.role === 'assistant' && lastMsg.id.startsWith('streaming-')) {
+                      // Update existing streaming message
+                      return prev.map((msg, idx) =>
+                        idx === prev.length - 1
+                          ? { ...msg, content: accumulatedText }
+                          : msg
+                      );
+                    } else {
+                      // Add new assistant message
+                      return [
+                        ...prev,
+                        {
+                          id: 'streaming-' + Date.now(),
+                          role: 'assistant',
+                          content: accumulatedText,
+                          created_at: new Date().toISOString(),
+                        },
+                      ];
+                    }
+                  });
                 });
               }
 
