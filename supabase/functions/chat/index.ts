@@ -82,9 +82,18 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || ''
     );
 
-    // Verify token and get user
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
-    if (authError || !user) {
+    // Verify token and extract user ID from JWT claims
+    const { data, error: claimsError } = await supabase.auth.getClaims(token);
+    if (claimsError || !data || !data.claims) {
+      return new Response(
+        JSON.stringify({ error: 'Unauthorized' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Extract user ID from claims
+    const userId = data.claims.sub;
+    if (!userId) {
       return new Response(
         JSON.stringify({ error: 'Unauthorized' }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -101,7 +110,7 @@ Deno.serve(async (req) => {
     const { data: timeEntries, error: dbError } = await supabase
       .from('time_entries')
       .select('*')
-      .eq('user_id', user.id)
+      .eq('user_id', userId)
       .gte('start_time', startDate.toISOString())
       .lte('start_time', endDate.toISOString())
       .order('start_time', { ascending: true }) as any;
@@ -148,7 +157,7 @@ Please answer the user's question based on this data. Be specific with numbers, 
       const { data: messages, error: contextError } = await supabase
         .from('chat_messages')
         .select('role, content, question, response')
-        .eq('user_id', user.id)
+        .eq('user_id', userId)
         .eq('session_id', sessionId)
         .order('created_at', { ascending: true })
         .limit(20);
@@ -178,7 +187,7 @@ Please answer the user's question based on this data. Be specific with numbers, 
 
       // Save user message before calling Claude
       const { error: userMessageError } = await supabase.from('chat_messages').insert({
-        user_id: user.id,
+        user_id: userId,
         session_id: sessionId,
         role: 'user',
         content: question,
@@ -299,7 +308,7 @@ Remember: this is a conversation with someone who wants to understand themselves
               const { error: saveError } = await supabase
                 .from('chat_messages')
                 .insert({
-                  user_id: user.id,
+                  user_id: userId,
                   session_id: sessionId,
                   role: 'assistant',
                   content: finalResponse,
@@ -315,7 +324,7 @@ Remember: this is a conversation with someone who wants to understand themselves
               const { error: saveError } = await supabase
                 .from('chat_messages')
                 .insert({
-                  user_id: user.id,
+                  user_id: userId,
                   question,
                   response: finalResponse,
                   created_at: new Date().toISOString(),
