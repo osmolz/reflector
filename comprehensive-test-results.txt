@@ -1,0 +1,141 @@
+
+Running 12 tests using 1 worker
+
+
+🚀 TEST: Complete User Journey
+══════════════════════════════════════════════════════════════════════
+
+📍 STEP 1: Login
+✅ Logged in: true
+
+📍 STEP 2: Create Activities via Text Input
+✅ Transcript entered (334 chars)
+⏳ Parsing activities...
+✅ Activities parsed and review shown
+⏳ Saving to timeline...
+✅ Activities saved
+
+📍 STEP 3: View Timeline
+✅ Timeline view accessible: false
+
+📍 STEP 4: Chat Analytics
+✅ Chat question: "How much time did I spend working today?"
+⏳ Waiting for Claude response...
+✅ Chat response received: true
+
+📍 STEP 5: View Journal
+✅ Journal page accessible
+
+📍 STEP 6: Sign Out
+✅ Signed out: true
+
+══════════════════════════════════════════════════════════════════════
+📊 TEST SUMMARY
+✅ Console errors: 1
+   1. Failed to load resource: the server responded with a status of 502 (Bad Gateway)
+══════════════════════════════════════════════════════════════════════
+  ✓   1 [chromium] › tests\app-complete.spec.js:8:7 › Complete App Functionality Tests › 1. Full user flow: Text Input → Parse → Save → Timeline → Chat (21.9s)
+
+🧪 TEST: Navigation Between Pages
+══════════════════════════════════════════════════════════════════════
+✅ Logged in
+✅ Dashboard: http://localhost:5173/
+✅ Timeline: http://localhost:5173/
+✅ Journal: http://localhost:5173/
+
+📊 Navigation Results:
+   Dashboard: ✅ Accessible
+   Timeline: ✅ Accessible
+   Journal: ✅ Accessible
+  ✓   2 [chromium] › tests\app-complete.spec.js:157:7 › Complete App Functionality Tests › 2. Navigation between all pages (5.0s)
+
+🧪 TEST: Check-in Input Modes
+══════════════════════════════════════════════════════════════════════
+✅ Logged in
+✅ Speak button: true
+✅ Type button: true
+✅ Text mode: true
+✅ Back to mode selection: true
+✅ Voice mode accessible: true
+  ✓   3 [chromium] › tests\app-complete.spec.js:198:7 › Complete App Functionality Tests › 3. Check-in form with both input modes (3.5s)
+
+🧪 TEST: Activity Review & Editing
+══════════════════════════════════════════════════════════════════════
+✅ Review page displayed
+✅ Edit buttons available: 3
+✅ Delete buttons available: 3
+✅ Save button available: true
+✅ Discard button available: true
+  ✓   4 [chromium] › tests\app-complete.spec.js:244:7 › Complete App Functionality Tests › 4. Activity review and editing (7.9s)
+
+🧪 TEST: Responsive & Accessibility
+══════════════════════════════════════════════════════════════════════
+✅ Main element: false
+✅ Nav element: false
+✅ Form labels: 2
+✅ Elements with aria-label: 0
+✅ Total buttons: 2
+✅ Images without alt text: 0
+✅ Viewport: 1280x720
+✅ Content scrollable: true
+  ✓   5 [chromium] › tests\app-complete.spec.js:292:7 › Complete App Functionality Tests › 5. Responsive layout and accessibility (1.6s)
+
+🧪 TEST: Error States & Recovery
+══════════════════════════════════════════════════════════════════════
+📝 Testing empty input submission...
+✅ Parse button disabled on empty: true
+✅ Parse button disabled on whitespace: true
+✅ Parse button enabled on valid input: true
+
+📊 Console errors detected: 0
+  ✓   6 [chromium] › tests\app-complete.spec.js:344:7 › Complete App Functionality Tests › 6. Error states and recovery (4.4s)
+
+🧪 TEST: Data Persistence
+══════════════════════════════════════════════════════════════════════
+✅ Activity saved
+✅ Navigated away
+✅ Activity persisted in timeline: true
+  ✓   7 [chromium] › tests\app-complete.spec.js:391:7 › Complete App Functionality Tests › 7. Data persistence across navigation (11.5s)
+
+🧪 TEST: Chat Input Visibility
+══════════════════════════════════════════════════════════════════════
+✅ Logged in
+✅ Chat input visible
+  ✓   8 [chromium] › tests\chat-e2e.spec.js:8:7 › Chat Functionality E2E Tests › 1. Chat input field is visible and accessible (3.2s)
+
+🧪 TEST: Chat Question & Response
+══════════════════════════════════════════════════════════════════════
+✅ Logged in
+✅ Chat input found
+📝 Question entered: "What activities have I logged?"
+⏳ Clicking Send button
+⏳ Waiting for Claude response...
+✅ Input cleared after send: true
+  ✓   9 [chromium] › tests\chat-e2e.spec.js:38:7 › Chat Functionality E2E Tests › 2. Chat question submission and response (7.0s)
+
+🧪 TEST: Chat Claude Response
+══════════════════════════════════════════════════════════════════════
+✅ Logged in
+📝 Question: "How much time did I spend today?"
+⏳ Waiting for Claude response...
+✅ Chat API called (status: 200)
+✅ Message elements in DOM: 0
+  ✓  10 [chromium] › tests\chat-e2e.spec.js:96:7 › Chat Functionality E2E Tests › 3. Chat response from Claude API (9.0s)
+
+🧪 TEST: Message Persistence
+══════════════════════════════════════════════════════════════════════
+✅ Logged in
+⏳ Waiting for message to be sent...
+✅ Message visible on page: false
+✅ Navigated away
+✅ Messages persisted: false
+  ✓  11 [chromium] › tests\chat-e2e.spec.js:165:7 › Chat Functionality E2E Tests › 4. Chat message persistence (7.0s)
+
+🧪 TEST: Chat with Empty Data
+══════════════════════════════════════════════════════════════════════
+✅ Logged in
+⏳ Waiting for response...
+✅ Claude responded: false
+  ✓  12 [chromium] › tests\chat-e2e.spec.js:227:7 › Chat Functionality E2E Tests › 5. Chat with no time entries (8.9s)
+
+  12 passed (1.6m)
