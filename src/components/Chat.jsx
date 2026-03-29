@@ -78,7 +78,7 @@ const Chat = () => {
     const userMessage = {
       id: Date.now().toString(),
       question: input,
-      response: '', // Will be filled by API (Task 4.2)
+      response: '', // Will be filled by streaming
       created_at: new Date().toISOString(),
     };
 
@@ -95,10 +95,6 @@ const Chat = () => {
         throw new Error('Not authenticated');
       }
 
-      // Call backend API (Supabase Edge Function)
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
-
       // Get Supabase URL from environment
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 
@@ -112,26 +108,29 @@ const Chat = () => {
           question: userMessage.question,
           dateRange: { days: 30 }, // Default 30 days
         }),
-        signal: controller.signal,
       });
-
-      clearTimeout(timeoutId);
 
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || 'Failed to get response');
       }
 
-      const data = await response.json();
-
-      // Update message with Claude's response
-      setMessages((prev) =>
-        prev.map((msg) =>
-          msg.id === userMessage.id
-            ? { ...msg, response: data.response }
-            : msg
-        )
-      );
+      // Check if response is streaming (Server-Sent Events)
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('text/event-stream')) {
+        // Handle streaming response
+        await handleStreamingResponse(userMessage, response);
+      } else {
+        // Fallback: handle as JSON (non-streaming)
+        const data = await response.json();
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg.id === userMessage.id
+              ? { ...msg, response: data.response }
+              : msg
+          )
+        );
+      }
     } catch (err) {
       let errorMsg = 'Unknown error';
       if (err instanceof Error) {
@@ -156,6 +155,61 @@ const Chat = () => {
       );
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleStreamingResponse = async (userMessage, response) => {
+    if (!response.body) {
+      throw new Error('No response body');
+    }
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let accumulatedText = '';
+    let streamCharCount = 0;
+
+    try {
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value, { stream: true });
+        const lines = chunk.split('\n');
+
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            try {
+              const eventData = JSON.parse(line.slice(6));
+
+              // Handle content_block_delta events (streaming text)
+              if (eventData.type === 'content_block_delta' && eventData.delta?.type === 'text_delta') {
+                const text = eventData.delta.text;
+                accumulatedText += text;
+                streamCharCount = accumulatedText.length;
+
+                // Update message with streaming text
+                setMessages((prev) =>
+                  prev.map((msg) =>
+                    msg.id === userMessage.id
+                      ? { ...msg, response: accumulatedText }
+                      : msg
+                  )
+                );
+              }
+
+              // Handle message_stop (stream complete)
+              if (eventData.type === 'message_stop') {
+                // Stream is complete, message is now finalized
+                break;
+              }
+            } catch (parseErr) {
+              // Silently skip unparseable events
+            }
+          }
+        }
+      }
+    } finally {
+      reader.releaseLock();
     }
   };
 
