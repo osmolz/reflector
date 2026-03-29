@@ -174,6 +174,16 @@ const Chat = () => {
     setError(null);
     setLastSendTime(now);
 
+    // Optimistically update session title with first 60 chars of question
+    // This avoids race condition where DB update hasn't replicated yet
+    setSessions((prev) =>
+      prev.map((s) =>
+        s.id === activeSessionId
+          ? { ...s, title: input.substring(0, 60) }
+          : s
+      )
+    );
+
     try {
       // Get user's session token
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
@@ -240,15 +250,19 @@ const Chat = () => {
       );
     } finally {
       setLoading(false);
-      // Reload sessions to update titles after message is saved
-      await reloadSessions();
+      // DON'T reload sessions here - it overwrites the optimistic title update!
+      // The edge function will update the DB title, but by the time reloadSessions runs,
+      // there may be replication lag. Instead we keep the optimistic update we already made.
+
       // Reload messages to verify persistence (confirms DB save completed)
-      if (sessionId) {
+      // Use activeSessionId to ensure we reload messages for the session that received the message
+      // (not the session the user may have switched to during send)
+      if (activeSessionId) {
         const { data } = await supabase
           .from('chat_messages')
           .select('id, role, content, question, response, created_at')
           .eq('user_id', user.id)
-          .eq('session_id', sessionId)
+          .eq('session_id', activeSessionId)
           .order('created_at', { ascending: true });
 
         if (data) {
@@ -317,6 +331,11 @@ const Chat = () => {
                     }
                   });
                 });
+
+                // Force browser to render before processing next event
+                // Prevents multiple events from being batched and appearing all at once
+                // Use 5ms to ensure browser has time to actually paint between events
+                await new Promise((resolve) => setTimeout(resolve, 5));
               }
 
               // Handle message_stop (stream complete)

@@ -177,7 +177,7 @@ Please answer the user's question based on this data. Be specific with numbers, 
       }
 
       // Save user message before calling Claude
-      await supabase.from('chat_messages').insert({
+      const { error: userMessageError } = await supabase.from('chat_messages').insert({
         user_id: user.id,
         session_id: sessionId,
         role: 'user',
@@ -186,6 +186,9 @@ Please answer the user's question based on this data. Be specific with numbers, 
         response: null,
         created_at: new Date().toISOString(),
       });
+      if (userMessageError) {
+        console.error('[Chat API] Error saving user message:', userMessageError);
+      }
     }
 
     // Call Claude API
@@ -274,9 +277,10 @@ Remember: this is a conversation with someone who wants to understand themselves
                 const data = `data: ${JSON.stringify(sseEvent)}\n\n`;
                 controller.enqueue(encoder.encode(data));
 
-                // Small delay between chunks to prevent network buffering all at once
+                // Delay between chunks to prevent network buffering all at once
                 // This allows the client to receive chunks in separate packets for smooth streaming
-                await new Promise(resolve => setTimeout(resolve, 5));
+                // Increased from 5ms to 10ms to better prevent browser batching
+                await new Promise(resolve => setTimeout(resolve, 10));
               }
             }
 
@@ -292,7 +296,7 @@ Remember: this is a conversation with someone who wants to understand themselves
 
             // Save assistant message BEFORE closing stream (must complete before response ends)
             if (sessionId) {
-              await supabase
+              const { error: saveError } = await supabase
                 .from('chat_messages')
                 .insert({
                   user_id: user.id,
@@ -302,23 +306,23 @@ Remember: this is a conversation with someone who wants to understand themselves
                   question: null,
                   response: finalResponse,
                   created_at: new Date().toISOString(),
-                })
-                .catch((saveError: any) => {
-                  console.error('[Chat API] Error saving assistant message:', saveError);
                 });
+              if (saveError) {
+                console.error('[Chat API] Error saving assistant message:', saveError);
+              }
             } else {
               // Backward compat: save without session_id
-              await supabase
+              const { error: saveError } = await supabase
                 .from('chat_messages')
                 .insert({
                   user_id: user.id,
                   question,
                   response: finalResponse,
                   created_at: new Date().toISOString(),
-                })
-                .catch((saveError: any) => {
-                  console.error('[Chat API] Error saving chat message:', saveError);
                 });
+              if (saveError) {
+                console.error('[Chat API] Error saving chat message:', saveError);
+              }
             }
 
             // Emit completion event
