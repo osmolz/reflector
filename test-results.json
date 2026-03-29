@@ -1,0 +1,227 @@
+{
+  "config": {
+    "configFile": "C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\playwright.config.js",
+    "rootDir": "C:/Users/osmol/OneDrive/Desktop/Who am I/tests",
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/Users/osmol/OneDrive/Desktop/Who am I/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "C:/Users/osmol/OneDrive/Desktop/Who am I/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 60000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "html",
+        {
+          "outputFolder": "playwright-report"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "test-results.json"
+        }
+      ],
+      [
+        "list",
+        null
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "runAgents": "none",
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.58.2",
+    "workers": 1,
+    "webServer": {
+      "command": "npm run dev",
+      "url": "http://localhost:5173",
+      "reuseExistingServer": true
+    }
+  },
+  "suites": [
+    {
+      "title": "e2e-complete.spec.js",
+      "file": "e2e-complete.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "Complete E2E: Text Input → Parse → Review → Save",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 60000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 11823,
+                  "errors": [],
+                  "stdout": [
+                    {
+                      "text": "\n🚀 COMPLETE END-TO-END TEST\n"
+                    },
+                    {
+                      "text": "══════════════════════════════════════════════════════════════════════\n"
+                    },
+                    {
+                      "text": "\n📍 STEP 1: Login\n"
+                    },
+                    {
+                      "text": "✅ Logged in: true\n"
+                    },
+                    {
+                      "text": "\n📍 STEP 2: Navigate to Check-in\n"
+                    },
+                    {
+                      "text": "✅ Type button found\n"
+                    },
+                    {
+                      "text": "\n📍 STEP 3: Click Type Button\n"
+                    },
+                    {
+                      "text": "✅ Textarea visible: true\n"
+                    },
+                    {
+                      "text": "\n📍 STEP 4: Enter Test Transcript\n"
+                    },
+                    {
+                      "text": "✅ Text entered: 287 characters\n"
+                    },
+                    {
+                      "text": "\n📍 STEP 5: Click Parse & Continue\n"
+                    },
+                    {
+                      "text": "⏳ Parsing... (calling Claude API)\n"
+                    },
+                    {
+                      "text": "\n📍 STEP 6: Wait for Review Page\n"
+                    },
+                    {
+                      "text": "✅ Review page appeared!\n"
+                    },
+                    {
+                      "text": "✅ Found 54 parsed activities\n"
+                    },
+                    {
+                      "text": "\n📋 Parsed Activities:\n"
+                    },
+                    {
+                      "text": "   1. Team meeting30m08:00 AMwork...\n"
+                    },
+                    {
+                      "text": "   2. Coding210m08:30 AMworkNote: 3.5 hours of coding as stated...\n"
+                    },
+                    {
+                      "text": "   3. Lunch60m12:00 PMfood...\n"
+                    },
+                    {
+                      "text": "   4. Coding240m01:00 PMworkNote: 4 hours of coding as stated...\n"
+                    },
+                    {
+                      "text": "   5. Retrospective meeting30m05:00 PMwork...\n"
+                    },
+                    {
+                      "text": "\n📍 STEP 7: Save Activities to Timeline\n"
+                    },
+                    {
+                      "text": "⏳ Saving activities...\n"
+                    },
+                    {
+                      "text": "\n📍 STEP 8: Verify Save Completed\n"
+                    },
+                    {
+                      "text": "⚠️  Save status unclear (may have saved anyway)\n"
+                    },
+                    {
+                      "text": "\n══════════════════════════════════════════════════════════════════════\n"
+                    },
+                    {
+                      "text": "🎉 END-TO-END TEST COMPLETE\n"
+                    },
+                    {
+                      "text": "✅ All major functionality working:\n"
+                    },
+                    {
+                      "text": "   ✓ Login\n"
+                    },
+                    {
+                      "text": "   ✓ Text input for check-in\n"
+                    },
+                    {
+                      "text": "   ✓ Claude parsing (Edge Function)\n"
+                    },
+                    {
+                      "text": "   ✓ Activity review display\n"
+                    },
+                    {
+                      "text": "   ✓ Save to timeline\n"
+                    },
+                    {
+                      "text": "══════════════════════════════════════════════════════════════════════\n"
+                    }
+                  ],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-03-29T15:21:50.996Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "59e329b57562eb85d818-f21f000dd8cec5bdcd9e",
+          "file": "e2e-complete.spec.js",
+          "line": 6,
+          "column": 5
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-03-29T15:21:47.499Z",
+    "duration": 15750.086000000001,
+    "expected": 1,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

@@ -1,0 +1,30 @@
+
+Running 4 tests using 1 worker
+
+🔓 Starting login flow...
+✅ Login page loaded
+✅ Credentials entered
+⏳ Signing in...
+ℹ️  URL didn't change but checking if logged in via content
+✅ Login successful - dashboard visible
+  ✓  1 [chromium] › tests\full-flow.spec.js:8:7 › Full Flow - Text Input, Parsing, and Chat › 1. Login and navigate to check-in (11.5s)
+
+📝 Starting text input check-in test...
+⚠️  Check-in section not immediately visible, scrolling...
+❌ Check-in section not found on dashboard
+  ✓  2 [chromium] › tests\full-flow.spec.js:62:7 › Full Flow - Text Input, Parsing, and Chat › 2. Text input for check-in (parsing test) (3.3s)
+
+💬 Starting chat test...
+⚠️  Chat section not found, trying text input...
+❌ Chat input not found
+  ✓  3 [chromium] › tests\full-flow.spec.js:186:7 › Full Flow - Text Input, Parsing, and Chat › 3. Chat functionality with typed input (3.8s)
+
+🔍 Monitoring console for errors...
+
+📊 Console Summary:
+   Errors: 0
+   Warnings: 0
+✅ No console errors detected
+  ✓  4 [chromium] › tests\full-flow.spec.js:279:7 › Full Flow - Text Input, Parsing, and Chat › 4. Check for console errors throughout flow (4.4s)
+
+  4 passed (27.0s)

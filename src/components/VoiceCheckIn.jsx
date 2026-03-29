@@ -11,6 +11,7 @@ export function VoiceCheckIn({ onActivitiesSaved }) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [stage, setStage] = useState('recording'); // 'recording', 'review', 'saved'
+  const [inputMode, setInputMode] = useState(null); // null, 'voice', 'text'
 
   const handleTranscriptReady = async (text) => {
     setTranscript(text);
@@ -27,6 +28,7 @@ export function VoiceCheckIn({ onActivitiesSaved }) {
       const activities = await parseTranscript(text, session.access_token);
       setParsedActivities(activities);
       setStage('review');
+      setIsLoading(false);
     } catch (err) {
       setError(err.message || 'Failed to parse transcript.');
       setIsLoading(false);
@@ -122,6 +124,7 @@ export function VoiceCheckIn({ onActivitiesSaved }) {
     setParsedActivities([]);
     setError(null);
     setStage('recording');
+    setInputMode(null);
   };
 
   if (stage === 'saved') {
@@ -149,16 +152,124 @@ export function VoiceCheckIn({ onActivitiesSaved }) {
 
   return (
     <div style={{ padding: '20px' }}>
-      <h2>Voice Check-in</h2>
+      <h2>Check-in</h2>
       {stage === 'recording' && (
         <>
-          <MicButton onTranscriptReady={handleTranscriptReady} />
-          {error && (
-            <div style={{ color: '#c0392b', marginTop: '10px', padding: '10px', backgroundColor: '#ffe6e6', borderRadius: '4px' }}>
-              {error}
+          {!inputMode && (
+            <div style={{ display: 'flex', gap: '12px', marginBottom: '20px' }}>
+              <button
+                onClick={() => setInputMode('voice')}
+                style={{
+                  flex: 1,
+                  padding: '12px 20px',
+                  backgroundColor: '#3498db',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontSize: '16px',
+                  fontWeight: '500',
+                }}
+              >
+                🎤 Speak
+              </button>
+              <button
+                onClick={() => setInputMode('text')}
+                style={{
+                  flex: 1,
+                  padding: '12px 20px',
+                  backgroundColor: '#3498db',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontSize: '16px',
+                  fontWeight: '500',
+                }}
+              >
+                ✍️ Type
+              </button>
             </div>
           )}
-          {transcript && (
+
+          {inputMode === 'voice' && (
+            <>
+              <button
+                onClick={() => setInputMode(null)}
+                style={{
+                  padding: '8px 12px',
+                  backgroundColor: '#95a5a6',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontSize: '12px',
+                  marginBottom: '12px',
+                }}
+              >
+                ← Back
+              </button>
+              <MicButton onTranscriptReady={handleTranscriptReady} />
+            </>
+          )}
+
+          {inputMode === 'text' && (
+            <>
+              <button
+                onClick={() => setInputMode(null)}
+                style={{
+                  padding: '8px 12px',
+                  backgroundColor: '#95a5a6',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontSize: '12px',
+                  marginBottom: '12px',
+                }}
+              >
+                ← Back
+              </button>
+              <div style={{ marginBottom: '15px' }}>
+                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500' }}>
+                  What did you do today?
+                </label>
+                <textarea
+                  value={transcript}
+                  onChange={(e) => setTranscript(e.target.value)}
+                  placeholder="Describe your activities, times, and durations..."
+                  style={{
+                    width: '100%',
+                    height: '120px',
+                    padding: '10px',
+                    fontFamily: 'sans-serif',
+                    fontSize: '14px',
+                    border: '1px solid #bdc3c7',
+                    borderRadius: '4px',
+                    boxSizing: 'border-box',
+                  }}
+                />
+              </div>
+              <button
+                onClick={() => handleTranscriptReady(transcript)}
+                disabled={isLoading || !transcript.trim()}
+                style={{
+                  padding: '10px 20px',
+                  backgroundColor: isLoading || !transcript.trim() ? '#95a5a6' : '#27ae60',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: isLoading || !transcript.trim() ? 'not-allowed' : 'pointer',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                }}
+              >
+                {isLoading ? 'Parsing...' : 'Parse & Continue'}
+              </button>
+            </>
+          )}
+
+          {transcript && inputMode === 'voice' && (
             <div style={{ marginTop: '20px' }}>
               <h3>Your transcript:</h3>
               <textarea
@@ -166,7 +277,7 @@ export function VoiceCheckIn({ onActivitiesSaved }) {
                 onChange={(e) => setTranscript(e.target.value)}
                 style={{
                   width: '100%',
-                  height: '150px',
+                  height: '120px',
                   padding: '8px',
                   fontFamily: 'monospace',
                   fontSize: '14px',
@@ -181,16 +292,23 @@ export function VoiceCheckIn({ onActivitiesSaved }) {
                 style={{
                   marginTop: '10px',
                   padding: '10px 20px',
-                  backgroundColor: isLoading ? '#95a5a6' : '#3498db',
+                  backgroundColor: isLoading ? '#95a5a6' : '#27ae60',
                   color: 'white',
                   border: 'none',
                   borderRadius: '4px',
                   cursor: isLoading ? 'not-allowed' : 'pointer',
                   fontSize: '14px',
+                  fontWeight: '500',
                 }}
               >
                 {isLoading ? 'Parsing...' : 'Parse Transcript'}
               </button>
+            </div>
+          )}
+
+          {error && (
+            <div style={{ color: '#c0392b', marginTop: '10px', padding: '10px', backgroundColor: '#ffe6e6', borderRadius: '4px' }}>
+              {error}
             </div>
           )}
         </>
