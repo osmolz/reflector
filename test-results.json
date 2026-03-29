@@ -70,156 +70,296 @@
   },
   "suites": [
     {
-      "title": "e2e-complete.spec.js",
-      "file": "e2e-complete.spec.js",
+      "title": "chat-e2e.spec.js",
+      "file": "chat-e2e.spec.js",
       "column": 0,
       "line": 0,
-      "specs": [
+      "specs": [],
+      "suites": [
         {
-          "title": "Complete E2E: Text Input → Parse → Review → Save",
-          "ok": true,
-          "tags": [],
-          "tests": [
+          "title": "Chat Functionality E2E Tests",
+          "file": "chat-e2e.spec.js",
+          "line": 6,
+          "column": 6,
+          "specs": [
             {
-              "timeout": 60000,
-              "annotations": [],
-              "expectedStatus": "passed",
-              "projectId": "chromium",
-              "projectName": "chromium",
-              "results": [
+              "title": "1. Chat input field is visible and accessible",
+              "ok": true,
+              "tags": [],
+              "tests": [
                 {
-                  "workerIndex": 0,
-                  "parallelIndex": 0,
-                  "status": "passed",
-                  "duration": 11823,
-                  "errors": [],
-                  "stdout": [
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
                     {
-                      "text": "\n🚀 COMPLETE END-TO-END TEST\n"
-                    },
-                    {
-                      "text": "══════════════════════════════════════════════════════════════════════\n"
-                    },
-                    {
-                      "text": "\n📍 STEP 1: Login\n"
-                    },
-                    {
-                      "text": "✅ Logged in: true\n"
-                    },
-                    {
-                      "text": "\n📍 STEP 2: Navigate to Check-in\n"
-                    },
-                    {
-                      "text": "✅ Type button found\n"
-                    },
-                    {
-                      "text": "\n📍 STEP 3: Click Type Button\n"
-                    },
-                    {
-                      "text": "✅ Textarea visible: true\n"
-                    },
-                    {
-                      "text": "\n📍 STEP 4: Enter Test Transcript\n"
-                    },
-                    {
-                      "text": "✅ Text entered: 287 characters\n"
-                    },
-                    {
-                      "text": "\n📍 STEP 5: Click Parse & Continue\n"
-                    },
-                    {
-                      "text": "⏳ Parsing... (calling Claude API)\n"
-                    },
-                    {
-                      "text": "\n📍 STEP 6: Wait for Review Page\n"
-                    },
-                    {
-                      "text": "✅ Review page appeared!\n"
-                    },
-                    {
-                      "text": "✅ Found 54 parsed activities\n"
-                    },
-                    {
-                      "text": "\n📋 Parsed Activities:\n"
-                    },
-                    {
-                      "text": "   1. Team meeting30m08:00 AMwork...\n"
-                    },
-                    {
-                      "text": "   2. Coding210m08:30 AMworkNote: 3.5 hours of coding as stated...\n"
-                    },
-                    {
-                      "text": "   3. Lunch60m12:00 PMfood...\n"
-                    },
-                    {
-                      "text": "   4. Coding240m01:00 PMworkNote: 4 hours of coding as stated...\n"
-                    },
-                    {
-                      "text": "   5. Retrospective meeting30m05:00 PMwork...\n"
-                    },
-                    {
-                      "text": "\n📍 STEP 7: Save Activities to Timeline\n"
-                    },
-                    {
-                      "text": "⏳ Saving activities...\n"
-                    },
-                    {
-                      "text": "\n📍 STEP 8: Verify Save Completed\n"
-                    },
-                    {
-                      "text": "⚠️  Save status unclear (may have saved anyway)\n"
-                    },
-                    {
-                      "text": "\n══════════════════════════════════════════════════════════════════════\n"
-                    },
-                    {
-                      "text": "🎉 END-TO-END TEST COMPLETE\n"
-                    },
-                    {
-                      "text": "✅ All major functionality working:\n"
-                    },
-                    {
-                      "text": "   ✓ Login\n"
-                    },
-                    {
-                      "text": "   ✓ Text input for check-in\n"
-                    },
-                    {
-                      "text": "   ✓ Claude parsing (Edge Function)\n"
-                    },
-                    {
-                      "text": "   ✓ Activity review display\n"
-                    },
-                    {
-                      "text": "   ✓ Save to timeline\n"
-                    },
-                    {
-                      "text": "══════════════════════════════════════════════════════════════════════\n"
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3384,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n🧪 TEST: Chat Input Visibility\n"
+                        },
+                        {
+                          "text": "══════════════════════════════════════════════════════════════════════\n"
+                        },
+                        {
+                          "text": "✅ Logged in\n"
+                        },
+                        {
+                          "text": "✅ Chat input visible\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-29T15:37:22.618Z",
+                      "annotations": [],
+                      "attachments": []
                     }
                   ],
-                  "stderr": [],
-                  "retry": 0,
-                  "startTime": "2026-03-29T15:21:50.996Z",
-                  "annotations": [],
-                  "attachments": []
+                  "status": "expected"
                 }
               ],
-              "status": "expected"
+              "id": "91466cd529a83fb9a158-b634babc37a713a463a2",
+              "file": "chat-e2e.spec.js",
+              "line": 8,
+              "column": 7
+            },
+            {
+              "title": "2. Chat question submission and response",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6955,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n🧪 TEST: Chat Question & Response\n"
+                        },
+                        {
+                          "text": "══════════════════════════════════════════════════════════════════════\n"
+                        },
+                        {
+                          "text": "✅ Logged in\n"
+                        },
+                        {
+                          "text": "✅ Chat input found\n"
+                        },
+                        {
+                          "text": "📝 Question entered: \"What activities have I logged?\"\n"
+                        },
+                        {
+                          "text": "⏳ Clicking Send button\n"
+                        },
+                        {
+                          "text": "⏳ Waiting for Claude response...\n"
+                        },
+                        {
+                          "text": "✅ Input cleared after send: true\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-29T15:37:26.249Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "91466cd529a83fb9a158-08c25a3c032640551c21",
+              "file": "chat-e2e.spec.js",
+              "line": 38,
+              "column": 7
+            },
+            {
+              "title": "3. Chat response from Claude API",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 8886,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n🧪 TEST: Chat Claude Response\n"
+                        },
+                        {
+                          "text": "══════════════════════════════════════════════════════════════════════\n"
+                        },
+                        {
+                          "text": "✅ Logged in\n"
+                        },
+                        {
+                          "text": "📝 Question: \"How much time did I spend today?\"\n"
+                        },
+                        {
+                          "text": "⏳ Waiting for Claude response...\n"
+                        },
+                        {
+                          "text": "✅ Chat API called (status: 200)\n"
+                        },
+                        {
+                          "text": "✅ Message elements in DOM: 5\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-29T15:37:33.234Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "91466cd529a83fb9a158-4a9388e288a71df81b50",
+              "file": "chat-e2e.spec.js",
+              "line": 96,
+              "column": 7
+            },
+            {
+              "title": "4. Chat message persistence",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 7185,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n🧪 TEST: Message Persistence\n"
+                        },
+                        {
+                          "text": "══════════════════════════════════════════════════════════════════════\n"
+                        },
+                        {
+                          "text": "✅ Logged in\n"
+                        },
+                        {
+                          "text": "⏳ Waiting for message to be sent...\n"
+                        },
+                        {
+                          "text": "✅ Message visible on page: true\n"
+                        },
+                        {
+                          "text": "✅ Navigated away\n"
+                        },
+                        {
+                          "text": "✅ Messages persisted: true\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-29T15:37:42.141Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "91466cd529a83fb9a158-bfe5ad88769089de31a9",
+              "file": "chat-e2e.spec.js",
+              "line": 165,
+              "column": 7
+            },
+            {
+              "title": "5. Chat with no time entries",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 60000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 8918,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n🧪 TEST: Chat with Empty Data\n"
+                        },
+                        {
+                          "text": "══════════════════════════════════════════════════════════════════════\n"
+                        },
+                        {
+                          "text": "✅ Logged in\n"
+                        },
+                        {
+                          "text": "⏳ Waiting for response...\n"
+                        },
+                        {
+                          "text": "✅ Claude responded: true\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-29T15:37:49.355Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "91466cd529a83fb9a158-a87ce428cf41caaa73b9",
+              "file": "chat-e2e.spec.js",
+              "line": 227,
+              "column": 7
             }
-          ],
-          "id": "59e329b57562eb85d818-f21f000dd8cec5bdcd9e",
-          "file": "e2e-complete.spec.js",
-          "line": 6,
-          "column": 5
+          ]
         }
       ]
     }
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-03-29T15:21:47.499Z",
-    "duration": 15750.086000000001,
-    "expected": 1,
+    "startTime": "2026-03-29T15:37:18.886Z",
+    "duration": 39601.701,
+    "expected": 5,
     "skipped": 0,
     "unexpected": 0,
     "flaky": 0

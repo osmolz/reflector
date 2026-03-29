@@ -40,10 +40,6 @@
   --error:    #C62828;
   --warning:  #F57C00;
 
-  /* Shadows — minimal, purposeful */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.12);
-
   /* Spacing Scale (8px base unit) */
   --space-xs:  4px;
   --space-sm:  8px;
@@ -52,6 +48,7 @@
   --space-xl:  32px;
   --space-2xl: 48px;
   --space-3xl: 64px;
+  --space-4xl: 80px;
 
   /* Typography */
   --font-serif: 'Crimson Text', Georgia, 'Times New Roman', serif;
@@ -165,7 +162,7 @@ code {
   font-size: 0.875rem;
   background-color: var(--border-light);
   padding: 2px 6px;
-  border-radius: 2px;
+  border-radius: 0;
   color: var(--text-primary);
 }
 

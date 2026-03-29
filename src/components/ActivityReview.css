@@ -8,7 +8,7 @@
    Activity Review Container
    ============================================================ */
 .activity-review {
-  padding: var(--space-lg);
+  padding: var(--space-2xl);
 }
 
 .activity-review-title {
@@ -28,13 +28,12 @@
   margin-bottom: var(--space-md);
   border: 1px solid var(--border-light);
   background-color: var(--bg-secondary);
-  border-radius: 2px;
+  border-radius: 0;
   transition: all 0.2s ease;
 }
 
 .activity-item:hover {
   border-color: var(--accent-color);
-  box-shadow: var(--shadow-sm);
 }
 
 .activity-item.editing {
@@ -97,7 +96,7 @@
   padding: var(--space-xs) var(--space-sm);
   font-size: 0.75rem;
   border: none;
-  border-radius: 2px;
+  border-radius: 0;
   cursor: pointer;
   transition: all 0.2s ease;
   background-color: transparent;
@@ -121,7 +120,7 @@
 }
 
 .activity-item-actions .btn-delete:hover {
-  background-color: #fdf2f2;
+  border-left: 2px solid var(--error); padding-left: var(--space-md);
   border-color: var(--error);
 }
 
@@ -161,7 +160,7 @@
 .activity-item-form-group input {
   padding: var(--space-sm);
   border: 1px solid var(--border-light);
-  border-radius: 2px;
+  border-radius: 0;
   background-color: var(--bg-secondary);
   color: var(--text-primary);
   font-family: var(--font-sans);
@@ -172,7 +171,6 @@
 .activity-item-form-group input:focus {
   outline: none;
   border-color: var(--accent-color);
-  box-shadow: inset 0 0 0 1px var(--accent-color);
 }
 
 /* ============================================================
@@ -187,7 +185,7 @@
 .activity-item-edit-actions button {
   padding: var(--space-sm) var(--space-md);
   border: none;
-  border-radius: 2px;
+  border-radius: 0;
   cursor: pointer;
   font-weight: 600;
   font-size: 0.85rem;
@@ -232,7 +230,7 @@
 .activity-review-controls button {
   padding: var(--space-md) var(--space-lg);
   border: none;
-  border-radius: 2px;
+  border-radius: 0;
   cursor: pointer;
   font-weight: 600;
   font-size: 0.95rem;
@@ -249,7 +247,6 @@
 .activity-review-controls .btn-save-activities:hover:not(:disabled) {
   background-color: var(--accent-dark);
   transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
 }
 
 .activity-review-controls .btn-discard {
@@ -305,7 +302,7 @@
   background-color: var(--text-tertiary);
   color: var(--bg-secondary);
   border: none;
-  border-radius: 2px;
+  border-radius: 0;
   cursor: pointer;
   font-weight: 600;
   font-family: var(--font-sans);
@@ -321,11 +318,11 @@
    ============================================================ */
 .activity-review-error {
   padding: var(--space-md) var(--space-lg);
-  background-color: #fdf2f2;
+  border-left: 2px solid var(--error); padding-left: var(--space-md);
   border-left: 2px solid var(--error);
   color: var(--error);
   font-size: 0.875rem;
-  border-radius: 0 2px 2px 0;
+  border-radius: 0;
   margin-bottom: var(--space-lg);
 }
 

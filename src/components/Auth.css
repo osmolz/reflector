@@ -21,12 +21,11 @@
    ============================================================ */
 .auth-card {
   background-color: var(--bg-secondary);
-  border-radius: 2px;
+  border-radius: 0;
   padding: var(--space-2xl);
   max-width: 420px;
   width: 100%;
   border: 1px solid var(--border-light);
-  box-shadow: var(--shadow-md);
 }
 
 /* ============================================================
@@ -68,18 +67,17 @@
 .form-group input {
   padding: var(--space-md);
   border: 1px solid var(--border-light);
-  border-radius: 2px;
+  border-radius: 0;
   font-size: 1rem;
   font-family: var(--font-sans);
   background-color: var(--bg-secondary);
   color: var(--text-primary);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: border-color 0.2s ease;
 }
 
 .form-group input:focus {
   outline: none;
   border-color: var(--accent-color);
-  box-shadow: inset 0 0 0 1px var(--accent-color);
 }
 
 .form-group input:disabled {
@@ -100,23 +98,21 @@
   background-color: var(--accent-color);
   color: var(--bg-secondary);
   border: none;
-  border-radius: 2px;
+  border-radius: 0;
   font-size: 1rem;
   font-weight: 600;
   font-family: var(--font-sans);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease;
   letter-spacing: 0.01em;
 }
 
 .auth-button:hover:not(:disabled) {
   background-color: var(--accent-dark);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-sm);
 }
 
 .auth-button:active:not(:disabled) {
-  transform: translateY(0);
+  background-color: var(--accent-color);
 }
 
 .auth-button:disabled {
@@ -132,10 +128,8 @@
    Auth Messages (Error, Success)
    ============================================================ */
 .auth-error {
-  background-color: #fdf2f2;
   color: var(--error);
-  padding: var(--space-md) var(--space-lg);
-  border-radius: 2px;
+  padding: var(--space-md) 0 var(--space-md) var(--space-md);
   border-left: 2px solid var(--error);
   font-size: 0.875rem;
   margin-bottom: var(--space-lg);
@@ -143,10 +137,8 @@
 }
 
 .auth-success-message {
-  background-color: #f0f9f7;
   color: var(--success);
-  padding: var(--space-md) var(--space-lg);
-  border-radius: 2px;
+  padding: var(--space-md) 0 var(--space-md) var(--space-md);
   border-left: 2px solid var(--success);
   font-size: 0.875rem;
   margin-bottom: var(--space-lg);
@@ -221,7 +213,6 @@
   .auth-card {
     padding: var(--space-lg);
     border: none;
-    box-shadow: none;
   }
 
   .auth-title {

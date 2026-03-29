@@ -37,7 +37,7 @@
    Day Group
    ============================================================ */
 .timeline-day {
-  margin-bottom: var(--space-3xl);
+  margin-bottom: var(--space-4xl);
 }
 
 .timeline-day-header {
@@ -87,7 +87,7 @@
   border-bottom: 1px solid var(--border-light);
   cursor: pointer;
   transition: background-color 0.15s ease;
-  border-radius: 2px;
+  border-radius: 0;
 }
 
 .timeline-item:last-child {
@@ -175,7 +175,7 @@
   letter-spacing: 0.06em;
   padding: 1px var(--space-sm);
   border: 1px solid rgba(43, 90, 107, 0.25);
-  border-radius: 2px;
+  border-radius: 0;
 }
 
 /* ============================================================
@@ -205,7 +205,7 @@
   gap: var(--space-md);
   padding: var(--space-sm) var(--space-md);
   margin: var(--space-xs) calc(-1 * var(--space-md));
-  background-color: #fdf8f2;
+  border-left: 2px solid var(--warning); padding-left: var(--space-md);
   border-left: 2px solid var(--warning);
 }
 
@@ -231,7 +231,7 @@
   padding: var(--space-lg);
   background-color: var(--bg-secondary);
   border: 1px solid var(--border-light);
-  border-radius: 2px;
+  border-radius: 0;
 }
 
 .timeline-gaps-title {
@@ -282,11 +282,11 @@
 
 .timeline-error {
   padding: var(--space-md) var(--space-lg);
-  background-color: #fdf2f2;
+  border-left: 2px solid var(--error); padding-left: var(--space-md);
   border-left: 2px solid var(--error);
   color: var(--error);
   font-size: 0.875rem;
-  border-radius: 0 2px 2px 0;
+  border-radius: 0;
 }
 
 /* ============================================================

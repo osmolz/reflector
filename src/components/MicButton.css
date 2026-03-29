@@ -21,44 +21,31 @@
   justify-content: center;
   width: 60px;
   height: 60px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-dark) 100%);
+  border-radius: 0;
+  background-color: var(--accent-color);
   border: 2px solid var(--accent-color);
   color: var(--bg-secondary);
   font-size: 1.5rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  box-shadow: var(--shadow-md);
+  transition: background-color 0.2s ease;
   padding: 0;
   text-decoration: none;
   font-family: var(--font-sans);
 }
 
 .mic-button:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.16);
+  background-color: var(--accent-dark);
 }
 
 .mic-button:active:not(:disabled) {
-  transform: translateY(0);
-  box-shadow: var(--shadow-sm);
+  background-color: var(--accent-color);
 }
 
-/* Recording state — pulsing red */
+/* Recording state — solid red */
 .mic-button.recording {
-  animation: mic-pulse 1.5s infinite;
-  background: linear-gradient(135deg, var(--error) 0%, #8b0000 100%);
+  background-color: var(--error);
   border-color: var(--error);
-}
-
-@keyframes mic-pulse {
-  0%, 100% {
-    box-shadow: 0 4px 8px rgba(198, 40, 40, 0.3);
-  }
-  50% {
-    box-shadow: 0 4px 20px rgba(198, 40, 40, 0.6);
-  }
 }
 
 /* Disabled state */
@@ -82,7 +69,7 @@
   flex-direction: column;
   align-items: center;
   gap: var(--space-lg);
-  margin: var(--space-2xl) 0;
+  margin: var(--space-4xl) 0;
   padding: var(--space-lg) 0;
 }
 
@@ -100,16 +87,6 @@
 .mic-status.recording {
   color: var(--accent-color);
   font-weight: 500;
-  animation: status-fade 1.2s ease-in-out infinite;
-}
-
-@keyframes status-fade {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.7;
-  }
 }
 
 .mic-status.error {
@@ -132,12 +109,10 @@
    Error Message
    ============================================================ */
 .mic-error {
-  padding: var(--space-md) var(--space-lg);
-  background-color: #fdf2f2;
+  padding: var(--space-md) 0 var(--space-md) var(--space-md);
   border-left: 2px solid var(--error);
   color: var(--error);
   font-size: 0.875rem;
-  border-radius: 0 2px 2px 0;
   margin-top: var(--space-md);
 }
 
