@@ -35,6 +35,11 @@
   flex: 1;
 }
 
+.voice-check-in-mode-select .btn-primary {
+  background-color: var(--accent-color);
+  color: var(--bg-secondary);
+}
+
 .voice-check-in-back {
   margin-bottom: var(--space-lg);
 }
