@@ -4,6 +4,7 @@ import { ActivityReview } from './ActivityReview';
 import { parseTranscript } from '../lib/anthropic';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../store/authStore';
+import './VoiceCheckIn.css';
 
 export function VoiceCheckIn({ onActivitiesSaved }) {
   const [transcript, setTranscript] = useState('');
@@ -129,21 +130,10 @@ export function VoiceCheckIn({ onActivitiesSaved }) {
 
   if (stage === 'saved') {
     return (
-      <div style={{ padding: '20px' }}>
-        <h2>Activities Saved!</h2>
+      <div className="voice-check-in">
+        <h2>Activities Saved</h2>
         <p>Your check-in has been saved to the timeline.</p>
-        <button
-          onClick={handleDiscard}
-          style={{
-            padding: '10px 20px',
-            backgroundColor: '#3498db',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            fontSize: '14px',
-          }}
-        >
+        <button className="btn btn-primary" onClick={handleDiscard}>
           Record Another Check-in
         </button>
       </div>
@@ -151,63 +141,25 @@ export function VoiceCheckIn({ onActivitiesSaved }) {
   }
 
   return (
-    <div style={{ padding: '20px' }}>
+    <div className="voice-check-in">
       <h2>Check-in</h2>
       {stage === 'recording' && (
         <>
           {!inputMode && (
-            <div style={{ display: 'flex', gap: '12px', marginBottom: '20px' }}>
-              <button
-                onClick={() => setInputMode('voice')}
-                style={{
-                  flex: 1,
-                  padding: '12px 20px',
-                  backgroundColor: '#3498db',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  fontSize: '16px',
-                  fontWeight: '500',
-                }}
-              >
-                🎤 Speak
+            <div className="voice-check-in-mode-select">
+              <button className="btn btn-primary" onClick={() => setInputMode('voice')}>
+                Speak
               </button>
-              <button
-                onClick={() => setInputMode('text')}
-                style={{
-                  flex: 1,
-                  padding: '12px 20px',
-                  backgroundColor: '#3498db',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  fontSize: '16px',
-                  fontWeight: '500',
-                }}
-              >
-                ✍️ Type
+              <button className="btn btn-primary" onClick={() => setInputMode('text')}>
+                Type
               </button>
             </div>
           )}
 
           {inputMode === 'voice' && (
             <>
-              <button
-                onClick={() => setInputMode(null)}
-                style={{
-                  padding: '8px 12px',
-                  backgroundColor: '#95a5a6',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  fontSize: '12px',
-                  marginBottom: '12px',
-                }}
-              >
-                ← Back
+              <button className="btn btn-secondary voice-check-in-back" onClick={() => setInputMode(null)}>
+                Back
               </button>
               <MicButton onTranscriptReady={handleTranscriptReady} />
             </>
@@ -215,54 +167,22 @@ export function VoiceCheckIn({ onActivitiesSaved }) {
 
           {inputMode === 'text' && (
             <>
-              <button
-                onClick={() => setInputMode(null)}
-                style={{
-                  padding: '8px 12px',
-                  backgroundColor: '#95a5a6',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  fontSize: '12px',
-                  marginBottom: '12px',
-                }}
-              >
-                ← Back
+              <button className="btn btn-secondary voice-check-in-back" onClick={() => setInputMode(null)}>
+                Back
               </button>
-              <div style={{ marginBottom: '15px' }}>
-                <label style={{ display: 'block', marginBottom: '8px', fontWeight: '500' }}>
-                  What did you do today?
-                </label>
+              <div className="form-group">
+                <label>What did you do today?</label>
                 <textarea
                   value={transcript}
                   onChange={(e) => setTranscript(e.target.value)}
                   placeholder="Describe your activities, times, and durations..."
-                  style={{
-                    width: '100%',
-                    height: '120px',
-                    padding: '10px',
-                    fontFamily: 'sans-serif',
-                    fontSize: '14px',
-                    border: '1px solid #bdc3c7',
-                    borderRadius: '4px',
-                    boxSizing: 'border-box',
-                  }}
+                  className="voice-check-in-textarea"
                 />
               </div>
               <button
+                className="btn btn-primary"
                 onClick={() => handleTranscriptReady(transcript)}
                 disabled={isLoading || !transcript.trim()}
-                style={{
-                  padding: '10px 20px',
-                  backgroundColor: isLoading || !transcript.trim() ? '#95a5a6' : '#27ae60',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: isLoading || !transcript.trim() ? 'not-allowed' : 'pointer',
-                  fontSize: '14px',
-                  fontWeight: '500',
-                }}
               >
                 {isLoading ? 'Parsing...' : 'Parse & Continue'}
               </button>
@@ -270,47 +190,25 @@ export function VoiceCheckIn({ onActivitiesSaved }) {
           )}
 
           {transcript && inputMode === 'voice' && (
-            <div style={{ marginTop: '20px' }}>
-              <h3>Your transcript:</h3>
+            <div className="voice-check-in-transcript">
+              <h3>Your transcript</h3>
               <textarea
                 value={transcript}
                 onChange={(e) => setTranscript(e.target.value)}
-                style={{
-                  width: '100%',
-                  height: '120px',
-                  padding: '8px',
-                  fontFamily: 'monospace',
-                  fontSize: '14px',
-                  border: '1px solid #ccc',
-                  borderRadius: '4px',
-                  boxSizing: 'border-box',
-                }}
+                className="voice-check-in-textarea"
               />
               <button
+                className="btn btn-primary"
                 onClick={() => handleTranscriptReady(transcript)}
                 disabled={isLoading}
-                style={{
-                  marginTop: '10px',
-                  padding: '10px 20px',
-                  backgroundColor: isLoading ? '#95a5a6' : '#27ae60',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: isLoading ? 'not-allowed' : 'pointer',
-                  fontSize: '14px',
-                  fontWeight: '500',
-                }}
+                style={{ marginTop: 'var(--space-md)' }}
               >
                 {isLoading ? 'Parsing...' : 'Parse Transcript'}
               </button>
             </div>
           )}
 
-          {error && (
-            <div style={{ color: '#c0392b', marginTop: '10px', padding: '10px', backgroundColor: '#ffe6e6', borderRadius: '4px' }}>
-              {error}
-            </div>
-          )}
+          {error && <div className="voice-check-in-error">{error}</div>}
         </>
       )}
       {stage === 'review' && (
