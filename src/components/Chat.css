@@ -1,8 +1,24 @@
 /* ============================================================
    Reflector — Chat Component
-   Phase 5: Design & Polish
+   Phase 7: Streaming & Animation
    Editorial aesthetic, cohesive with timeline
    ============================================================ */
+
+/* ============================================================
+   Streaming Animation (Subtle Fade-In as Text Appears)
+   ============================================================ */
+@keyframes stream-in {
+  from {
+    opacity: 0.7;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.streaming-text {
+  animation: stream-in 0.4s ease-out;
+}
 
 /* ============================================================
    Chat Container
@@ -83,6 +99,18 @@
   margin-right: var(--space-sm);
 }
 
+/* Message currently being streamed — subtle styling difference */
+.message-in-progress .claude-message {
+  color: var(--text-secondary);
+  opacity: 0.9;
+}
+
+/* Visual separation between streamed text and next message */
+.message-complete {
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: var(--space-lg);
+}
+
 /* ============================================================
    Status Messages
    ============================================================ */
@@ -91,6 +119,8 @@
   color: var(--text-tertiary);
   padding: var(--space-md);
   text-align: center;
+  font-size: 0.95rem;
+  line-height: 1.5;
 }
 
 .error-banner {
@@ -208,6 +238,7 @@
   .user-message,
   .claude-message {
     max-width: 100%;
+    line-height: 1.6;
   }
 
   .chat-input-container {
@@ -217,5 +248,29 @@
 
   .chat-input {
     font-size: 16px; /* Prevents zoom on iOS */
+  }
+}
+
+/* ============================================================
+   Extra Small Mobile (375px+)
+   ============================================================ */
+@media (max-width: 480px) {
+  .chat-history {
+    padding: var(--space-sm);
+    gap: var(--space-lg);
+  }
+
+  .chat-message {
+    word-break: break-word;
+  }
+
+  .loading-indicator {
+    padding: var(--space-sm);
+    font-size: 0.9rem;
+  }
+
+  .error-banner {
+    padding: var(--space-sm) 0 var(--space-sm) var(--space-sm);
+    font-size: 0.8rem;
   }
 }
