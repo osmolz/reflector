@@ -99,7 +99,10 @@ const Chat = () => {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
 
-      const response = await fetch('/api/chat', {
+      // Get Supabase URL from environment
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+
+      const response = await fetch(`${supabaseUrl}/functions/v1/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
