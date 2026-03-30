@@ -74,7 +74,6 @@ export const TOOL_DEFINITIONS = [
       },
       required: ['start_date', 'end_date'],
     },
-    note: 'Read-only tool. Coach can view but not create events.',
   },
 ]
 
