@@ -245,23 +245,29 @@ const Chat = () => {
                   content: (m.content || '') + event.text,
                 }))
               } else if (event.type === 'done') {
-                updateStreaming((m) => ({ ...m, isStreaming: false }))
-
-                // After streaming completes, save the full assistant message to DB
+                // Combine streaming completion and persistence into a single state update
                 setMessages((prev) => {
-                  const latestMessage = prev[prev.length - 1]
-                  if (latestMessage && latestMessage.id === streamingId) {
-                    // Save the completed message
+                  const updatedMessages = prev.map((m) =>
+                    m.id === streamingId ? { ...m, isStreaming: false } : m
+                  )
+
+                  // Find the completed message
+                  const completedMessage = updatedMessages.find((m) => m.id === streamingId)
+
+                  if (completedMessage) {
+                    // Save to DB after marking complete in UI
+                    // Fire-and-forget is acceptable here since message is already visible
                     saveAssistantMessage(
                       user.id,
                       sessionId,
-                      latestMessage.content,
+                      completedMessage.content
                     ).catch((err) => {
                       console.error('[chat] Failed to persist assistant message:', err)
                       setError('Message sent but failed to save. Check your connection.')
                     })
                   }
-                  return prev
+
+                  return updatedMessages
                 })
               } else if (event.type === 'error') {
                 setError(event.message || 'Stream error')
