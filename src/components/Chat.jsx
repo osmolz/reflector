@@ -129,6 +129,7 @@ const Chat = () => {
       isStreaming: false,
     }
 
+    // [1] Add user message
     setMessages((prev) => [...prev, userMessage])
     setInput('')
     setLoading(true)
@@ -142,6 +143,29 @@ const Chat = () => {
 
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 
+      // [2] Create placeholder with unique ID for streaming
+      const streamingId = new Date(Date.now() + 1).toISOString()
+      const placeholder = {
+        id: streamingId,
+        role: 'assistant',
+        content: '',
+        created_at: streamingId,
+        thinking: '',
+        toolCalls: [],
+        isStreaming: true,
+      }
+
+      // Add placeholder to messages
+      setMessages((prev) => [...prev, placeholder])
+
+      // [3] Define updater that targets ONLY this message
+      const updateStreaming = (updater) => {
+        setMessages((prev) =>
+          prev.map((m) => (m.id === streamingId ? updater(m) : m))
+        )
+      }
+
+      // [4] Fetch with SSE
       const response = await fetch(`${supabaseUrl}/functions/v1/chat`, {
         method: 'POST',
         headers: {
@@ -159,21 +183,70 @@ const Chat = () => {
         throw new Error(errorData.error || 'Failed to get response')
       }
 
-      const data = await response.json()
+      const contentType = response.headers.get('content-type')
 
-      if (data.type === 'fast_path') {
-        // Fast-path response
-        const assistantMessage = {
-          id: 'msg-' + Date.now(),
-          role: 'assistant',
-          content: JSON.stringify(data.result.data || data.result.message),
-          created_at: new Date().toISOString(),
-          isStreaming: false,
+      if (contentType && contentType.includes('text/event-stream')) {
+        // [5] Parse SSE stream
+        const reader = response.body.getReader()
+        const decoder = new TextDecoder()
+        let buffer = ''
+
+        while (true) {
+          const { done, value } = await reader.read()
+          if (done) break
+
+          buffer += decoder.decode(value, { stream: true })
+          const lines = buffer.split('\n')
+          buffer = lines.pop() ?? ''
+
+          for (const line of lines) {
+            if (!line.startsWith('data: ')) continue
+
+            try {
+              const event = JSON.parse(line.slice(6))
+
+              // [6] Update placeholder (NOT append)
+              if (event.type === 'thinking') {
+                updateStreaming((m) => ({
+                  ...m,
+                  thinking: (m.thinking || '') + event.text,
+                }))
+              } else if (event.type === 'tool_use') {
+                updateStreaming((m) => ({
+                  ...m,
+                  toolCalls: [...(m.toolCalls || []), { tool: event.tool }],
+                }))
+              } else if (event.type === 'text') {
+                updateStreaming((m) => ({
+                  ...m,
+                  content: (m.content || '') + event.text,
+                }))
+              } else if (event.type === 'done') {
+                updateStreaming((m) => ({ ...m, isStreaming: false }))
+              } else if (event.type === 'error') {
+                setError(event.message || 'Stream error')
+              }
+            } catch (parseErr) {
+              console.error('[chat] Failed to parse SSE event:', parseErr)
+            }
+          }
         }
-        setMessages((prev) => [...prev, assistantMessage])
       } else {
-        // Full loop response (will be handled in Part 2)
-        console.log('Full loop response:', data)
+        // Fallback for fast-path JSON response
+        const data = await response.json()
+        if (data.type === 'fast_path' && data.result.status === 'ok') {
+          setMessages((prev) =>
+            prev.map((m) =>
+              m.id === streamingId
+                ? {
+                    ...m,
+                    content: JSON.stringify(data.result.data || data.result.message),
+                    isStreaming: false,
+                  }
+                : m
+            )
+          )
+        }
       }
     } catch (err) {
       let errorMsg = 'Unknown error'
@@ -234,7 +307,23 @@ const Chat = () => {
         {messages.map((msg) => (
           <div key={msg.id} className={`chat-message ${msg.role}`}>
             <div className={msg.role === 'user' ? 'user-message' : 'claude-message'}>
-              <strong>{msg.role === 'user' ? 'You' : 'Coach'}:</strong> {msg.content}
+              <strong>{msg.role === 'user' ? 'You' : 'Coach'}:</strong>
+              {msg.thinking && (
+                <div className="message-thinking">
+                  <em>Thinking: {msg.thinking}</em>
+                </div>
+              )}
+              {msg.toolCalls && msg.toolCalls.length > 0 && (
+                <div className="message-tools">
+                  {msg.toolCalls.map((tc, idx) => (
+                    <span key={idx} className="tool-badge">
+                      {tc.tool}
+                    </span>
+                  ))}
+                </div>
+              )}
+              <div>{msg.content}</div>
+              {msg.isStreaming && <span className="streaming-indicator">●</span>}
             </div>
           </div>
         ))}
