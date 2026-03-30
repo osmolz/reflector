@@ -114,18 +114,119 @@ Deno.serve(async (req) => {
       )
     }
 
-    // [4] If not fast-path, prepare for full LLM loop (defer to Part 2)
-    // For now, return a placeholder
-    return new Response(
-      JSON.stringify({
-        type: 'full_loop',
-        message: 'Full LLM loop coming in Part 2',
-      }),
-      {
-        status: 200,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    // [4] Load context and prepare for full LLM loop
+    const { messages: contextMessages, userMemory } = await loadConversationContext(supabase, userId, sessionId)
+
+    // Fire-and-forget: save user message
+    saveMessage(supabase, userId, 'user', message, sessionId)
+
+    const encoder = new TextEncoder()
+
+    // Create SSE stream response
+    const readable = new ReadableStream({
+      async start(controller) {
+        function emit(event: SSEEvent) {
+          controller.enqueue(encoder.encode(`data: ${JSON.stringify(event)}\n\n`))
+        }
+
+        try {
+          emit({ type: 'status', status: 'thinking' })
+
+          const systemPrompt = buildSystemPrompt(userMemory)
+          const anthropic = new Anthropic({ apiKey: Deno.env.get('ANTHROPIC_API_KEY') })
+
+          let maxHops = 5
+          let finalText = ''
+          let currentMessages = [...contextMessages, { role: 'user' as const, content: message }]
+
+          while (maxHops > 0) {
+            emit({ type: 'status', status: 'thinking' })
+
+            // Call Claude with streaming
+            const stream = await anthropic.messages.stream({
+              model: 'claude-opus-4-6',
+              max_tokens: 4096,
+              system: systemPrompt,
+              tools: TOOL_DEFINITIONS as any,
+              messages: currentMessages as any,
+              thinking: { type: 'enabled', budget_tokens: 2048 },
+            })
+
+            // Attach listeners BEFORE awaiting
+            stream.on('thinking', (delta: string) => {
+              emit({ type: 'thinking', text: delta })
+            })
+
+            stream.on('text', (delta: string) => {
+              finalText += delta
+              emit({ type: 'text', text: delta })
+            })
+
+            // Wait for stream to complete
+            const response = await stream.finalMessage()
+
+            // Check if done reasoning
+            if (response.stop_reason === 'end_turn') {
+              break
+            }
+
+            // Process tool calls
+            const toolUseBlocks = response.content.filter((b: any) => b.type === 'tool_use')
+
+            for (const toolUse of toolUseBlocks) {
+              emit({ type: 'tool_use', tool: toolUse.name })
+            }
+
+            // Execute tools in parallel
+            const toolResults = await Promise.all(
+              toolUseBlocks.map(async (block: any) => {
+                const result = await executeTool(supabase, userId, block.name, block.input as Record<string, unknown>)
+                return {
+                  type: 'tool_result',
+                  tool_use_id: block.id,
+                  content: JSON.stringify(result),
+                }
+              })
+            )
+
+            // Append to conversation and continue loop
+            currentMessages = [
+              ...currentMessages,
+              { role: 'assistant' as const, content: response.content as any },
+              { role: 'user' as const, content: toolResults as any },
+            ]
+
+            maxHops--
+          }
+
+          // Fire-and-forget: save assistant message
+          if (finalText) {
+            saveMessage(supabase, userId, 'assistant', finalText, sessionId)
+            maybeSetSessionTitle(supabase, sessionId, message)
+          }
+
+          emit({ type: 'done' })
+        } catch (error) {
+          console.error('[chat] Stream error:', error)
+          emit({
+            type: 'error',
+            message: error instanceof Error ? error.message : 'Unknown error',
+          })
+        } finally {
+          controller.close()
+        }
       },
-    )
+    })
+
+    return new Response(readable, {
+      status: 200,
+      headers: {
+        ...corsHeaders,
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
+      },
+    })
   } catch (error) {
     console.error('[chat] Error:', error)
     return new Response(
