@@ -172,24 +172,30 @@
    ============================================================ */
 .chat-message {
   display: flex;
-  flex-direction: column;
-  margin-bottom: 0;
+  margin-bottom: var(--space-md);
+  width: 100%;
 }
 
 .chat-message.user {
-  /* User message styling */
+  flex-direction: row-reverse;
+  justify-content: flex-end;
 }
 
 .chat-message.assistant {
-  /* Assistant message styling */
+  flex-direction: row;
+  justify-content: flex-start;
 }
 
-/* User message — plain text, no container */
+/* User message — distinct background color */
 .user-message {
-  margin-bottom: var(--space-md);
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  max-width: 80%;
+  padding: var(--space-md);
+  border-radius: 0;
+  text-align: left;
   word-wrap: break-word;
   line-height: 1.6;
-  color: var(--text-primary);
 }
 
 .user-message strong {
@@ -198,16 +204,21 @@
   margin-right: var(--space-sm);
 }
 
-/* Assistant (Claude) message — plain text, no container */
+/* Assistant (Claude) message — distinct background color */
 .claude-message {
-  margin-bottom: var(--space-md);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  max-width: 80%;
+  padding: var(--space-md);
+  border-radius: 0;
+  text-align: left;
   word-wrap: break-word;
   line-height: 1.6;
 }
 
 .claude-message strong {
   font-weight: 500;
-  color: var(--text-secondary);
+  color: var(--text-primary);
   margin-right: var(--space-sm);
 }
 
@@ -349,7 +360,7 @@
 
   .user-message,
   .claude-message {
-    max-width: 100%;
+    max-width: 90%;
     line-height: 1.6;
   }
 
