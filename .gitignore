@@ -27,3 +27,6 @@ supabase/.branches/
 .env
 
 .vercel
+
+# Git worktrees
+.worktrees/
