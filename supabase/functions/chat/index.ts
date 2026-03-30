@@ -92,8 +92,8 @@ Deno.serve(async (req) => {
       // FAST-PATH: Execute tool directly, return synchronous response
       const toolResult = await executeTool(supabase, userId, intent.handler, intent.params || {})
 
-      // Fire-and-forget: save user message in background
-      saveMessage(supabase, userId, 'user', message, sessionId)
+      // Save user message
+      await saveMessage(supabase, userId, 'user', message, sessionId)
 
       // Build assistant response
       const responseContent =
@@ -101,9 +101,9 @@ Deno.serve(async (req) => {
           ? JSON.stringify(toolResult.data)
           : toolResult.message || 'Unable to retrieve data'
 
-      // Fire-and-forget: save assistant message in background
-      saveMessage(supabase, userId, 'assistant', responseContent, sessionId)
-      maybeSetSessionTitle(supabase, sessionId, message)
+      // Save assistant message
+      await saveMessage(supabase, userId, 'assistant', responseContent, sessionId)
+      await maybeSetSessionTitle(supabase, sessionId, message)
 
       return new Response(
         JSON.stringify({
@@ -120,8 +120,8 @@ Deno.serve(async (req) => {
     // [4] Load context and prepare for full LLM loop
     const { messages: contextMessages, userMemory } = await loadConversationContext(supabase, userId, sessionId)
 
-    // Fire-and-forget: save user message
-    saveMessage(supabase, userId, 'user', message, sessionId)
+    // Save user message
+    await saveMessage(supabase, userId, 'user', message, sessionId)
 
     const encoder = new TextEncoder()
 
@@ -250,10 +250,10 @@ Deno.serve(async (req) => {
             }
           }
 
-          // Fire-and-forget: save assistant message
+          // Save assistant message before closing stream
           if (finalText) {
-            saveMessage(supabase, userId, 'assistant', finalText, sessionId)
-            maybeSetSessionTitle(supabase, sessionId, message)
+            await saveMessage(supabase, userId, 'assistant', finalText, sessionId)
+            await maybeSetSessionTitle(supabase, sessionId, message)
           }
 
           emit({ type: 'done' })
