@@ -88,21 +88,16 @@ export function Timeline({ refreshKey = 0 }) {
             category: event.category,
             start_time: event.start_time.toISOString(),
             type: 'time_entry',
-            check_in_id: null,
-            created_at: null,
-            updated_at: null,
           };
         } else {
           // Calendar event
           return {
             id: event.id,
             activity_name: event.title,
-            duration_minutes: Math.round((event.end_time - event.start_time) / (1000 * 60)),
+            duration_minutes: Math.round((event.end_time.getTime() - event.start_time.getTime()) / (1000 * 60)),
             start_time: event.start_time.toISOString(),
             type: 'calendar_event',
             gcp_event_id: event.gcp_event_id,
-            created_at: null,
-            updated_at: null,
           };
         }
       });

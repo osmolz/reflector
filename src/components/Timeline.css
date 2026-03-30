@@ -305,8 +305,8 @@
   gap: var(--space-md);
   padding: var(--space-sm) var(--space-md);
   margin: var(--space-xs) calc(-1 * var(--space-md));
-  border-left: 2px solid var(--warning); padding-left: var(--space-md);
   border-left: 2px solid var(--warning);
+  padding-left: var(--space-md);
 }
 
 .timeline-gap-label {
@@ -382,8 +382,8 @@
 
 .timeline-error {
   padding: var(--space-md) var(--space-lg);
-  border-left: 2px solid var(--error); padding-left: var(--space-md);
   border-left: 2px solid var(--error);
+  padding-left: var(--space-md);
   color: var(--error);
   font-size: 0.875rem;
   border-radius: 0;
