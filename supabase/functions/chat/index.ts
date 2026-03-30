@@ -1,4 +1,4 @@
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.1'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.49.1'
 import Anthropic from 'https://esm.sh/@anthropic-ai/sdk@0.80.0'
 
 import { classifyIntent } from './intent-classifier.ts'
@@ -30,7 +30,7 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // [1] Auth: Validate JWT via getClaims
+    // [1] Auth: validate user JWT
     const authHeader = req.headers.get('Authorization')
     if (!authHeader) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
@@ -39,29 +39,32 @@ Deno.serve(async (req) => {
       })
     }
 
-    const token = authHeader.replace('Bearer ', '')
+    const token = authHeader.replace(/^Bearer\s+/i, '').trim()
+    if (!token) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      })
+    }
 
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') || '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '',
     )
 
-    // Verify token and extract user ID
-    const { data, error: claimsError } = await supabase.auth.getClaims(token)
-    if (claimsError || !data || !data.claims) {
+    // Validate JWT via Auth API (more reliable in Deno than getClaims + JWKS alone)
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser(token)
+    if (userError || !user?.id) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
         status: 401,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       })
     }
 
-    const userId = data.claims.sub
-    if (!userId) {
-      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-        status: 401,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      })
-    }
+    const userId = user.id
 
     // [2] Parse request body
     const { message, sessionId: providedSessionId } = (await req.json()) as {

@@ -139,13 +139,21 @@ const Chat = () => {
     let streamingId = null
 
     try {
-      const { data: session, error: sessionError } = await supabase.auth.getSession()
-      if (sessionError || !session?.session) {
+      const { data: refreshData } = await supabase.auth.refreshSession()
+      let session = refreshData.session
+      if (!session?.access_token) {
+        const { data: existing } = await supabase.auth.getSession()
+        session = existing.session
+      }
+      if (!session?.access_token) {
         throw new Error('Not authenticated')
       }
 
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
       const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+      if (!supabaseUrl || !supabaseAnonKey) {
+        throw new Error('App misconfigured: missing Supabase URL or anon key')
+      }
 
       // [2] Create placeholder with unique ID for streaming
       streamingId = new Date(Date.now() + 1).toISOString()
@@ -174,8 +182,8 @@ const Chat = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.session.access_token}`,
-          'apikey': supabaseAnonKey ?? '',
+          'Authorization': `Bearer ${session.access_token}`,
+          'apikey': supabaseAnonKey,
         },
         body: JSON.stringify({
           message: userMessage.content,

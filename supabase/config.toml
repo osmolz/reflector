@@ -1,0 +1,10 @@
+# Edge Functions: platform JWT gate vs app-level auth
+# Default is verify_jwt = true; the gateway can return 401 before Deno runs.
+# We validate the user in each handler (e.g. supabase.auth.getUser(token)).
+# See: https://supabase.com/docs/guides/functions/function-configuration
+
+[functions.chat]
+verify_jwt = false
+
+[functions.parse]
+verify_jwt = false
