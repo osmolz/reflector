@@ -8,10 +8,86 @@ A personal time-tracking and journaling app. Speak your day, see your time.
 
 - **Voice Check-ins:** Speak stream-of-consciousness about your day; Reflector parses it into a timeline of activities with durations
 - **Timeline:** See activities with durations, categories, and start times. Unaccounted gaps are flagged for awareness
+- **Google Calendar Integration:** Sync events from Google Calendar to your timeline, add time entries to your calendar, and let the coach see your calendar for smarter suggestions
 - **Journal:** Separate text/voice notes, no time association. Reflect freely
 - **Chat Analytics:** Ask questions about your time data ("What did I spend time on this week?", "How much time on work today?")
 - **Supabase Sync:** All data persisted securely with per-user isolation via Row-Level Security
 - **Responsive Design:** Desktop-first, works on tablet and mobile
+
+## Google Calendar Integration
+
+The app now syncs with Google Calendar, allowing you to view calendar events alongside time entries on your timeline and add tracked time entries directly to your calendar.
+
+### Getting Started
+
+1. **Connect Your Google Calendar**
+   - From the Timeline page, click the "Sync Calendar" button
+   - Click "Connect with Google" to authorize OAuth access
+   - Grant permission to read/write Google Calendar events
+   - The app stores your OAuth token securely in Supabase user metadata (follows Supabase auth pattern)
+
+2. **Sync Calendar Events**
+   - After connecting, click "Sync with Google Calendar" to pull events
+   - Choose a date range: Today, This Week, or Custom date range
+   - Calendar events appear on your timeline as gray blocks alongside your time entries
+
+### Adding Time Entries to Google Calendar
+
+1. On the Timeline, find a time entry you want to add to Google Calendar
+2. Click the **"+Cal"** button on the time entry
+3. In the modal, you can:
+   - Review or edit the event title
+   - Adjust start and end times if needed
+4. Click "Add to Calendar"
+5. The event is now created in your Google Calendar and marked on your timeline
+
+### Coach Calendar Awareness
+
+When you sync your calendar, the coach (Claude AI) can see your calendar events and considers them when:
+- Suggesting what to do next
+- Analyzing your time allocation
+- Asking questions about your day
+
+This helps the coach provide context-aware suggestions that account for your scheduled commitments.
+
+### OAuth Setup (For Self-Hosting)
+
+If you're running this app in your own environment, you'll need to:
+
+1. **Create a Google Cloud Project**
+   - Go to [Google Cloud Console](https://console.cloud.google.com)
+   - Create a new project
+   - Enable the "Google Calendar API"
+
+2. **Create OAuth 2.0 Credentials**
+   - Go to "Credentials" in the Cloud Console
+   - Click "Create Credentials" → "OAuth 2.0 Client ID"
+   - Configure the OAuth consent screen (required for first-time setup)
+   - Choose "Web application"
+   - Add authorized redirect URIs:
+     - Local: `http://localhost:5173/auth/callback`
+     - Production: `https://your-domain.com/auth/callback`
+
+3. **Set Environment Variables**
+   - Copy your Client ID and Client Secret
+   - Add to `.env.local` (local) or Vercel (production):
+     ```
+     VITE_GOOGLE_CLIENT_ID=<your-client-id>
+     VITE_GOOGLE_CLIENT_SECRET=<your-client-secret>
+     ```
+
+4. **Edge Function Configuration**
+   - The `sync-calendar-events` and `create-calendar-event` Edge Functions need access to the Google Calendar API
+   - Ensure `GOOGLE_CLIENT_SECRET` is set in Supabase Edge Function secrets
+
+### Known Limitations
+
+- **Calendar events are read-only in the app** — Edit them in Google Calendar directly
+- **OAuth token stored in user metadata** — Follows Supabase auth pattern; only accessible to authenticated user
+- **Sync is manual** — Run "Sync with Google Calendar" from Timeline when you want to pull latest events
+- **No recurring event expansion** — Recurring events show as single entries; future occurrences won't appear until synced again
+- **No event deletion** — Once added to calendar, events can only be deleted from Google Calendar directly
+- **Calendar events don't affect "unaccounted time"** — Gaps are calculated only from time entries, not calendar events
 
 ## Tech Stack
 
