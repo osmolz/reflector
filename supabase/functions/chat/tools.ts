@@ -63,6 +63,19 @@ export const TOOL_DEFINITIONS = [
       required: ['query'],
     },
   },
+  {
+    name: 'gcal_list_events',
+    description: 'List calendar events for a date range. Use to understand user\'s calendar context when making suggestions.',
+    input_schema: {
+      type: 'object',
+      properties: {
+        start_date: { type: 'string', description: 'ISO 8601 date string (YYYY-MM-DD)' },
+        end_date: { type: 'string', description: 'ISO 8601 date string (YYYY-MM-DD)' },
+      },
+      required: ['start_date', 'end_date'],
+    },
+    note: 'Read-only tool. Coach can view but not create events.',
+  },
 ]
 
 async function getActivitySummary(
@@ -206,6 +219,49 @@ async function getTimeBreakdown(
   }
 }
 
+async function gcalListEvents(
+  supabase: ReturnType<typeof createClient>,
+  userId: string,
+  startDate: string,
+  endDate: string,
+): Promise<ToolResult> {
+  const { data, error } = await supabase
+    .from('calendar_events')
+    .select('id, title, description, start_time, end_time, is_all_day')
+    .eq('user_id', userId)
+    .gte('start_time', `${startDate}T00:00:00`)
+    .lte('start_time', `${endDate}T23:59:59`)
+    .order('start_time', { ascending: true })
+
+  if (error) {
+    return { status: 'error', message: error.message }
+  }
+
+  if (!data || data.length === 0) {
+    return {
+      status: 'no_data',
+      message: `No calendar events found between ${startDate} and ${endDate}`,
+    }
+  }
+
+  const events = data.map((event) => ({
+    title: event.title,
+    description: event.description,
+    start_time: event.start_time,
+    end_time: event.end_time,
+    is_all_day: event.is_all_day,
+  }))
+
+  return {
+    status: 'ok',
+    data: {
+      period: `${startDate} to ${endDate}`,
+      events_count: data.length,
+      events,
+    },
+  }
+}
+
 export async function executeTool(
   supabase: ReturnType<typeof createClient>,
   userId: string,
@@ -250,6 +306,14 @@ export async function executeTool(
           status: 'no_data',
           message: 'Web search not yet enabled. Coming soon.',
         }
+
+      case 'gcal_list_events':
+        return await gcalListEvents(
+          supabase,
+          userId,
+          toolInput.start_date as string,
+          toolInput.end_date as string,
+        )
 
       default:
         return { status: 'error', message: `Unknown tool: ${toolName}` }
