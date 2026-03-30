@@ -436,3 +436,21 @@
     opacity: 0.5;
   }
 }
+
+/* Error dismiss button */
+.error-dismiss {
+  margin-left: 0.5em;
+  padding: 0;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font-size: 1.2em;
+  line-height: 1;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.error-dismiss:hover {
+  opacity: 1;
+}

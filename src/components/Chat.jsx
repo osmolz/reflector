@@ -251,10 +251,19 @@ const Chat = () => {
     } catch (err) {
       let errorMsg = 'Unknown error'
       if (err instanceof Error) {
-        errorMsg = err.message
+        if (err.message.includes('Unauthorized')) {
+          errorMsg = 'Session expired. Please log in again.'
+        } else if (err.message.includes('Failed to get response')) {
+          errorMsg = 'The coach took too long to respond. Try again.'
+        } else if (err.message.includes('fetch')) {
+          errorMsg = 'Network error. Check your connection.'
+        } else {
+          errorMsg = err.message
+        }
       }
       setError(errorMsg)
-      setMessages((prev) => prev.filter((msg) => msg.id !== userMessage.id))
+      // Remove the placeholder on error
+      setMessages((prev) => prev.filter((msg) => msg.id !== streamingId))
     } finally {
       setLoading(false)
     }
@@ -330,7 +339,14 @@ const Chat = () => {
         {loading && <div className="loading-indicator">Coach is thinking...</div>}
       </div>
 
-      {error && <div className="error-banner">Error: {error}</div>}
+      {error && (
+        <div className="error-banner">
+          <span>Error: {error}</span>
+          <button onClick={() => setError(null)} className="error-dismiss">
+            ✕
+          </button>
+        </div>
+      )}
 
       <div className="chat-input-container">
         <input
