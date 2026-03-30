@@ -1,33 +1,29 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { flushSync } from 'react-dom';
-import { useAuthStore } from '../store/authStore';
-import { supabase } from '../lib/supabase';
-import './Chat.css';
+import React, { useState, useRef, useEffect } from 'react'
+import { useAuthStore } from '../store/authStore'
+import { supabase } from '../lib/supabase'
+import './Chat.css'
 
 const Chat = () => {
-  const { user } = useAuthStore();
+  const { user } = useAuthStore()
 
   // Session state
-  const [sessions, setSessions] = useState([]);
-  const [sessionId, setSessionId] = useState(null);
-  const [sessionLoading, setSessionLoading] = useState(true);
+  const [sessions, setSessions] = useState([])
+  const [sessionId, setSessionId] = useState(null)
+  const [sessionLoading, setSessionLoading] = useState(true)
 
   // Message state
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const chatHistoryRef = useRef(null);
-  const [lastSendTime, setLastSendTime] = useState(0);
-
-  const MIN_SEND_INTERVAL = 1000; // 1 second between sends
+  const [messages, setMessages] = useState([])
+  const [input, setInput] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const chatHistoryRef = useRef(null)
 
   // Load sessions on mount
   useEffect(() => {
     const loadSessions = async () => {
       if (!user) {
-        setSessionLoading(false);
-        return;
+        setSessionLoading(false)
+        return
       }
 
       try {
@@ -36,407 +32,185 @@ const Chat = () => {
           .select('id, title, created_at')
           .eq('user_id', user.id)
           .order('created_at', { ascending: false })
-          .limit(20);
+          .limit(20)
 
-        if (fetchError) throw fetchError;
+        if (fetchError) throw fetchError
 
-        setSessions(data || []);
+        setSessions(data || [])
 
-        // Set active session to most recent, or null if none exist
+        // Set active session to most recent
         if (data && data.length > 0) {
-          setSessionId(data[0].id);
+          setSessionId(data[0].id)
         }
       } catch (err) {
-        console.error('Failed to load sessions:', err);
-        setError('Failed to load sessions');
+        console.error('[chat] Failed to load sessions:', err)
+        setError('Failed to load sessions')
       } finally {
-        setSessionLoading(false);
+        setSessionLoading(false)
       }
-    };
+    }
 
-    loadSessions();
-  }, [user]);
+    loadSessions()
+  }, [user])
 
   // Load messages when session changes
   useEffect(() => {
     const loadMessages = async () => {
       if (!user || !sessionId) {
-        setMessages([]);
-        return;
+        setMessages([])
+        return
       }
 
       try {
         const { data, error: fetchError } = await supabase
           .from('chat_messages')
-          .select('id, role, content, question, response, created_at')
+          .select('id, role, content, created_at')
           .eq('user_id', user.id)
           .eq('session_id', sessionId)
-          .order('created_at', { ascending: true });
+          .order('created_at', { ascending: true })
 
-        if (fetchError) throw fetchError;
+        if (fetchError) throw fetchError
 
-        // Convert to unified message format
-        const formattedMessages = (data || []).map((msg) => ({
-          id: msg.id,
-          role: msg.role || (msg.question ? 'user' : 'assistant'),
-          content: msg.content || msg.question || msg.response || '',
-          created_at: msg.created_at,
-        }));
-
-        setMessages(formattedMessages);
+        setMessages(
+          (data || []).map((msg) => ({
+            id: msg.id,
+            role: msg.role,
+            content: msg.content,
+            created_at: msg.created_at,
+            isStreaming: false,
+          }))
+        )
       } catch (err) {
-        console.error('Failed to load messages:', err);
-        setError('Failed to load messages');
+        console.error('[chat] Failed to load messages:', err)
+        setError('Failed to load messages')
       }
-    };
+    }
 
-    loadMessages();
-  }, [user, sessionId]);
+    loadMessages()
+  }, [user, sessionId])
 
-  // Auto-scroll to bottom when messages change
+  // Auto-scroll to bottom
   useEffect(() => {
     if (chatHistoryRef.current) {
-      chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight;
+      chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight
     }
-  }, [messages, loading]);
+  }, [messages, loading])
 
-  // Create a new session
   const createNewSession = async () => {
+    if (!user) return
+
     try {
       const { data, error: createError } = await supabase
         .from('chat_sessions')
-        .insert({ user_id: user.id })
+        .insert({ user_id: user.id, created_at: new Date().toISOString() })
         .select()
-        .single();
+        .single()
 
-      if (createError) throw createError;
+      if (createError) throw createError
 
-      setSessions((prev) => [data, ...prev]);
-      setSessionId(data.id);
-      setMessages([]);
-      setError(null);
+      setSessions((prev) => [data, ...prev])
+      setSessionId(data.id)
+      setMessages([])
+      setError(null)
     } catch (err) {
-      console.error('Failed to create session:', err);
-      setError('Failed to create new chat');
+      console.error('[chat] Failed to create session:', err)
+      setError('Failed to create new chat')
     }
-  };
+  }
 
   const handleSend = async () => {
-    if (!input.trim() || !user) {
-      return;
-    }
+    if (!input.trim() || !user || !sessionId) return
 
-    // Validate input length
-    if (input.length > 500) {
-      setError('Question is too long (max 500 characters)');
-      return;
-    }
-
-    const now = Date.now();
-    if (now - lastSendTime < MIN_SEND_INTERVAL) {
-      setError('Please wait before sending another message');
-      return;
-    }
-
-    // If no session, create one first
-    let activeSessionId = sessionId;
-    if (!activeSessionId) {
-      try {
-        const { data, error: createError } = await supabase
-          .from('chat_sessions')
-          .insert({ user_id: user.id })
-          .select()
-          .single();
-
-        if (createError) throw createError;
-
-        setSessions((prev) => [data, ...prev]);
-        activeSessionId = data.id;
-        setSessionId(data.id);
-      } catch (err) {
-        console.error('Failed to create session:', err);
-        setError('Failed to create new chat');
-        return;
-      }
-    }
-
-    // Optimistically add user message to state
     const userMessage = {
       id: Date.now().toString(),
       role: 'user',
       content: input,
       created_at: new Date().toISOString(),
-    };
+      isStreaming: false,
+    }
 
-    setMessages((prev) => [...prev, userMessage]);
-    setInput('');
-    setLoading(true);
-    setError(null);
-    setLastSendTime(now);
-
-    // Optimistically update session title with first 60 chars of question
-    // This avoids race condition where DB update hasn't replicated yet
-    setSessions((prev) =>
-      prev.map((s) =>
-        s.id === activeSessionId
-          ? { ...s, title: input.substring(0, 60) }
-          : s
-      )
-    );
-
+    setMessages((prev) => [...prev, userMessage])
+    setInput('')
+    setLoading(true)
+    setError(null)
 
     try {
-      // Get user's session token
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      if (sessionError || !session) {
-        throw new Error('Not authenticated');
+      const { data: session, error: sessionError } = await supabase.auth.getSession()
+      if (sessionError || !session?.session) {
+        throw new Error('Not authenticated')
       }
 
-      // Get Supabase URL from environment
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 
       const response = await fetch(`${supabaseUrl}/functions/v1/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`,
+          'Authorization': `Bearer ${session.session.access_token}`,
         },
         body: JSON.stringify({
-          question: userMessage.content,
-          sessionId: activeSessionId,
-          dateRange: { days: 30 },
+          message: userMessage.content,
+          sessionId,
         }),
-      });
+      })
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to get response');
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to get response')
       }
 
-      // Handle streaming response
-      const contentType = response.headers.get('content-type');
-      if (contentType && contentType.includes('text/event-stream')) {
-        await handleStreamingResponse(userMessage, response);
+      const data = await response.json()
+
+      if (data.type === 'fast_path') {
+        // Fast-path response
+        const assistantMessage = {
+          id: 'msg-' + Date.now(),
+          role: 'assistant',
+          content: JSON.stringify(data.result.data || data.result.message),
+          created_at: new Date().toISOString(),
+          isStreaming: false,
+        }
+        setMessages((prev) => [...prev, assistantMessage])
       } else {
-        const data = await response.json();
-        setMessages((prev) =>
-          prev.map((msg) =>
-            msg.id === userMessage.id
-              ? { ...msg, role: 'assistant', content: data.response }
-              : msg
-          )
-        );
+        // Full loop response (will be handled in Part 2)
+        console.log('Full loop response:', data)
       }
     } catch (err) {
-      let errorMsg = 'Unknown error';
+      let errorMsg = 'Unknown error'
       if (err instanceof Error) {
-        if (err.name === 'AbortError') {
-          errorMsg = 'Request timed out. Please try again.';
-        } else if (err.message === 'Not authenticated') {
-          errorMsg = 'Please log in to use chat.';
-        } else if (err.message.includes('No time entries')) {
-          errorMsg = 'No time entries found for this period. Start logging activities to enable analytics.';
-        } else if (err.message.includes('rate limit')) {
-          errorMsg = 'API rate limit exceeded. Please wait a moment and try again.';
-        } else if (err.message.includes('API')) {
-          errorMsg = 'Claude API is temporarily unavailable. Please try again later.';
-        } else {
-          errorMsg = err.message;
-        }
+        errorMsg = err.message
       }
-      setError(errorMsg);
-      // Remove the pending message on error
-      setMessages((prev) =>
-        prev.filter((msg) => msg.id !== userMessage.id)
-      );
+      setError(errorMsg)
+      setMessages((prev) => prev.filter((msg) => msg.id !== userMessage.id))
     } finally {
-      setLoading(false);
-
-      // Reload messages to verify persistence (confirms DB save completed)
-      // Use activeSessionId to ensure we reload messages for the session that received the message
-      // (not the session the user may have switched to during send)
-      // CRITICAL: Only update messages if user is still viewing the same session
-      // Otherwise we'll overwrite correct messages with stale data from a different session
-      if (activeSessionId && sessionId === activeSessionId) {
-        const { data } = await supabase
-          .from('chat_messages')
-          .select('id, role, content, question, response, created_at')
-          .eq('user_id', user.id)
-          .eq('session_id', activeSessionId)
-          .order('created_at', { ascending: true });
-
-        if (data) {
-          setMessages(
-            data.map((msg) => ({
-              id: msg.id,
-              role: msg.role || (msg.question ? 'user' : 'assistant'),
-              content: msg.content || msg.question || msg.response || '',
-              created_at: msg.created_at,
-            }))
-          );
-        }
-
-        // Also reload the session to get the updated title from the database
-        // (the edge function updates the title to the first message content)
-        if (user) {
-          const { data: sessionData } = await supabase
-            .from('chat_sessions')
-            .select('id, title, created_at')
-            .eq('user_id', user.id)
-            .eq('id', activeSessionId)
-            .single();
-
-          if (sessionData) {
-            setSessions((prev) =>
-              prev.map((s) =>
-                s.id === activeSessionId ? { ...s, title: sessionData.title } : s
-              )
-            );
-          }
-        }
-      }
+      setLoading(false)
     }
-  };
-
-  const handleStreamingResponse = async (userMessage, response) => {
-    if (!response.body) {
-      throw new Error('No response body');
-    }
-
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
-    let accumulatedText = '';
-    let buffer = ''; // Buffer for partial lines across chunks
-
-    try {
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        // Decode chunk and append to buffer
-        buffer += decoder.decode(value, { stream: true });
-
-        // Process complete lines (separated by \n\n for SSE events)
-        const lines = buffer.split('\n');
-
-        // Keep the last incomplete line in buffer for next chunk
-        buffer = lines[lines.length - 1];
-
-        // Process all complete lines
-        for (let i = 0; i < lines.length - 1; i++) {
-          const line = lines[i];
-
-          if (line.startsWith('data: ')) {
-            try {
-              const eventData = JSON.parse(line.slice(6));
-
-              // Handle content_block_delta events (streaming text)
-              if (eventData.type === 'content_block_delta' && eventData.delta?.type === 'text_delta') {
-                const text = eventData.delta.text;
-                accumulatedText += text;
-
-                // Force synchronous update to prevent React batching (allows true character-by-character streaming)
-                flushSync(() => {
-                  setMessages((prev) => {
-                    const lastMsg = prev[prev.length - 1];
-                    if (lastMsg && lastMsg.role === 'assistant' && lastMsg.id.startsWith('streaming-')) {
-                      // Update existing streaming message
-                      return prev.map((msg, idx) =>
-                        idx === prev.length - 1
-                          ? { ...msg, content: accumulatedText }
-                          : msg
-                      );
-                    } else {
-                      // Add new assistant message
-                      return [
-                        ...prev,
-                        {
-                          id: 'streaming-' + Date.now(),
-                          role: 'assistant',
-                          content: accumulatedText,
-                          created_at: new Date().toISOString(),
-                        },
-                      ];
-                    }
-                  });
-                });
-
-                // Force browser to render before processing next event
-                // Prevents multiple events from being batched and appearing all at once
-                // Use 5ms to ensure browser has time to actually paint between events
-                await new Promise((resolve) => setTimeout(resolve, 5));
-              }
-
-              // Handle message_stop (stream complete)
-              if (eventData.type === 'message_stop') {
-                return; // Exit the function completely
-              }
-            } catch (parseErr) {
-              // Silently skip unparseable events
-            }
-          }
-        }
-      }
-    } finally {
-      reader.releaseLock();
-    }
-  };
+  }
 
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
+      e.preventDefault()
+      handleSend()
     }
-  };
+  }
 
   const switchSession = (sid) => {
-    setSessionId(sid);
-    setError(null);
-  };
-
-  const getSessionTitle = (session) => {
-    if (!session.title) {
-      return 'New Chat';
-    }
-    // Truncate title if too long
-    return session.title.length > 30 ? session.title.substring(0, 30) + '…' : session.title;
-  };
-
-  // Reload sessions (useful after sending message to refresh titles)
-  const reloadSessions = async () => {
-    if (!user) return;
-    try {
-      const { data, error: fetchError } = await supabase
-        .from('chat_sessions')
-        .select('id, title, created_at')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(20);
-
-      if (fetchError) throw fetchError;
-      setSessions(data || []);
-    } catch (err) {
-      console.error('Failed to reload sessions:', err);
-    }
-  };
+    setSessionId(sid)
+    setError(null)
+  }
 
   if (!user) {
-    return <p className="chat-not-logged-in">Please log in to use chat.</p>;
+    return <p className="chat-not-logged-in">Please log in to use chat.</p>
   }
 
   if (sessionLoading) {
-    return <p className="chat-loading">Loading chats...</p>;
+    return <p className="chat-loading">Loading chats...</p>
   }
 
   return (
     <div className="chat-container">
-      {/* Session strip */}
       <div className="session-strip">
-        <button
-          className="session-new-btn"
-          onClick={createNewSession}
-          title="Start a new conversation"
-        >
+        <button className="session-new-btn" onClick={createNewSession} title="Start a new conversation">
           + New
         </button>
         <div className="session-list">
@@ -447,13 +221,12 @@ const Chat = () => {
               onClick={() => switchSession(session.id)}
               title={session.title || 'New Chat'}
             >
-              {getSessionTitle(session)}
+              {session.title ? session.title.substring(0, 30) : 'New Chat'}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Chat history */}
       <div className="chat-history" ref={chatHistoryRef}>
         {messages.length === 0 && !loading && (
           <p className="chat-empty">No messages yet. Ask a question to get started.</p>
@@ -461,33 +234,15 @@ const Chat = () => {
         {messages.map((msg) => (
           <div key={msg.id} className={`chat-message ${msg.role}`}>
             <div className={msg.role === 'user' ? 'user-message' : 'claude-message'}>
-              {msg.role === 'user' ? (
-                <>
-                  <strong>You:</strong> {msg.content}
-                </>
-              ) : (
-                <>
-                  <strong>Claude:</strong> {msg.content}
-                </>
-              )}
+              <strong>{msg.role === 'user' ? 'You' : 'Coach'}:</strong> {msg.content}
             </div>
           </div>
         ))}
-        {loading && (
-          <div className="loading-indicator">
-            Claude is thinking...
-          </div>
-        )}
+        {loading && <div className="loading-indicator">Coach is thinking...</div>}
       </div>
 
-      {/* Error banner */}
-      {error && (
-        <div className="error-banner">
-          Error: {error}
-        </div>
-      )}
+      {error && <div className="error-banner">Error: {error}</div>}
 
-      {/* Input section */}
       <div className="chat-input-container">
         <input
           type="text"
@@ -498,16 +253,12 @@ const Chat = () => {
           disabled={loading}
           className="chat-input"
         />
-        <button
-          onClick={handleSend}
-          disabled={loading || !input.trim()}
-          className="chat-send-button"
-        >
+        <button onClick={handleSend} disabled={loading || !input.trim()} className="chat-send-button">
           Send
         </button>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Chat;
+export default Chat
