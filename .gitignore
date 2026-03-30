@@ -1,6 +1,7 @@
 # Environment variables
 .env
 .env.local
+.env.*.local
 
 # Dependencies
 node_modules/
@@ -24,9 +25,13 @@ Thumbs.db
 # Runtime
 .supabase/
 supabase/.branches/
-.env
 
 .vercel
 
 # Git worktrees
 .worktrees/
+
+# Testing
+playwright-report/
+test-results/
+.last-run.json

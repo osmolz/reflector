@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS calendar_events (
   description TEXT,
   start_time TIMESTAMPTZ NOT NULL,
   end_time TIMESTAMPTZ NOT NULL,
+  is_all_day BOOLEAN DEFAULT FALSE,
   calendar_id TEXT,
   synced_at TIMESTAMPTZ DEFAULT NOW(),
   created_at TIMESTAMPTZ DEFAULT NOW(),
