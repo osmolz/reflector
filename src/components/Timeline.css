@@ -15,6 +15,14 @@
   margin-bottom: var(--space-3xl);
 }
 
+.timeline-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-lg);
+  margin-bottom: var(--space-md);
+}
+
 .timeline-page-title {
   font-family: var(--font-serif);
   font-size: 2.5rem;
@@ -22,7 +30,31 @@
   letter-spacing: -0.02em;
   color: var(--text-primary);
   line-height: 1.1;
-  margin-bottom: var(--space-sm);
+  margin-bottom: 0;
+}
+
+.btn-sync-calendar {
+  padding: var(--space-sm) var(--space-lg);
+  border: 1px solid var(--border-medium);
+  background-color: transparent;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border-radius: 0;
+  white-space: nowrap;
+}
+
+.btn-sync-calendar:hover {
+  background-color: var(--bg-secondary);
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+.btn-sync-calendar:active {
+  background-color: var(--bg-primary);
 }
 
 .timeline-count {
@@ -102,6 +134,40 @@
   color: var(--accent-color);
 }
 
+/* Calendar event styling - distinct from time entries */
+.timeline-calendar-event {
+  background-color: rgba(173, 216, 230, 0.15);
+  cursor: default;
+}
+
+.timeline-calendar-event:hover {
+  background-color: rgba(173, 216, 230, 0.25);
+}
+
+.timeline-calendar-event:hover .timeline-activity-name {
+  color: var(--text-primary);
+}
+
+.timeline-calendar-indicator {
+  background-color: #70b3d8;
+}
+
+.timeline-calendar-title {
+  font-style: italic;
+  opacity: 0.9;
+}
+
+.timeline-calendar-badge {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #2b5a6b;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 2px var(--space-xs);
+  background-color: rgba(43, 90, 107, 0.15);
+  border-radius: 0;
+}
+
 /* ============================================================
    Timeline Indicator (dot)
    ============================================================ */
@@ -179,6 +245,35 @@
 }
 
 /* ============================================================
+   Add to Calendar Button
+   ============================================================ */
+.timeline-add-calendar-btn {
+  flex-shrink: 0;
+  padding: 2px var(--space-sm);
+  border: 1px solid rgba(43, 90, 107, 0.3);
+  background-color: transparent;
+  color: var(--text-tertiary);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.15s ease;
+  border-radius: 0;
+}
+
+.timeline-item:hover .timeline-add-calendar-btn {
+  opacity: 1;
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+.timeline-add-calendar-btn:active {
+  background-color: var(--bg-secondary);
+}
+
+/* ============================================================
    Edit hint (right side)
    ============================================================ */
 .timeline-edit-hint {
@@ -194,6 +289,11 @@
 .timeline-item:hover .timeline-edit-hint {
   opacity: 1;
   color: var(--accent-color);
+}
+
+.timeline-calendar-event:hover .timeline-edit-hint {
+  opacity: 1;
+  color: var(--text-tertiary);
 }
 
 /* ============================================================
@@ -293,6 +393,17 @@
    Responsive
    ============================================================ */
 @media (max-width: 640px) {
+  .timeline-header-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-md);
+  }
+
+  .btn-sync-calendar {
+    width: 100%;
+    text-align: center;
+  }
+
   .timeline-item {
     gap: var(--space-md);
     padding: var(--space-md) var(--space-sm);
@@ -310,6 +421,10 @@
   }
 
   .timeline-edit-hint {
+    display: none;
+  }
+
+  .timeline-add-calendar-btn {
     display: none;
   }
 

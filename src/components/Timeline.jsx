@@ -2,7 +2,10 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../store/authStore';
 import { ActivityEditForm } from './ActivityEditForm';
+import { SyncCalendarModal } from './SyncCalendarModal';
+import { AddToCalendarModal } from './AddToCalendarModal';
 import { calculateGaps, formatTime, sortActivities } from '../utils/timelineUtils';
+import { mergeEvents } from '../utils/calendarUtils';
 import './Timeline.css';
 
 // Format a date string into a day-name and date string
@@ -36,6 +39,8 @@ export function Timeline({ refreshKey = 0 }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [editingActivity, setEditingActivity] = useState(null);
+  const [syncModalOpen, setSyncModalOpen] = useState(false);
+  const [addToCalendarEntry, setAddToCalendarEntry] = useState(null);
 
   useEffect(() => {
     fetchActivities();
@@ -51,18 +56,62 @@ export function Timeline({ refreshKey = 0 }) {
     setError('');
 
     try {
-      const { data, error: fetchError } = await supabase
+      // Fetch time entries
+      const { data: timeEntriesData, error: timeEntriesError } = await supabase
         .from('time_entries')
         .select('id, activity_name, duration_minutes, category, start_time, check_in_id, created_at, updated_at')
         .eq('user_id', user.id)
         .order('start_time', { ascending: true });
 
-      if (fetchError) throw fetchError;
+      if (timeEntriesError) throw timeEntriesError;
 
-      const sortedActivities = sortActivities(data || []);
-      setActivities(sortedActivities);
+      // Fetch calendar events
+      const { data: calendarEventsData, error: calendarEventsError } = await supabase
+        .from('calendar_events')
+        .select('id, gcp_event_id, user_id, title, description, start_time, end_time, calendar_id, synced_at, created_at, updated_at')
+        .eq('user_id', user.id)
+        .order('start_time', { ascending: true });
 
-      const calculatedGaps = calculateGaps(sortedActivities);
+      if (calendarEventsError) throw calendarEventsError;
+
+      // Merge time entries and calendar events
+      const merged = mergeEvents(timeEntriesData || [], calendarEventsData || []);
+
+      // Convert merged events back to a format compatible with existing code
+      // and group by day using the original grouping logic
+      const displayActivities = merged.map(event => {
+        if (event.type === 'time_entry') {
+          return {
+            id: event.id,
+            activity_name: event.title,
+            duration_minutes: event.duration_minutes,
+            category: event.category,
+            start_time: event.start_time.toISOString(),
+            type: 'time_entry',
+            check_in_id: null,
+            created_at: null,
+            updated_at: null,
+          };
+        } else {
+          // Calendar event
+          return {
+            id: event.id,
+            activity_name: event.title,
+            duration_minutes: Math.round((event.end_time - event.start_time) / (1000 * 60)),
+            start_time: event.start_time.toISOString(),
+            type: 'calendar_event',
+            gcp_event_id: event.gcp_event_id,
+            created_at: null,
+            updated_at: null,
+          };
+        }
+      });
+
+      setActivities(displayActivities);
+
+      // Calculate gaps only for time entries (not calendar events)
+      const timeEntriesOnly = displayActivities.filter(a => a.type === 'time_entry');
+      const calculatedGaps = calculateGaps(timeEntriesOnly);
       setGaps(calculatedGaps);
     } catch (err) {
       setError(err.message || 'Failed to load timeline');
@@ -73,6 +122,16 @@ export function Timeline({ refreshKey = 0 }) {
 
   const handleActivitySaved = () => {
     setEditingActivity(null);
+    fetchActivities();
+  };
+
+  const handleSyncComplete = () => {
+    setSyncModalOpen(false);
+    fetchActivities();
+  };
+
+  const handleAddToCalendarComplete = () => {
+    setAddToCalendarEntry(null);
     fetchActivities();
   };
 
@@ -106,13 +165,29 @@ export function Timeline({ refreshKey = 0 }) {
     return (
       <div className="timeline-wrapper">
         <div className="timeline-header">
-          <h1 className="timeline-page-title">Timeline</h1>
+          <div className="timeline-header-top">
+            <h1 className="timeline-page-title">Timeline</h1>
+            <button
+              className="btn-sync-calendar"
+              onClick={() => setSyncModalOpen(true)}
+              aria-label="Sync with Google Calendar"
+            >
+              Sync with Google Calendar
+            </button>
+          </div>
         </div>
         <div className="timeline-empty">
           <p className="timeline-empty-message">
             No activities yet. Record a voice check-in to get started.
           </p>
         </div>
+
+        {/* Sync Calendar Modal */}
+        <SyncCalendarModal
+          isOpen={syncModalOpen}
+          onClose={() => setSyncModalOpen(false)}
+          onSyncComplete={handleSyncComplete}
+        />
       </div>
     );
   }
@@ -123,9 +198,18 @@ export function Timeline({ refreshKey = 0 }) {
   return (
     <div className="timeline-wrapper">
       <div className="timeline-header">
-        <h1 className="timeline-page-title">Timeline</h1>
+        <div className="timeline-header-top">
+          <h1 className="timeline-page-title">Timeline</h1>
+          <button
+            className="btn-sync-calendar"
+            onClick={() => setSyncModalOpen(true)}
+            aria-label="Sync with Google Calendar"
+          >
+            Sync with Google Calendar
+          </button>
+        </div>
         <p className="timeline-count">
-          {activities.length} {activities.length === 1 ? 'activity' : 'activities'}
+          {activities.length} {activities.length === 1 ? 'item' : 'items'}
         </p>
       </div>
 
@@ -143,55 +227,93 @@ export function Timeline({ refreshKey = 0 }) {
 
             <ul className="timeline-list" role="list">
               {dayActivities.map((activity, index) => {
-                // Find gap after this activity
+                const isCalendarEvent = activity.type === 'calendar_event';
+
+                // Find gap after this activity (only for time entries)
                 const activityEnd =
                   new Date(activity.start_time).getTime() +
                   activity.duration_minutes * 60 * 1000;
 
-                const gap = gaps.find((g) => {
+                const gap = !isCalendarEvent ? gaps.find((g) => {
                   return Math.abs(g.startTime.getTime() - activityEnd) < 60 * 1000;
-                });
+                }) : null;
 
                 return (
                   <li key={activity.id}>
-                    <div
-                      className="timeline-item"
-                      onClick={() => setEditingActivity(activity)}
-                      role="button"
-                      tabIndex={0}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault();
-                          setEditingActivity(activity);
-                        }
-                      }}
-                      aria-label={`Edit ${activity.activity_name}`}
-                    >
-                      <span className="timeline-indicator" aria-hidden="true" />
-                      <span className="timeline-time">
-                        {formatTime(activity.start_time)}
-                      </span>
-                      <div className="timeline-content">
-                        <div className="timeline-activity-name">
-                          {activity.activity_name}
-                        </div>
-                        <div className="timeline-meta">
-                          <span className="timeline-duration">
-                            {activity.duration_minutes}m
-                          </span>
-                          {activity.category && (
-                            <span className="timeline-category">
-                              {activity.category}
+                    {isCalendarEvent ? (
+                      // Calendar event - read-only display
+                      <div className="timeline-item timeline-calendar-event">
+                        <span className="timeline-indicator timeline-calendar-indicator" aria-hidden="true" />
+                        <span className="timeline-time">
+                          {formatTime(activity.start_time)}
+                        </span>
+                        <div className="timeline-content">
+                          <div className="timeline-activity-name timeline-calendar-title">
+                            {activity.activity_name}
+                          </div>
+                          <div className="timeline-meta">
+                            <span className="timeline-duration">
+                              {activity.duration_minutes}m
                             </span>
-                          )}
+                            <span className="timeline-calendar-badge">Calendar</span>
+                          </div>
                         </div>
+                        <span className="timeline-edit-hint" aria-hidden="true">
+                          synced
+                        </span>
                       </div>
-                      <span className="timeline-edit-hint" aria-hidden="true">
-                        edit
-                      </span>
-                    </div>
+                    ) : (
+                      // Time entry - editable with add to calendar option
+                      <div
+                        className="timeline-item"
+                        onClick={() => setEditingActivity(activity)}
+                        role="button"
+                        tabIndex={0}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            setEditingActivity(activity);
+                          }
+                        }}
+                        aria-label={`Edit ${activity.activity_name}`}
+                      >
+                        <span className="timeline-indicator" aria-hidden="true" />
+                        <span className="timeline-time">
+                          {formatTime(activity.start_time)}
+                        </span>
+                        <div className="timeline-content">
+                          <div className="timeline-activity-name">
+                            {activity.activity_name}
+                          </div>
+                          <div className="timeline-meta">
+                            <span className="timeline-duration">
+                              {activity.duration_minutes}m
+                            </span>
+                            {activity.category && (
+                              <span className="timeline-category">
+                                {activity.category}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <button
+                          className="timeline-add-calendar-btn"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setAddToCalendarEntry(activity);
+                          }}
+                          aria-label={`Add ${activity.activity_name} to calendar`}
+                          title="Add to Google Calendar"
+                        >
+                          +Cal
+                        </button>
+                        <span className="timeline-edit-hint" aria-hidden="true">
+                          edit
+                        </span>
+                      </div>
+                    )}
 
-                    {/* Gap indicator */}
+                    {/* Gap indicator - only for time entries */}
                     {gap && index < dayActivities.length - 1 && (
                       <div className="timeline-gap" role="note" aria-label={`${gap.durationMinutes} minute gap`}>
                         <span className="timeline-gap-label">Gap</span>
@@ -230,6 +352,21 @@ export function Timeline({ refreshKey = 0 }) {
           onSave={handleActivitySaved}
         />
       )}
+
+      {/* Sync Calendar Modal */}
+      <SyncCalendarModal
+        isOpen={syncModalOpen}
+        onClose={() => setSyncModalOpen(false)}
+        onSyncComplete={handleSyncComplete}
+      />
+
+      {/* Add to Calendar Modal */}
+      <AddToCalendarModal
+        isOpen={!!addToCalendarEntry}
+        timeEntry={addToCalendarEntry}
+        onClose={() => setAddToCalendarEntry(null)}
+        onSuccess={handleAddToCalendarComplete}
+      />
     </div>
   );
 }
