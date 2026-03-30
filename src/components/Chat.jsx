@@ -246,6 +246,23 @@ const Chat = () => {
                 }))
               } else if (event.type === 'done') {
                 updateStreaming((m) => ({ ...m, isStreaming: false }))
+
+                // After streaming completes, save the full assistant message to DB
+                setMessages((prev) => {
+                  const latestMessage = prev[prev.length - 1]
+                  if (latestMessage && latestMessage.id === streamingId) {
+                    // Save the completed message
+                    saveAssistantMessage(
+                      user.id,
+                      sessionId,
+                      latestMessage.content,
+                    ).catch((err) => {
+                      console.error('[chat] Failed to persist assistant message:', err)
+                      setError('Message sent but failed to save. Check your connection.')
+                    })
+                  }
+                  return prev
+                })
               } else if (event.type === 'error') {
                 setError(event.message || 'Stream error')
               }
