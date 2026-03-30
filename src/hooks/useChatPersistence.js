@@ -2,7 +2,7 @@ import { supabase } from '../lib/supabase'
 
 export function useChatPersistence() {
   const saveUserMessage = async (userId, sessionId, content) => {
-    if (!userId || !sessionId || !content) {
+    if (userId == null || sessionId == null || content == null) {
       throw new Error('Missing required parameters: userId, sessionId, content')
     }
 
@@ -24,14 +24,8 @@ export function useChatPersistence() {
     }
   }
 
-  const saveAssistantMessage = async (
-    userId,
-    sessionId,
-    content,
-    thinking = null,
-    toolCalls = null
-  ) => {
-    if (!userId || !sessionId || !content) {
+  const saveAssistantMessage = async (userId, sessionId, content) => {
+    if (userId == null || sessionId == null || content == null) {
       throw new Error('Missing required parameters: userId, sessionId, content')
     }
 
