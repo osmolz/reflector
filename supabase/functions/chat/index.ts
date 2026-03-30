@@ -139,64 +139,112 @@ Deno.serve(async (req) => {
           let finalText = ''
           let currentMessages = [...contextMessages, { role: 'user' as const, content: message }]
 
-          while (maxHops > 0) {
-            emit({ type: 'status', status: 'thinking' })
+          // Set 55-second timeout (Vercel limit is 60s)
+          const timeoutPromise = new Promise<void>((_, reject) =>
+            setTimeout(() => reject(new Error('Stream timeout after 55 seconds')), 55000)
+          )
 
-            // Call Claude with streaming
-            const stream = await anthropic.messages.stream({
-              model: 'claude-opus-4-6',
-              max_tokens: 4096,
-              system: systemPrompt,
-              tools: TOOL_DEFINITIONS as any,
-              messages: currentMessages as any,
-              thinking: { type: 'enabled', budget_tokens: 2048 },
-            })
+          try {
+            await Promise.race([
+              (async () => {
+                while (maxHops > 0) {
+                  emit({ type: 'status', status: 'thinking' })
 
-            // Attach listeners BEFORE awaiting
-            stream.on('thinking', (delta: string) => {
-              emit({ type: 'thinking', text: delta })
-            })
+                  // Call Claude with streaming
+                  const stream = await anthropic.messages.stream({
+                    model: 'claude-opus-4-6',
+                    max_tokens: 4096,
+                    system: systemPrompt,
+                    tools: TOOL_DEFINITIONS as any,
+                    messages: currentMessages as any,
+                    thinking: { type: 'enabled', budget_tokens: 2048 },
+                  })
 
-            stream.on('text', (delta: string) => {
-              finalText += delta
-              emit({ type: 'text', text: delta })
-            })
+                  // Attach listeners BEFORE awaiting
+                  stream.on('thinking', (delta: string) => {
+                    emit({ type: 'thinking', text: delta })
+                  })
 
-            // Wait for stream to complete
-            const response = await stream.finalMessage()
+                  stream.on('text', (delta: string) => {
+                    finalText += delta
+                    emit({ type: 'text', text: delta })
+                  })
 
-            // Check if done reasoning
-            if (response.stop_reason === 'end_turn') {
-              break
-            }
+                  // Wait for stream to complete
+                  const response = await stream.finalMessage()
 
-            // Process tool calls
-            const toolUseBlocks = response.content.filter((b: any) => b.type === 'tool_use')
+                  // Check if done reasoning
+                  if (response.stop_reason === 'end_turn') {
+                    break
+                  }
 
-            for (const toolUse of toolUseBlocks) {
-              emit({ type: 'tool_use', tool: toolUse.name })
-            }
+                  // Process tool calls
+                  const toolUseBlocks = response.content.filter((b: any) => b.type === 'tool_use')
 
-            // Execute tools in parallel
-            const toolResults = await Promise.all(
-              toolUseBlocks.map(async (block: any) => {
-                const result = await executeTool(supabase, userId, block.name, block.input as Record<string, unknown>)
-                return {
-                  type: 'tool_result',
-                  tool_use_id: block.id,
-                  content: JSON.stringify(result),
+                  for (const toolUse of toolUseBlocks) {
+                    emit({ type: 'tool_use', tool: toolUse.name })
+                  }
+
+                  // Execute tools in parallel with error handling
+                  const toolResults = await Promise.all(
+                    toolUseBlocks.map(async (block: any) => {
+                      try {
+                        const result = await executeTool(supabase, userId, block.name, block.input as Record<string, unknown>)
+
+                        // Check for no_data and continue gracefully
+                        if (result.status === 'no_data') {
+                          emit({
+                            type: 'text',
+                            text: ` (Note: ${result.message || 'No data available'})\n`,
+                          })
+                        }
+
+                        return {
+                          type: 'tool_result',
+                          tool_use_id: block.id,
+                          content: JSON.stringify(result),
+                        }
+                      } catch (toolError) {
+                        console.error(`[chat] Tool ${block.name} failed:`, toolError)
+
+                        emit({
+                          type: 'text',
+                          text: ` (Unable to retrieve ${block.name}. Continuing...)\n`,
+                        })
+
+                        return {
+                          type: 'tool_result',
+                          tool_use_id: block.id,
+                          content: JSON.stringify({
+                            status: 'error',
+                            message: `Tool execution failed: ${toolError instanceof Error ? toolError.message : String(toolError)}`,
+                          }),
+                        }
+                      }
+                    })
+                  )
+
+                  // Append to conversation and continue loop
+                  currentMessages = [
+                    ...currentMessages,
+                    { role: 'assistant' as const, content: response.content as any },
+                    { role: 'user' as const, content: toolResults as any },
+                  ]
+
+                  maxHops--
                 }
+              })(),
+              timeoutPromise,
+            ])
+          } catch (timeoutErr) {
+            if (timeoutErr instanceof Error && timeoutErr.message.includes('timeout')) {
+              emit({
+                type: 'text',
+                text: '\n\n(Response took too long. Sending partial analysis...)',
               })
-            )
-
-            // Append to conversation and continue loop
-            currentMessages = [
-              ...currentMessages,
-              { role: 'assistant' as const, content: response.content as any },
-              { role: 'user' as const, content: toolResults as any },
-            ]
-
-            maxHops--
+            } else {
+              throw timeoutErr
+            }
           }
 
           // Fire-and-forget: save assistant message
