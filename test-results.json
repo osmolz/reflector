@@ -1,7 +1,7 @@
 {
   "config": {
-    "configFile": "C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\playwright.config.js",
-    "rootDir": "C:/Users/osmol/OneDrive/Desktop/Who am I/tests",
+    "configFile": "C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\.worktrees\\gcal-frontend\\playwright.config.js",
+    "rootDir": "C:/Users/osmol/OneDrive/Desktop/Who am I/.worktrees/gcal-frontend/tests",
     "forbidOnly": false,
     "fullyParallel": false,
     "globalSetup": null,
@@ -16,7 +16,7 @@
     "preserveOutput": "always",
     "projects": [
       {
-        "outputDir": "C:/Users/osmol/OneDrive/Desktop/Who am I/test-results",
+        "outputDir": "C:/Users/osmol/OneDrive/Desktop/Who am I/.worktrees/gcal-frontend/test-results",
         "repeatEach": 1,
         "retries": 0,
         "metadata": {
@@ -24,7 +24,7 @@
         },
         "id": "chromium",
         "name": "chromium",
-        "testDir": "C:/Users/osmol/OneDrive/Desktop/Who am I/tests",
+        "testDir": "C:/Users/osmol/OneDrive/Desktop/Who am I/.worktrees/gcal-frontend/tests",
         "testIgnore": [],
         "testMatch": [
           "**/*.@(spec|test).?(c|m)[jt]s?(x)"
@@ -70,21 +70,21 @@
   },
   "suites": [
     {
-      "title": "chat-streaming-local.spec.js",
-      "file": "chat-streaming-local.spec.js",
+      "title": "sync-calendar-modal.spec.js",
+      "file": "sync-calendar-modal.spec.js",
       "column": 0,
       "line": 0,
       "specs": [],
       "suites": [
         {
-          "title": "Chat Streaming - Local Live Tests",
-          "file": "chat-streaming-local.spec.js",
-          "line": 3,
+          "title": "SyncCalendarModal Component Tests",
+          "file": "sync-calendar-modal.spec.js",
+          "line": 11,
           "column": 6,
           "specs": [
             {
-              "title": "Chat component renders and is visible",
-              "ok": false,
+              "title": "1. Component exports and is importable",
+              "ok": true,
               "tags": [],
               "tests": [
                 {
@@ -97,552 +97,34 @@
                     {
                       "workerIndex": 0,
                       "parallelIndex": 0,
-                      "status": "failed",
-                      "duration": 6309,
-                      "error": {
-                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.chat-container')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.chat-container')\u001b[22m\n",
-                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.chat-container')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.chat-container')\u001b[22m\n\n    at C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\tests\\chat-streaming-local.spec.js:12:33",
-                        "location": {
-                          "file": "C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\tests\\chat-streaming-local.spec.js",
-                          "column": 33,
-                          "line": 12
-                        },
-                        "snippet": "\u001b[0m \u001b[90m 10 |\u001b[39m   test(\u001b[32m'Chat component renders and is visible'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 11 |\u001b[39m     \u001b[36mconst\u001b[39m chatContainer \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'.chat-container'\u001b[39m)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 12 |\u001b[39m     \u001b[36mawait\u001b[39m expect(chatContainer)\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                 \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 13 |\u001b[39m     console\u001b[33m.\u001b[39mlog(\u001b[32m'✅ Chat container is visible'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 14 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 15 |\u001b[39m\u001b[0m"
-                      },
-                      "errors": [
+                      "status": "passed",
+                      "duration": 19,
+                      "errors": [],
+                      "stdout": [
                         {
-                          "location": {
-                            "file": "C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\tests\\chat-streaming-local.spec.js",
-                            "column": 33,
-                            "line": 12
-                          },
-                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.chat-container')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.chat-container')\u001b[22m\n\n\n  10 |   test('Chat component renders and is visible', async ({ page }) => {\n  11 |     const chatContainer = page.locator('.chat-container');\n> 12 |     await expect(chatContainer).toBeVisible();\n     |                                 ^\n  13 |     console.log('✅ Chat container is visible');\n  14 |   });\n  15 |\n    at C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\tests\\chat-streaming-local.spec.js:12:33"
-                        }
-                      ],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-03-29T18:13:19.535Z",
-                      "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\test-results\\chat-streaming-local-Chat--4360f-nent-renders-and-is-visible-chromium\\error-context.md"
-                        }
-                      ],
-                      "errorLocation": {
-                        "file": "C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\tests\\chat-streaming-local.spec.js",
-                        "column": 33,
-                        "line": 12
-                      }
-                    }
-                  ],
-                  "status": "unexpected"
-                }
-              ],
-              "id": "f4cccaa2946821e39c53-d7f8608159f4d8334aba",
-              "file": "chat-streaming-local.spec.js",
-              "line": 10,
-              "column": 7
-            },
-            {
-              "title": "Chat input field is functional",
-              "ok": false,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 1,
-                      "parallelIndex": 0,
-                      "status": "failed",
-                      "duration": 6429,
-                      "error": {
-                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.chat-input')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.chat-input')\u001b[22m\n",
-                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.chat-input')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.chat-input')\u001b[22m\n\n    at C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\tests\\chat-streaming-local.spec.js:18:29",
-                        "location": {
-                          "file": "C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\tests\\chat-streaming-local.spec.js",
-                          "column": 29,
-                          "line": 18
-                        },
-                        "snippet": "\u001b[0m \u001b[90m 16 |\u001b[39m   test(\u001b[32m'Chat input field is functional'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 17 |\u001b[39m     \u001b[36mconst\u001b[39m chatInput \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'.chat-input'\u001b[39m)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 18 |\u001b[39m     \u001b[36mawait\u001b[39m expect(chatInput)\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 19 |\u001b[39m\n \u001b[90m 20 |\u001b[39m     \u001b[36mawait\u001b[39m chatInput\u001b[33m.\u001b[39mfill(\u001b[32m'What did I work on today?'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 21 |\u001b[39m     \u001b[36mconst\u001b[39m value \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m chatInput\u001b[33m.\u001b[39minputValue()\u001b[33m;\u001b[39m\u001b[0m"
-                      },
-                      "errors": [
-                        {
-                          "location": {
-                            "file": "C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\tests\\chat-streaming-local.spec.js",
-                            "column": 29,
-                            "line": 18
-                          },
-                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.chat-input')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.chat-input')\u001b[22m\n\n\n  16 |   test('Chat input field is functional', async ({ page }) => {\n  17 |     const chatInput = page.locator('.chat-input');\n> 18 |     await expect(chatInput).toBeVisible();\n     |                             ^\n  19 |\n  20 |     await chatInput.fill('What did I work on today?');\n  21 |     const value = await chatInput.inputValue();\n    at C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\tests\\chat-streaming-local.spec.js:18:29"
-                        }
-                      ],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-03-29T18:13:31.358Z",
-                      "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\test-results\\chat-streaming-local-Chat--59038-t-input-field-is-functional-chromium\\error-context.md"
-                        }
-                      ],
-                      "errorLocation": {
-                        "file": "C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\tests\\chat-streaming-local.spec.js",
-                        "column": 29,
-                        "line": 18
-                      }
-                    }
-                  ],
-                  "status": "unexpected"
-                }
-              ],
-              "id": "f4cccaa2946821e39c53-dd1898a9a3453ca1cbd9",
-              "file": "chat-streaming-local.spec.js",
-              "line": 16,
-              "column": 7
-            },
-            {
-              "title": "Chat send button responds to input",
-              "ok": false,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 2,
-                      "parallelIndex": 0,
-                      "status": "timedOut",
-                      "duration": 30077,
-                      "error": {
-                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
-                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
-                      },
-                      "errors": [
-                        {
-                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                          "text": "\n✅ TEST: Component module structure\n"
                         },
                         {
-                          "location": {
-                            "file": "C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\tests\\chat-streaming-local.spec.js",
-                            "column": 21,
-                            "line": 31
-                          },
-                          "message": "Error: locator.fill: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.chat-input')\u001b[22m\n\n\n  29 |\n  30 |     // Fill input and button should become enabled\n> 31 |     await chatInput.fill('Test question');\n     |                     ^\n  32 |     await expect(sendButton).not.toBeDisabled();\n  33 |     console.log('✅ Send button responds to input');\n  34 |   });\n    at C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\tests\\chat-streaming-local.spec.js:31:21"
+                          "text": "   SyncCalendarModal is a valid React component\n"
                         }
                       ],
-                      "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-03-29T18:13:43.524Z",
+                      "startTime": "2026-03-30T15:04:20.190Z",
                       "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\test-results\\chat-streaming-local-Chat--2dd38-nd-button-responds-to-input-chromium\\error-context.md"
-                        }
-                      ]
+                      "attachments": []
                     }
                   ],
-                  "status": "unexpected"
+                  "status": "expected"
                 }
               ],
-              "id": "f4cccaa2946821e39c53-ff934d33be84aac48d91",
-              "file": "chat-streaming-local.spec.js",
-              "line": 26,
+              "id": "6482e77a86adcef14335-82f14c4ec5765aff51a9",
+              "file": "sync-calendar-modal.spec.js",
+              "line": 19,
               "column": 7
             },
             {
-              "title": "Chat history container exists",
-              "ok": false,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 3,
-                      "parallelIndex": 0,
-                      "status": "failed",
-                      "duration": 6542,
-                      "error": {
-                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.chat-history')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.chat-history')\u001b[22m\n",
-                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.chat-history')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.chat-history')\u001b[22m\n\n    at C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\tests\\chat-streaming-local.spec.js:38:31",
-                        "location": {
-                          "file": "C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\tests\\chat-streaming-local.spec.js",
-                          "column": 31,
-                          "line": 38
-                        },
-                        "snippet": "\u001b[0m \u001b[90m 36 |\u001b[39m   test(\u001b[32m'Chat history container exists'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 37 |\u001b[39m     \u001b[36mconst\u001b[39m chatHistory \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'.chat-history'\u001b[39m)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 38 |\u001b[39m     \u001b[36mawait\u001b[39m expect(chatHistory)\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                               \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 39 |\u001b[39m     console\u001b[33m.\u001b[39mlog(\u001b[32m'✅ Chat history container is visible'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 40 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 41 |\u001b[39m\u001b[0m"
-                      },
-                      "errors": [
-                        {
-                          "location": {
-                            "file": "C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\tests\\chat-streaming-local.spec.js",
-                            "column": 31,
-                            "line": 38
-                          },
-                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.chat-history')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.chat-history')\u001b[22m\n\n\n  36 |   test('Chat history container exists', async ({ page }) => {\n  37 |     const chatHistory = page.locator('.chat-history');\n> 38 |     await expect(chatHistory).toBeVisible();\n     |                               ^\n  39 |     console.log('✅ Chat history container is visible');\n  40 |   });\n  41 |\n    at C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\tests\\chat-streaming-local.spec.js:38:31"
-                        }
-                      ],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-03-29T18:14:19.240Z",
-                      "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\test-results\\chat-streaming-local-Chat--313d7-at-history-container-exists-chromium\\error-context.md"
-                        }
-                      ],
-                      "errorLocation": {
-                        "file": "C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\tests\\chat-streaming-local.spec.js",
-                        "column": 31,
-                        "line": 38
-                      }
-                    }
-                  ],
-                  "status": "unexpected"
-                }
-              ],
-              "id": "f4cccaa2946821e39c53-0d0f68edac5baef97a6d",
-              "file": "chat-streaming-local.spec.js",
-              "line": 36,
-              "column": 7
-            },
-            {
-              "title": "Empty state message shows",
-              "ok": false,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 4,
-                      "parallelIndex": 0,
-                      "status": "failed",
-                      "duration": 6446,
-                      "error": {
-                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.chat-empty')\nExpected substring: \u001b[32m\"No messages yet\"\u001b[39m\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.chat-empty')\u001b[22m\n",
-                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.chat-empty')\nExpected substring: \u001b[32m\"No messages yet\"\u001b[39m\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.chat-empty')\u001b[22m\n\n    at C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\tests\\chat-streaming-local.spec.js:44:32",
-                        "location": {
-                          "file": "C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\tests\\chat-streaming-local.spec.js",
-                          "column": 32,
-                          "line": 44
-                        },
-                        "snippet": "\u001b[0m \u001b[90m 42 |\u001b[39m   test(\u001b[32m'Empty state message shows'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n \u001b[90m 43 |\u001b[39m     \u001b[36mconst\u001b[39m emptyMessage \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'.chat-empty'\u001b[39m)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 44 |\u001b[39m     \u001b[36mawait\u001b[39m expect(emptyMessage)\u001b[33m.\u001b[39mtoContainText(\u001b[32m'No messages yet'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 45 |\u001b[39m     console\u001b[33m.\u001b[39mlog(\u001b[32m'✅ Empty state displays correctly'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 46 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 47 |\u001b[39m\u001b[0m"
-                      },
-                      "errors": [
-                        {
-                          "location": {
-                            "file": "C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\tests\\chat-streaming-local.spec.js",
-                            "column": 32,
-                            "line": 44
-                          },
-                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoContainText\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.chat-empty')\nExpected substring: \u001b[32m\"No messages yet\"\u001b[39m\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toContainText\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.chat-empty')\u001b[22m\n\n\n  42 |   test('Empty state message shows', async ({ page }) => {\n  43 |     const emptyMessage = page.locator('.chat-empty');\n> 44 |     await expect(emptyMessage).toContainText('No messages yet');\n     |                                ^\n  45 |     console.log('✅ Empty state displays correctly');\n  46 |   });\n  47 |\n    at C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\tests\\chat-streaming-local.spec.js:44:32"
-                        }
-                      ],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-03-29T18:14:31.312Z",
-                      "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\test-results\\chat-streaming-local-Chat--b91ed-s-Empty-state-message-shows-chromium\\error-context.md"
-                        }
-                      ],
-                      "errorLocation": {
-                        "file": "C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\tests\\chat-streaming-local.spec.js",
-                        "column": 32,
-                        "line": 44
-                      }
-                    }
-                  ],
-                  "status": "unexpected"
-                }
-              ],
-              "id": "f4cccaa2946821e39c53-4270ca2bc735ffe81993",
-              "file": "chat-streaming-local.spec.js",
-              "line": 42,
-              "column": 7
-            },
-            {
-              "title": "Component is responsive at 375px (mobile)",
-              "ok": false,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 5,
-                      "parallelIndex": 0,
-                      "status": "failed",
-                      "duration": 6216,
-                      "error": {
-                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.chat-container')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.chat-container')\u001b[22m\n",
-                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.chat-container')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.chat-container')\u001b[22m\n\n    at C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\tests\\chat-streaming-local.spec.js:52:33",
-                        "location": {
-                          "file": "C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\tests\\chat-streaming-local.spec.js",
-                          "column": 33,
-                          "line": 52
-                        },
-                        "snippet": "\u001b[0m \u001b[90m 50 |\u001b[39m\n \u001b[90m 51 |\u001b[39m     \u001b[36mconst\u001b[39m chatContainer \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'.chat-container'\u001b[39m)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 52 |\u001b[39m     \u001b[36mawait\u001b[39m expect(chatContainer)\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                 \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 53 |\u001b[39m     console\u001b[33m.\u001b[39mlog(\u001b[32m'✅ Component responsive at 375px'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 54 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 55 |\u001b[39m\u001b[0m"
-                      },
-                      "errors": [
-                        {
-                          "location": {
-                            "file": "C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\tests\\chat-streaming-local.spec.js",
-                            "column": 33,
-                            "line": 52
-                          },
-                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.chat-container')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.chat-container')\u001b[22m\n\n\n  50 |\n  51 |     const chatContainer = page.locator('.chat-container');\n> 52 |     await expect(chatContainer).toBeVisible();\n     |                                 ^\n  53 |     console.log('✅ Component responsive at 375px');\n  54 |   });\n  55 |\n    at C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\tests\\chat-streaming-local.spec.js:52:33"
-                        }
-                      ],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-03-29T18:14:43.257Z",
-                      "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\test-results\\chat-streaming-local-Chat--eca45-responsive-at-375px-mobile--chromium\\error-context.md"
-                        }
-                      ],
-                      "errorLocation": {
-                        "file": "C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\tests\\chat-streaming-local.spec.js",
-                        "column": 33,
-                        "line": 52
-                      }
-                    }
-                  ],
-                  "status": "unexpected"
-                }
-              ],
-              "id": "f4cccaa2946821e39c53-0f06e76d58855cc36eb5",
-              "file": "chat-streaming-local.spec.js",
-              "line": 48,
-              "column": 7
-            },
-            {
-              "title": "Component is responsive at 1280px (desktop)",
-              "ok": false,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 6,
-                      "parallelIndex": 0,
-                      "status": "failed",
-                      "duration": 6266,
-                      "error": {
-                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.chat-container')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.chat-container')\u001b[22m\n",
-                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.chat-container')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.chat-container')\u001b[22m\n\n    at C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\tests\\chat-streaming-local.spec.js:60:33",
-                        "location": {
-                          "file": "C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\tests\\chat-streaming-local.spec.js",
-                          "column": 33,
-                          "line": 60
-                        },
-                        "snippet": "\u001b[0m \u001b[90m 58 |\u001b[39m\n \u001b[90m 59 |\u001b[39m     \u001b[36mconst\u001b[39m chatContainer \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'.chat-container'\u001b[39m)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 60 |\u001b[39m     \u001b[36mawait\u001b[39m expect(chatContainer)\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                 \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 61 |\u001b[39m     console\u001b[33m.\u001b[39mlog(\u001b[32m'✅ Component responsive at 1280px'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 62 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 63 |\u001b[39m\u001b[0m"
-                      },
-                      "errors": [
-                        {
-                          "location": {
-                            "file": "C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\tests\\chat-streaming-local.spec.js",
-                            "column": 33,
-                            "line": 60
-                          },
-                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('.chat-container')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for locator('.chat-container')\u001b[22m\n\n\n  58 |\n  59 |     const chatContainer = page.locator('.chat-container');\n> 60 |     await expect(chatContainer).toBeVisible();\n     |                                 ^\n  61 |     console.log('✅ Component responsive at 1280px');\n  62 |   });\n  63 |\n    at C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\tests\\chat-streaming-local.spec.js:60:33"
-                        }
-                      ],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-03-29T18:14:53.627Z",
-                      "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\test-results\\chat-streaming-local-Chat--65705-sponsive-at-1280px-desktop--chromium\\error-context.md"
-                        }
-                      ],
-                      "errorLocation": {
-                        "file": "C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\tests\\chat-streaming-local.spec.js",
-                        "column": 33,
-                        "line": 60
-                      }
-                    }
-                  ],
-                  "status": "unexpected"
-                }
-              ],
-              "id": "f4cccaa2946821e39c53-6bf4d36c3d72f401f294",
-              "file": "chat-streaming-local.spec.js",
-              "line": 56,
-              "column": 7
-            },
-            {
-              "title": "CSS styles are loaded",
-              "ok": false,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 7,
-                      "parallelIndex": 0,
-                      "status": "failed",
-                      "duration": 1250,
-                      "error": {
-                        "message": "Error: page.evaluate: TypeError: Failed to execute 'getComputedStyle' on 'Window': parameter 1 is not of type 'Element'.\n    at eval (eval at evaluate (:290:30), <anonymous>:2:29)\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
-                        "stack": "Error: page.evaluate: TypeError: Failed to execute 'getComputedStyle' on 'Window': parameter 1 is not of type 'Element'.\n    at eval (eval at evaluate (:290:30), <anonymous>:2:29)\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at eval (eval at evaluate (:290:30), <anonymous>:2:29)\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\tests\\chat-streaming-local.spec.js:65:36",
-                        "location": {
-                          "file": "eval at evaluate (:290:30), <anonymous>",
-                          "column": 29,
-                          "line": 2
-                        }
-                      },
-                      "errors": [
-                        {
-                          "location": {
-                            "file": "eval at evaluate (:290:30), <anonymous>",
-                            "column": 29,
-                            "line": 2
-                          },
-                          "message": "Error: page.evaluate: TypeError: Failed to execute 'getComputedStyle' on 'Window': parameter 1 is not of type 'Element'.\n    at eval (eval at evaluate (:290:30), <anonymous>:2:29)\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at eval (eval at evaluate (:290:30), <anonymous>:2:29)\n    at UtilityScript.evaluate (<anonymous>:292:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)\n    at C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\tests\\chat-streaming-local.spec.js:65:36"
-                        }
-                      ],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-03-29T18:15:04.029Z",
-                      "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\test-results\\chat-streaming-local-Chat--1a925-Tests-CSS-styles-are-loaded-chromium\\error-context.md"
-                        }
-                      ],
-                      "errorLocation": {
-                        "file": "eval at evaluate (:290:30), <anonymous>",
-                        "column": 29,
-                        "line": 2
-                      }
-                    }
-                  ],
-                  "status": "unexpected"
-                }
-              ],
-              "id": "f4cccaa2946821e39c53-992d5c9aa4e95a44ab37",
-              "file": "chat-streaming-local.spec.js",
-              "line": 64,
-              "column": 7
-            },
-            {
-              "title": "Keyboard Enter key handling",
-              "ok": false,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 8,
-                      "parallelIndex": 0,
-                      "status": "timedOut",
-                      "duration": 30082,
-                      "error": {
-                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
-                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
-                      },
-                      "errors": [
-                        {
-                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
-                        },
-                        {
-                          "location": {
-                            "file": "C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\tests\\chat-streaming-local.spec.js",
-                            "column": 21,
-                            "line": 76
-                          },
-                          "message": "Error: locator.fill: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('.chat-input')\u001b[22m\n\n\n  74 |   test('Keyboard Enter key handling', async ({ page }) => {\n  75 |     const chatInput = page.locator('.chat-input');\n> 76 |     await chatInput.fill('Test message');\n     |                     ^\n  77 |\n  78 |     // Press Enter should trigger send (may not work without auth, but shouldn't crash)\n  79 |     await chatInput.press('Enter');\n    at C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\tests\\chat-streaming-local.spec.js:76:21"
-                        }
-                      ],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-03-29T18:15:09.938Z",
-                      "annotations": [],
-                      "attachments": [
-                        {
-                          "name": "error-context",
-                          "contentType": "text/markdown",
-                          "path": "C:\\Users\\osmol\\OneDrive\\Desktop\\Who am I\\test-results\\chat-streaming-local-Chat--b8471-Keyboard-Enter-key-handling-chromium\\error-context.md"
-                        }
-                      ]
-                    }
-                  ],
-                  "status": "unexpected"
-                }
-              ],
-              "id": "f4cccaa2946821e39c53-7252d2982c5fa4f9a533",
-              "file": "chat-streaming-local.spec.js",
-              "line": 74,
-              "column": 7
-            },
-            {
-              "title": "Error banner initially hidden",
+              "title": "2. Component handles isOpen prop correctly",
               "ok": true,
               "tags": [],
               "tests": [
@@ -654,19 +136,25 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 9,
+                      "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 1303,
+                      "duration": 9,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "✅ Error banner initially hidden\n"
+                          "text": "\n✅ TEST: isOpen prop behavior\n"
+                        },
+                        {
+                          "text": "   When isOpen=false, modal returns null\n"
+                        },
+                        {
+                          "text": "   When isOpen=true, modal renders with backdrop and dialog\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-03-29T18:15:45.039Z",
+                      "startTime": "2026-03-30T15:04:20.331Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -674,21 +162,13 @@
                   "status": "expected"
                 }
               ],
-              "id": "f4cccaa2946821e39c53-61118f93aff48b44e14e",
-              "file": "chat-streaming-local.spec.js",
-              "line": 86,
+              "id": "6482e77a86adcef14335-3dc5c5dc9adc43b511b7",
+              "file": "sync-calendar-modal.spec.js",
+              "line": 24,
               "column": 7
-            }
-          ]
-        },
-        {
-          "title": "Streaming Parser Unit Tests",
-          "file": "chat-streaming-local.spec.js",
-          "line": 95,
-          "column": 6,
-          "specs": [
+            },
             {
-              "title": "SSE event parsing in browser context",
+              "title": "3. Preset options state management",
               "ok": true,
               "tags": [],
               "tests": [
@@ -700,19 +180,28 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 9,
+                      "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 149,
+                      "duration": 6,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "✅ SSE event parsing works\n"
+                          "text": "\n✅ TEST: Preset selection and state\n"
+                        },
+                        {
+                          "text": "   Today preset initializes default dates\n"
+                        },
+                        {
+                          "text": "   Week preset calculates current week range\n"
+                        },
+                        {
+                          "text": "   Custom preset allows manual date input\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-03-29T18:15:46.768Z",
+                      "startTime": "2026-03-30T15:04:20.465Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -720,13 +209,324 @@
                   "status": "expected"
                 }
               ],
-              "id": "f4cccaa2946821e39c53-cc7265e5b23addd5b0ad",
-              "file": "chat-streaming-local.spec.js",
+              "id": "6482e77a86adcef14335-3e01d132abbcb5ea866a",
+              "file": "sync-calendar-modal.spec.js",
+              "line": 30,
+              "column": 7
+            },
+            {
+              "title": "4. Date formatting utilities work correctly",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 34,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n✅ TEST: Date conversion functions\n"
+                        },
+                        {
+                          "text": "   Date 2026-03-30 -> ISO: 2026-03-30T00:00:00.000Z\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-30T15:04:20.513Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "6482e77a86adcef14335-dd041b8c26bd9b319897",
+              "file": "sync-calendar-modal.spec.js",
+              "line": 37,
+              "column": 7
+            },
+            {
+              "title": "5. API payload structure is correct",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 37,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n✅ TEST: API request payload\n"
+                        },
+                        {
+                          "text": "   Payload: {\"startDate\":\"2026-03-30T00:00:00.000Z\",\"endDate\":\"2026-04-06T00:00:00.000Z\"}\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-30T15:04:20.734Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "6482e77a86adcef14335-2c594b1d68ae39c5f762",
+              "file": "sync-calendar-modal.spec.js",
+              "line": 47,
+              "column": 7
+            },
+            {
+              "title": "6. Error states are handled",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 18,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n✅ TEST: Error handling\n"
+                        },
+                        {
+                          "text": "   Network errors display error message\n"
+                        },
+                        {
+                          "text": "   Empty date fields show validation error\n"
+                        },
+                        {
+                          "text": "   Invalid date range (start > end) shows error\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-30T15:04:20.852Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "6482e77a86adcef14335-c18df43370854b88dce2",
+              "file": "sync-calendar-modal.spec.js",
+              "line": 65,
+              "column": 7
+            },
+            {
+              "title": "7. Success response handling",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 22,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n✅ TEST: Success response\n"
+                        },
+                        {
+                          "text": "   Response: {\"success\":true,\"eventsCount\":5,\"message\":\"Successfully synced 5 events\"}\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-30T15:04:20.958Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "6482e77a86adcef14335-f3790d8c26b43ee810ec",
+              "file": "sync-calendar-modal.spec.js",
+              "line": 72,
+              "column": 7
+            },
+            {
+              "title": "8. Loading state prevents duplicate submissions",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 7,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n✅ TEST: Loading state\n"
+                        },
+                        {
+                          "text": "   Sync button disabled during loading\n"
+                        },
+                        {
+                          "text": "   Cancel button disabled during loading\n"
+                        },
+                        {
+                          "text": "   Form inputs disabled during loading\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-30T15:04:21.092Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "6482e77a86adcef14335-848f44f003dad7df6604",
+              "file": "sync-calendar-modal.spec.js",
+              "line": 82,
+              "column": 7
+            },
+            {
+              "title": "9. Modal closes after successful sync",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n✅ TEST: Modal lifecycle\n"
+                        },
+                        {
+                          "text": "   Success message shows for 1500ms\n"
+                        },
+                        {
+                          "text": "   Modal closes automatically after sync\n"
+                        },
+                        {
+                          "text": "   onSyncComplete callback is triggered\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-30T15:04:21.173Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "6482e77a86adcef14335-466f15fa2cf5763c96e5",
+              "file": "sync-calendar-modal.spec.js",
+              "line": 89,
+              "column": 7
+            },
+            {
+              "title": "10. Cancel button dismisses modal",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 12,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n✅ TEST: Cancel action\n"
+                        },
+                        {
+                          "text": "   Cancel button calls onClose callback\n"
+                        },
+                        {
+                          "text": "   Modal backdrop click calls onClose\n"
+                        },
+                        {
+                          "text": "   No API call made on cancel\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-30T15:04:21.240Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "6482e77a86adcef14335-94c087083eeadfa92e8a",
+              "file": "sync-calendar-modal.spec.js",
               "line": 96,
               "column": 7
             },
             {
-              "title": "Markdown detection logic",
+              "title": "11. Date range validation logic",
               "ok": true,
               "tags": [],
               "tests": [
@@ -738,19 +538,28 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 9,
+                      "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 226,
+                      "duration": 25,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "✅ Markdown detection works\n"
+                          "text": "\n✅ TEST: Date validation\n"
+                        },
+                        {
+                          "text": "   2026-03-30 to 2026-04-06: valid\n"
+                        },
+                        {
+                          "text": "   2026-04-06 to 2026-03-30: invalid\n"
+                        },
+                        {
+                          "text": "   2026-03-30 to 2026-03-30: valid\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-03-29T18:15:46.944Z",
+                      "startTime": "2026-03-30T15:04:21.304Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -758,13 +567,13 @@
                   "status": "expected"
                 }
               ],
-              "id": "f4cccaa2946821e39c53-a820ffd19c0f305a0e70",
-              "file": "chat-streaming-local.spec.js",
-              "line": 119,
+              "id": "6482e77a86adcef14335-62666e6e2b125ad6dd0e",
+              "file": "sync-calendar-modal.spec.js",
+              "line": 103,
               "column": 7
             },
             {
-              "title": "Plain prose validation",
+              "title": "12. Accessibility attributes present",
               "ok": true,
               "tags": [],
               "tests": [
@@ -776,19 +585,40 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 9,
+                      "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 140,
+                      "duration": 8,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "✅ Plain prose text passes validation\n"
+                          "text": "\n✅ TEST: WCAG compliance\n"
+                        },
+                        {
+                          "text": "   Modal has role=\"dialog\"\n"
+                        },
+                        {
+                          "text": "   Modal has aria-labelledby pointing to title\n"
+                        },
+                        {
+                          "text": "   Modal has aria-describedby pointing to description\n"
+                        },
+                        {
+                          "text": "   Error messages have role=\"alert\"\n"
+                        },
+                        {
+                          "text": "   Success messages have role=\"status\"\n"
+                        },
+                        {
+                          "text": "   All form inputs have labels\n"
+                        },
+                        {
+                          "text": "   Radio buttons properly grouped\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-03-29T18:15:47.202Z",
+                      "startTime": "2026-03-30T15:04:21.405Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -796,13 +626,13 @@
                   "status": "expected"
                 }
               ],
-              "id": "f4cccaa2946821e39c53-9e55e1cf33bc87a67dce",
-              "file": "chat-streaming-local.spec.js",
-              "line": 130,
+              "id": "6482e77a86adcef14335-65069322fa4577bbce8c",
+              "file": "sync-calendar-modal.spec.js",
+              "line": 121,
               "column": 7
             },
             {
-              "title": "Streaming text accumulation logic",
+              "title": "13. Responsive design CSS classes present",
               "ok": true,
               "tags": [],
               "tests": [
@@ -814,19 +644,31 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 9,
+                      "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 161,
+                      "duration": 12,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "✅ Text accumulation works correctly\n"
+                          "text": "\n✅ TEST: Responsive styling\n"
+                        },
+                        {
+                          "text": "   Modal uses CSS variables for spacing\n"
+                        },
+                        {
+                          "text": "   Preset options stack vertically\n"
+                        },
+                        {
+                          "text": "   Date inputs adapt to screen size\n"
+                        },
+                        {
+                          "text": "   Loading spinner is centered\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-03-29T18:15:47.372Z",
+                      "startTime": "2026-03-30T15:04:21.485Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -834,13 +676,13 @@
                   "status": "expected"
                 }
               ],
-              "id": "f4cccaa2946821e39c53-abce5faeaaed305ceb83",
-              "file": "chat-streaming-local.spec.js",
-              "line": 141,
+              "id": "6482e77a86adcef14335-222c043ed52ab6020be3",
+              "file": "sync-calendar-modal.spec.js",
+              "line": 132,
               "column": 7
             },
             {
-              "title": "Response length validation",
+              "title": "14. Date presets calculate correctly",
               "ok": true,
               "tags": [],
               "tests": [
@@ -852,19 +694,25 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 9,
+                      "workerIndex": 0,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 145,
+                      "duration": 10,
                       "errors": [],
                       "stdout": [
                         {
-                          "text": "✅ Response length validation works\n"
+                          "text": "\n✅ TEST: Preset date calculations\n"
+                        },
+                        {
+                          "text": "   Today: 2026-03-30 to 2026-03-31\n"
+                        },
+                        {
+                          "text": "   Week: 2026-03-29 to 2026-04-05\n"
                         }
                       ],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-03-29T18:15:47.560Z",
+                      "startTime": "2026-03-30T15:04:21.582Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -872,9 +720,65 @@
                   "status": "expected"
                 }
               ],
-              "id": "f4cccaa2946821e39c53-0680d2b3bbcede88a808",
-              "file": "chat-streaming-local.spec.js",
-              "line": 155,
+              "id": "6482e77a86adcef14335-9025d41dcc61937b2330",
+              "file": "sync-calendar-modal.spec.js",
+              "line": 140,
+              "column": 7
+            },
+            {
+              "title": "15. Component integration requirements",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 8,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "\n✅ TEST: Integration checklist\n"
+                        },
+                        {
+                          "text": "   [ ] Import SyncCalendarModal from components\n"
+                        },
+                        {
+                          "text": "   [ ] Add state to manage isOpen flag\n"
+                        },
+                        {
+                          "text": "   [ ] Import getDateRangeForPreset from calendarUtils\n"
+                        },
+                        {
+                          "text": "   [ ] Handle onSyncComplete callback\n"
+                        },
+                        {
+                          "text": "   [ ] Ensure Modal.css is imported in component\n"
+                        },
+                        {
+                          "text": "   [ ] Test with actual Supabase API endpoint\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-30T15:04:21.664Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "6482e77a86adcef14335-34ff306e655f98eea077",
+              "file": "sync-calendar-modal.spec.js",
+              "line": 161,
               "column": 7
             }
           ]
@@ -884,11 +788,11 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-03-29T18:13:14.251Z",
-    "duration": 153686.67,
-    "expected": 6,
+    "startTime": "2026-03-30T15:04:10.216Z",
+    "duration": 12165.381,
+    "expected": 15,
     "skipped": 0,
-    "unexpected": 9,
+    "unexpected": 0,
     "flaky": 0
   }
 }
