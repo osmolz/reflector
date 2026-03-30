@@ -52,6 +52,17 @@ export const TOOL_DEFINITIONS = [
       required: ['memory_type', 'content'],
     },
   },
+  {
+    name: 'web_search',
+    description: 'Search the web for information (optional feature)',
+    input_schema: {
+      type: 'object',
+      properties: {
+        query: { type: 'string', description: 'Search query' },
+      },
+      required: ['query'],
+    },
+  },
 ]
 
 async function getActivitySummary(
@@ -232,6 +243,13 @@ export async function executeTool(
           toolInput.content as string,
         )
         return { status: 'ok', data: { message: 'Memory updated' } }
+
+      case 'web_search':
+        // TODO: Implement web search via Brave API or similar
+        return {
+          status: 'no_data',
+          message: 'Web search not yet enabled. Coming soon.',
+        }
 
       default:
         return { status: 'error', message: `Unknown tool: ${toolName}` }
