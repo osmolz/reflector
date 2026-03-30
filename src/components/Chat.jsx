@@ -1,10 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { useAuthStore } from '../store/authStore'
 import { supabase } from '../lib/supabase'
+import { useChatPersistence } from '../hooks/useChatPersistence'
 import './Chat.css'
 
 const Chat = () => {
   const { user } = useAuthStore()
+  const { saveUserMessage, saveAssistantMessage } = useChatPersistence()
 
   // Session state
   const [sessions, setSessions] = useState([])
@@ -136,6 +138,16 @@ const Chat = () => {
     setInput('')
     setLoading(true)
     setError(null)
+
+    // Save user message to DB
+    try {
+      await saveUserMessage(user.id, sessionId, userMessage.content)
+    } catch (err) {
+      console.error('[chat] Failed to persist user message:', err)
+      setError('Failed to save your message. Please try again.')
+      setLoading(false)
+      return
+    }
 
     /** Set only after placeholder is created — catch must not reference before assignment */
     let streamingId = null
