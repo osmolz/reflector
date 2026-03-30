@@ -363,7 +363,7 @@ const Chat = () => {
         </div>
       )}
 
-      <div className="chat-input-container">
+      <form className="chat-input-container" onSubmit={(e) => { e.preventDefault(); handleSend() }}>
         <input
           type="text"
           placeholder="Ask about your time..."
@@ -372,11 +372,13 @@ const Chat = () => {
           onKeyDown={handleKeyDown}
           disabled={loading}
           className="chat-input"
+          name="message"
+          autoComplete="off"
         />
-        <button onClick={handleSend} disabled={loading || !input.trim()} className="chat-send-button">
+        <button type="submit" disabled={loading || !input.trim()} className="chat-send-button">
           Send
         </button>
-      </div>
+      </form>
     </div>
   )
 }
