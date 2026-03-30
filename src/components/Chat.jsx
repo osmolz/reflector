@@ -17,6 +17,7 @@ const Chat = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const chatHistoryRef = useRef(null)
+  const isStreamingRef = useRef(false)
 
   // Load sessions on mount
   useEffect(() => {
@@ -51,12 +52,13 @@ const Chat = () => {
     }
 
     loadSessions()
-  }, [user])
+  }, [user?.id])
 
   // Load messages when session changes
   useEffect(() => {
     const loadMessages = async () => {
-      if (!user || !sessionId) {
+      if (isStreamingRef.current) return
+      if (!user?.id || !sessionId) {
         setMessages([])
         return
       }
@@ -87,7 +89,7 @@ const Chat = () => {
     }
 
     loadMessages()
-  }, [user, sessionId])
+  }, [user?.id, sessionId])
 
   // Auto-scroll to bottom
   useEffect(() => {
@@ -139,12 +141,7 @@ const Chat = () => {
     let streamingId = null
 
     try {
-      const { data: refreshData } = await supabase.auth.refreshSession()
-      let session = refreshData.session
-      if (!session?.access_token) {
-        const { data: existing } = await supabase.auth.getSession()
-        session = existing.session
-      }
+      const { data: { session } } = await supabase.auth.getSession()
       if (!session?.access_token) {
         throw new Error('Not authenticated')
       }
@@ -200,6 +197,7 @@ const Chat = () => {
 
       if (contentType && contentType.includes('text/event-stream')) {
         // [5] Parse SSE stream
+        isStreamingRef.current = true
         const reader = response.body.getReader()
         const decoder = new TextDecoder()
         let buffer = ''
@@ -280,6 +278,7 @@ const Chat = () => {
         setMessages((prev) => prev.filter((msg) => msg.id !== streamingId))
       }
     } finally {
+      isStreamingRef.current = false
       setLoading(false)
     }
   }
