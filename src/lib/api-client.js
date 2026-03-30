@@ -1,9 +1,10 @@
-export async function streamChat(token, supabaseUrl, message, sessionId) {
+export async function streamChat(token, supabaseUrl, supabaseAnonKey, message, sessionId) {
   const response = await fetch(`${supabaseUrl}/functions/v1/chat`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`,
+      'apikey': supabaseAnonKey ?? '',
     },
     body: JSON.stringify({
       message,

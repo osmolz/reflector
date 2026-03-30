@@ -135,6 +135,9 @@ const Chat = () => {
     setLoading(true)
     setError(null)
 
+    /** Set only after placeholder is created — catch must not reference before assignment */
+    let streamingId = null
+
     try {
       const { data: session, error: sessionError } = await supabase.auth.getSession()
       if (sessionError || !session?.session) {
@@ -142,9 +145,10 @@ const Chat = () => {
       }
 
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+      const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
       // [2] Create placeholder with unique ID for streaming
-      const streamingId = new Date(Date.now() + 1).toISOString()
+      streamingId = new Date(Date.now() + 1).toISOString()
       const placeholder = {
         id: streamingId,
         role: 'assistant',
@@ -171,6 +175,7 @@ const Chat = () => {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${session.session.access_token}`,
+          'apikey': supabaseAnonKey ?? '',
         },
         body: JSON.stringify({
           message: userMessage.content,
@@ -262,8 +267,10 @@ const Chat = () => {
         }
       }
       setError(errorMsg)
-      // Remove the placeholder on error
-      setMessages((prev) => prev.filter((msg) => msg.id !== streamingId))
+      // Remove the placeholder on error (only if we added one)
+      if (streamingId) {
+        setMessages((prev) => prev.filter((msg) => msg.id !== streamingId))
+      }
     } finally {
       setLoading(false)
     }

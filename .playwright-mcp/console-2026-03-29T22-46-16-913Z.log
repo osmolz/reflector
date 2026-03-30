@@ -1,0 +1,2 @@
+[    1561ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:5173/favicon.ico:0
+[   28538ms] [ERROR] Failed to load resource: the server responded with a status of 401 () @ https://jjwmtqkjpbaviwdvyuuq.supabase.co/functions/v1/chat:0
