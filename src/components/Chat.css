@@ -189,7 +189,7 @@
 /* User message — distinct background color */
 .user-message {
   background-color: var(--bg-tertiary);
-  color: var(--text-primary);
+  color: #000;
   max-width: 80%;
   padding: var(--space-md);
   border-radius: 0;
