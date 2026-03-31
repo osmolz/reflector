@@ -57,6 +57,18 @@ export function formatTime(date) {
 }
 
 /**
+ * Short duration for timeline chips (e.g. "45m", "1h 30m")
+ */
+export function formatDurationShort(minutes) {
+  if (minutes == null || Number.isNaN(Number(minutes))) return '';
+  const m = Math.round(Number(minutes));
+  if (m < 60) return `${m}m`;
+  const h = Math.floor(m / 60);
+  const r = m % 60;
+  return r ? `${h}h ${r}m` : `${h}h`;
+}
+
+/**
  * Format date for display (e.g., "Monday, March 28")
  */
 export function formatDate(date) {

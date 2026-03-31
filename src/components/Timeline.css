@@ -88,6 +88,7 @@
    DAY VIEW
    ============================================================ */
 .timeline-day-view {
+  --tl-hour: 52px;
 }
 
 .timeline-day-nav {
@@ -126,19 +127,23 @@
 
 .timeline-grid {
   display: grid;
-  grid-template-columns: 50px 1fr;
-  gap: var(--space-md);
+  grid-template-columns: 76px 1fr;
+  gap: 0;
   position: relative;
-  height: 760px;
-  border: 1px solid var(--border-light);
+  height: calc(19 * var(--tl-hour, 52px));
+  border: 1px solid var(--border-medium);
+  border-radius: 4px;
+  overflow: hidden;
   background-color: var(--bg-secondary);
+  box-shadow: 0 2px 12px rgba(26, 26, 26, 0.06);
 }
 
 .timeline-hours {
   display: flex;
   flex-direction: column;
-  border-right: 1px solid var(--border-light);
-  padding-right: var(--space-sm);
+  border-right: 1px solid var(--border-medium);
+  padding: 0 var(--space-sm) 0 var(--space-xs);
+  background: linear-gradient(180deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
 }
 
 .timeline-hour {
@@ -146,7 +151,8 @@
   align-items: flex-start;
   justify-content: flex-end;
   border-bottom: 1px solid var(--border-light);
-  padding-top: var(--space-xs);
+  padding-top: 6px;
+  box-sizing: border-box;
 }
 
 .timeline-hour:last-child {
@@ -154,17 +160,51 @@
 }
 
 .timeline-hour-label {
-  font-family: var(--font-mono);
-  font-size: 0.65rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1.05;
+  text-align: right;
+}
+
+.timeline-hour-num {
+  font-family: var(--font-serif);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.timeline-hour-period {
+  font-family: var(--font-sans);
+  font-size: 0.5625rem;
+  font-weight: 600;
   color: var(--text-tertiary);
-  font-weight: 500;
-  letter-spacing: 0.01em;
-  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 1px;
 }
 
 .timeline-activities-container {
   position: relative;
   overflow: hidden;
+  background-color: var(--bg-primary);
+}
+
+.timeline-activities-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--border-light) 0,
+    var(--border-light) 1px,
+    transparent 1px,
+    transparent var(--tl-hour, 52px)
+  );
+  opacity: 0.85;
 }
 
 .timeline-empty-day {
@@ -172,6 +212,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  z-index: 1;
   font-size: 0.875rem;
   color: var(--text-tertiary);
   font-style: italic;
@@ -179,98 +220,179 @@
 
 .timeline-activity {
   position: absolute;
-  left: 0;
-  right: 0;
-  margin: 1px;
-  padding: var(--space-xs) var(--space-sm);
-  /* Opaque fill so overlapping blocks (common in day view) do not show each other's labels */
+  left: 10px;
+  right: 10px;
+  margin: 0;
+  padding: 8px 12px;
+  box-sizing: border-box;
   background-color: var(--bg-secondary);
-  border: 1px solid rgba(43, 90, 107, 0.35);
-  border-left: 3px solid rgba(43, 90, 107, 0.55);
-  border-radius: 2px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  background-image: linear-gradient(145deg, rgba(43, 90, 107, 0.08) 0%, transparent 52%);
+  border: 1px solid rgba(43, 90, 107, 0.22);
+  border-left: 4px solid var(--accent-color);
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(43, 90, 107, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.6) inset;
   cursor: pointer;
-  transition: all 0.1s ease;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
 }
 
 .timeline-activity:hover {
-  background-color: var(--bg-tertiary);
-  border-color: var(--accent-color);
+  border-color: rgba(43, 90, 107, 0.45);
   border-left-color: var(--accent-color);
+  box-shadow: 0 4px 16px rgba(43, 90, 107, 0.14), 0 0 0 1px rgba(255, 255, 255, 0.7) inset;
   z-index: 100;
+  transform: translateY(-1px);
 }
 
 .timeline-activity.calendar-event {
   background-color: var(--bg-secondary);
-  border-color: rgba(112, 179, 216, 0.45);
-  border-left-color: rgba(70, 140, 190, 0.85);
+  background-image: linear-gradient(145deg, rgba(70, 140, 190, 0.12) 0%, transparent 52%);
+  border-color: rgba(70, 140, 190, 0.35);
+  border-left-color: rgba(45, 120, 175, 1);
   cursor: default;
 }
 
 .timeline-activity.calendar-event:hover {
-  background-color: var(--bg-tertiary);
-  border-color: rgba(112, 179, 216, 0.65);
-  border-left-color: rgba(50, 120, 175, 0.95);
+  border-color: rgba(70, 140, 190, 0.5);
+  border-left-color: rgba(30, 100, 155, 1);
+  transform: none;
 }
 
 .timeline-activity-inner {
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 6px;
   min-height: 0;
+  flex: 1;
   width: 100%;
+}
+
+.timeline-activity-meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  flex-shrink: 0;
 }
 
 .timeline-activity-time {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
-  color: var(--text-secondary);
-  font-weight: 500;
-  line-height: 1;
+  font-size: 0.6875rem;
+  color: var(--text-primary);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  flex-shrink: 0;
 }
 
 .timeline-activity-name {
-  font-size: 0.7375rem;
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
   color: var(--text-primary);
-  font-weight: 500;
-  line-height: 1.2;
+  font-weight: 600;
+  line-height: 1.35;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+  min-width: 0;
 }
 
 .timeline-activity-duration {
   font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  line-height: 1.2;
+  flex-shrink: 0;
+  letter-spacing: -0.02em;
+}
+
+/* Single-line strip for short-duration blocks */
+.timeline-activity--compact {
+  padding: 4px 8px 4px 10px;
+  justify-content: center;
+}
+
+.timeline-activity--compact .timeline-activity-compact-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  width: 100%;
+}
+
+.timeline-activity--compact .timeline-activity-time {
   font-size: 0.625rem;
-  color: var(--text-tertiary);
-  line-height: 1;
+  flex-shrink: 0;
+}
+
+.timeline-activity--compact .timeline-activity-compact-sep {
+  color: var(--border-medium);
+  font-weight: 300;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.timeline-activity--compact .timeline-activity-name {
+  flex: 1;
+  min-width: 0;
+  display: block;
+  -webkit-line-clamp: unset;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.timeline-activity--compact .timeline-activity-duration {
+  font-size: 0.625rem;
+  flex-shrink: 0;
 }
 
 .timeline-add-cal-btn {
   align-self: flex-end;
-  background: none;
-  border: 1px solid rgba(43, 90, 107, 0.3);
-  padding: 2px 4px;
-  font-size: 0.6rem;
-  color: var(--text-tertiary);
+  margin-top: auto;
+  flex-shrink: 0;
+  background: var(--bg-tertiary);
+  border: 1px solid rgba(43, 90, 107, 0.28);
+  padding: 3px 8px;
+  font-family: var(--font-sans);
+  font-size: 0.625rem;
+  font-weight: 600;
+  color: var(--accent-color);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   cursor: pointer;
-  transition: all 0.1s ease;
-  margin-top: 2px;
-  border-radius: 0;
+  transition: opacity 0.12s ease, border-color 0.12s ease, background 0.12s ease;
+  border-radius: 3px;
   opacity: 0;
 }
 
 .timeline-activity:hover .timeline-add-cal-btn {
   opacity: 1;
   border-color: var(--accent-color);
-  color: var(--accent-color);
+  background: var(--bg-secondary);
+}
+
+.timeline-add-cal-btn--icon {
+  opacity: 0.55;
+  margin-top: 0;
+  margin-left: 2px;
+  padding: 0 5px;
+  min-width: 22px;
+  line-height: 1.4;
+  border-radius: 4px;
+  align-self: center;
+}
+
+.timeline-activity--compact:hover .timeline-add-cal-btn--icon {
+  opacity: 1;
 }
 
 /* Gap visualization */
@@ -536,30 +658,43 @@
 
 @media (max-width: 640px) {
   .timeline-grid {
-    grid-template-columns: 40px 1fr;
-    gap: var(--space-sm);
-    height: 600px;
+    grid-template-columns: 56px 1fr;
+    border-radius: 2px;
   }
 
-  .timeline-hour-label {
-    font-size: 0.6rem;
+  .timeline-hour-num {
+    font-size: 0.8125rem;
+  }
+
+  .timeline-hour-period {
+    font-size: 0.5rem;
   }
 
   .timeline-activity {
-    font-size: 0.65rem;
-    padding: 3px 4px;
+    left: 6px;
+    right: 6px;
+    padding: 6px 8px;
+    font-size: 0.75rem;
+  }
+
+  .timeline-activity--compact {
+    padding: 3px 6px;
   }
 
   .timeline-activity-name {
-    font-size: 0.65rem;
+    font-size: 0.75rem;
     -webkit-line-clamp: 1;
   }
 
-  .timeline-activity-duration {
-    display: none;
+  .timeline-activity--compact .timeline-activity-name {
+    font-size: 0.6875rem;
   }
 
   .timeline-add-cal-btn {
+    display: none;
+  }
+
+  .timeline-add-cal-btn--icon {
     display: none;
   }
 
