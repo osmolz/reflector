@@ -217,6 +217,7 @@
   flex-direction: column;
   gap: 1px;
   min-height: 0;
+  width: 100%;
 }
 
 .timeline-activity-time {
