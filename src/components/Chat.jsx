@@ -340,6 +340,7 @@ const Chat = () => {
 
   return (
     <div className="chat-container">
+      <h1 className="sr-only">Chat</h1>
       <div className="session-strip">
         <button type="button" className="session-new-btn" onClick={createNewSession} title="Start a new conversation">
           New chat

@@ -8,7 +8,7 @@
    Activity Review Container
    ============================================================ */
 .activity-review {
-  padding: var(--space-2xl);
+  padding: var(--space-lg) 0;
 }
 
 .activity-review-title {
@@ -25,15 +25,15 @@
    ============================================================ */
 .activity-item {
   padding: var(--space-lg);
-  margin-bottom: var(--space-md);
+  margin-bottom: var(--space-sm);
   border: 1px solid var(--border-light);
   background-color: var(--bg-secondary);
-  border-radius: 0;
-  transition: all 0.2s ease;
+  border-radius: var(--radius-md);
+  transition: border-color 0.15s ease;
 }
 
 .activity-item:hover {
-  border-color: var(--accent-color);
+  border-color: var(--border-medium);
 }
 
 .activity-item.editing {
@@ -150,17 +150,17 @@
 }
 
 .activity-item-form-group label {
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 500;
   color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  text-transform: none;
+  letter-spacing: 0.01em;
 }
 
 .activity-item-form-group input {
-  padding: var(--space-sm);
-  border: 1px solid var(--border-light);
-  border-radius: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
   background-color: var(--bg-secondary);
   color: var(--text-primary);
   font-family: var(--font-sans);
@@ -183,14 +183,14 @@
 }
 
 .activity-item-edit-actions button {
-  padding: var(--space-sm) var(--space-md);
+  padding: 10px 16px;
   border: none;
-  border-radius: 0;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: 0.8125rem;
   font-family: var(--font-sans);
-  transition: all 0.2s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 
 .activity-item-edit-actions .btn-save {
@@ -228,14 +228,14 @@
 }
 
 .activity-review-controls button {
-  padding: var(--space-md) var(--space-lg);
+  padding: 12px 20px;
   border: none;
-  border-radius: 0;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.9375rem;
   font-family: var(--font-sans);
-  transition: all 0.2s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
   flex: 1;
 }
 
@@ -246,7 +246,6 @@
 
 .activity-review-controls .btn-save-activities:hover:not(:disabled) {
   background-color: var(--accent-dark);
-  transform: translateY(-1px);
 }
 
 .activity-review-controls .btn-discard {
@@ -257,8 +256,8 @@
 
 .activity-review-controls .btn-discard:hover:not(:disabled) {
   background-color: var(--bg-primary);
-  border-color: var(--accent-color);
-  color: var(--accent-color);
+  border-color: var(--text-tertiary);
+  color: var(--text-primary);
 }
 
 .activity-review-controls button:disabled {
@@ -298,19 +297,19 @@
 }
 
 .activity-review-empty button {
-  padding: var(--space-md) var(--space-lg);
-  background-color: var(--text-tertiary);
+  padding: 12px 22px;
+  background-color: var(--accent-color);
   color: var(--bg-secondary);
   border: none;
-  border-radius: 0;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   font-weight: 600;
   font-family: var(--font-sans);
-  transition: all 0.2s ease;
+  transition: background-color 0.15s ease;
 }
 
 .activity-review-empty button:hover {
-  background-color: var(--text-secondary);
+  background-color: var(--accent-dark);
 }
 
 /* ============================================================

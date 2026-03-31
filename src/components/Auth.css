@@ -21,11 +21,12 @@
    ============================================================ */
 .auth-card {
   background-color: var(--bg-secondary);
-  border-radius: 0;
+  border-radius: var(--radius-md);
   padding: var(--space-2xl);
   max-width: 420px;
   width: 100%;
   border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-card);
 }
 
 /* ============================================================
@@ -33,12 +34,12 @@
    ============================================================ */
 .auth-title {
   font-family: var(--font-serif);
-  font-size: 1.75rem;
-  font-weight: 600;
+  font-size: 1.65rem;
+  font-weight: 500;
   color: var(--text-primary);
   text-align: center;
   margin-bottom: var(--space-lg);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.03em;
 }
 
 /* ============================================================
@@ -59,20 +60,20 @@
 .form-group label {
   font-weight: 500;
   color: var(--text-secondary);
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  font-size: 0.8125rem;
+  text-transform: none;
+  letter-spacing: 0.01em;
 }
 
 .form-group input {
   padding: var(--space-md);
-  border: 1px solid var(--border-light);
-  border-radius: 0;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
   font-size: 1rem;
   font-family: var(--font-sans);
   background-color: var(--bg-secondary);
   color: var(--text-primary);
-  transition: border-color 0.2s ease;
+  transition: border-color 0.15s ease;
 }
 
 .form-group input:focus {
@@ -94,17 +95,18 @@
    Auth Buttons
    ============================================================ */
 .auth-button {
-  padding: var(--space-md) var(--space-lg);
+  padding: 14px var(--space-lg);
   background-color: var(--accent-color);
   color: var(--bg-secondary);
   border: none;
-  border-radius: 0;
+  border-radius: var(--radius-sm);
   font-size: 1rem;
   font-weight: 600;
   font-family: var(--font-sans);
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.15s ease;
   letter-spacing: 0.01em;
+  box-shadow: var(--shadow-card);
 }
 
 .auth-button:hover:not(:disabled) {

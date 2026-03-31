@@ -33,7 +33,6 @@ textarea:focus-visible,
 select:focus-visible {
   outline: 2px solid var(--accent-color);
   outline-offset: 2px;
-  border-radius: 0;
 }
 
 /* Remove outline for mouse users (relies on :focus-visible) */
@@ -49,19 +48,16 @@ select:focus:not(:focus-visible) {
    Color Contrast (WCAG AA minimum 4.5:1 for normal text)
    ============================================================ */
 
-/* Primary text on background */
 body {
-  color: var(--text-primary); /* #1A1A1A on #F9F9F9 = 18:1 */
+  color: var(--text-primary);
 }
 
-/* Secondary text */
 .text-secondary {
-  color: var(--text-secondary); /* #4A4A4A on #F9F9F9 = 8.5:1 */
+  color: var(--text-secondary);
 }
 
-/* Links */
 a {
-  color: var(--accent-color); /* #2B5A6B on #F9F9F9 = 7.5:1 */
+  color: var(--text-primary);
 }
 
 /* Form labels */
@@ -71,16 +67,16 @@ label {
 
 /* Buttons */
 .btn-primary {
-  color: var(--bg-secondary); /* #FFFFFF on #2B5A6B = 8.5:1 */
+  color: var(--bg-secondary);
 }
 
-/* Chat messages */
+/* Chat messages — both use ink on light surfaces */
 .user-message {
-  color: var(--bg-secondary); /* #FFFFFF on #2B5A6B = 8.5:1 */
+  color: var(--text-primary);
 }
 
 .claude-message {
-  color: var(--text-primary); /* #1A1A1A on #F9F9F9 = 18:1 */
+  color: var(--text-primary);
 }
 
 /* ============================================================
@@ -138,35 +134,29 @@ label {
   }
 }
 
-/* ============================================================
-   Touch Target Size (WCAG 2.1 Level AAA: 44x44px minimum)
-   ============================================================ */
-button,
-a,
-input[type="checkbox"],
-input[type="radio"] {
+/* Touch targets: primary actions; nav/chips use padding instead of global min-size */
+.auth-button,
+.chat-send-button,
+.journal-submit-button,
+.btn-primary,
+.btn-save-activities,
+.activity-review-controls .btn-save-activities,
+.activity-review-controls .btn-discard,
+.mic-button {
   min-height: 44px;
-  min-width: 44px;
 }
 
 .mic-button {
-  /* 60x60px exceeds 44x44px minimum */
-  min-height: 60px;
-  min-width: 60px;
+  min-width: 44px;
 }
 
 /* ============================================================
    Text Sizing & Readability
    ============================================================ */
 
-/* Minimum font size for readability */
-body,
-button,
-input,
-textarea,
-select {
-  font-size: 16px; /* Prevents auto-zoom on iOS */
-  line-height: 1.6;
+body {
+  font-size: 16px;
+  line-height: 1.65;
 }
 
 /* Spacing between form elements */
@@ -289,15 +279,6 @@ footer {
    ============================================================ */
 
 @media (max-width: 640px) {
-  /* Larger touch targets on mobile */
-  button,
-  .btn,
-  input,
-  a {
-    min-height: 48px;
-    min-width: 48px;
-  }
-
   .mic-button {
     min-height: 52px;
     min-width: 52px;

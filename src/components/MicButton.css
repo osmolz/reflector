@@ -1,37 +1,26 @@
-/* ============================================================
-   Reflector — Mic Button Component
-   Phase 5: Design & Polish
-   Premium custom object, not Bootstrap component
-   ============================================================ */
+/* Primary capture control — one clear circle, calm status copy */
 
-/* ============================================================
-   Mic Button Wrapper
-   ============================================================ */
 .mic-button-wrapper {
-  margin-bottom: var(--space-lg);
+  margin-bottom: var(--space-md);
 }
 
-/* ============================================================
-   Mic Button (Primary Interactive Element)
-   ============================================================ */
 .mic-button {
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 60px;
-  height: 60px;
-  border-radius: 0;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
   background-color: var(--accent-color);
-  border: 2px solid var(--accent-color);
+  border: none;
   color: var(--bg-secondary);
-  font-size: 1.5rem;
-  font-weight: 500;
+  font-size: 1.35rem;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.15s ease, transform 0.12s ease;
   padding: 0;
-  text-decoration: none;
   font-family: var(--font-sans);
+  box-shadow: var(--shadow-card);
 }
 
 .mic-button:hover:not(:disabled) {
@@ -39,95 +28,76 @@
 }
 
 .mic-button:active:not(:disabled) {
-  background-color: var(--accent-color);
+  transform: scale(0.97);
 }
 
-/* Recording state — solid red */
 .mic-button.recording {
   background-color: var(--error);
-  border-color: var(--error);
 }
 
-/* Disabled state */
 .mic-button:disabled {
-  opacity: 0.5;
+  opacity: 0.45;
   cursor: not-allowed;
-  transform: none;
 }
 
-/* Keyboard focus (accessibility) */
 .mic-button:focus-visible {
   outline: 2px solid var(--accent-color);
-  outline-offset: 2px;
+  outline-offset: 3px;
 }
 
-/* ============================================================
-   Mic Button Container (Layout)
-   ============================================================ */
 .mic-button-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-lg);
-  margin: var(--space-4xl) 0;
-  padding: var(--space-lg) 0;
+  gap: var(--space-md);
+  margin: var(--space-xl) 0;
+  padding: var(--space-md) 0;
 }
 
-/* ============================================================
-   Mic Status Label
-   ============================================================ */
 .mic-status {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   color: var(--text-secondary);
   text-align: center;
-  line-height: 1.5;
-  font-weight: 400;
+  line-height: 1.45;
+  font-weight: 500;
 }
 
 .mic-status.recording {
-  color: var(--accent-color);
-  font-weight: 500;
+  color: var(--error);
+  font-weight: 600;
 }
 
 .mic-status.error {
   color: var(--error);
 }
 
-/* ============================================================
-   Mic Button Text Label (below button)
-   ============================================================ */
 .mic-button-label {
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   color: var(--text-tertiary);
-  margin-top: var(--space-sm);
+  margin-top: var(--space-xs);
   text-align: center;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  font-weight: 500;
+  letter-spacing: 0.02em;
 }
 
-/* ============================================================
-   Error Message
-   ============================================================ */
 .mic-error {
-  padding: var(--space-md) 0 var(--space-md) var(--space-md);
-  border-left: 2px solid var(--error);
+  padding: var(--space-md) var(--space-lg);
+  border-left: 3px solid var(--error);
   color: var(--error);
   font-size: 0.875rem;
   margin-top: var(--space-md);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: rgba(155, 44, 44, 0.06);
 }
 
-/* ============================================================
-   Responsive
-   ============================================================ */
 @media (max-width: 640px) {
   .mic-button {
     width: 52px;
     height: 52px;
-    font-size: 1.25rem;
+    font-size: 1.2rem;
   }
 
   .mic-button-container {
     margin: var(--space-lg) 0;
-    gap: var(--space-md);
   }
 }

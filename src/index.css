@@ -1,17 +1,7 @@
-/* ============================================================
-   Reflector — Global CSS & Design System
-   Phase 5: Design & Polish
-   ============================================================ */
+/* Reflector — design system (warm editorial, intentional rhythm) */
 
-/* Google Fonts: Crimson Text (serif, editorial) + Inter (sans, modern) */
-@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Karla:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
 
-/* Accessibility enhancements: WCAG AA compliance, focus states, etc. */
-@import url('./index-a11y.css');
-
-/* ============================================================
-   CSS Reset
-   ============================================================ */
 *,
 *::before,
 *::after {
@@ -20,50 +10,51 @@
   box-sizing: border-box;
 }
 
-/* ============================================================
-   Design Tokens (CSS Custom Properties)
-   ============================================================ */
 :root {
-  /* Color Palette */
-  --bg-primary:    #F9F9F9;
-  --bg-secondary:  #FFFFFF;
-  --bg-tertiary:   #F9F5F0;
-  --text-primary:  #1A1A1A;
-  --text-secondary: #4A4A4A;
-  --text-tertiary: #757575;
-  --accent-color:  #2B5A6B;
-  --accent-dark:   #1a3d4d;
-  --border-light:  #E8E8E8;
-  --border-medium: #D0D0D0;
+  /* Surfaces — warm plaster + paper (Gebbia-like hospitality, not cold gray) */
+  --bg-primary: #f0ebe3;
+  --bg-secondary: #fffcf8;
+  --bg-tertiary: #e8e2d8;
 
-  /* Functional Colors */
-  --success:  #2E7D32;
-  --error:    #C62828;
-  --warning:  #F57C00;
+  /* Type colors */
+  --text-primary: #161412;
+  --text-secondary: #45423d;
+  --text-tertiary: #6e6960;
 
-  /* Spacing Scale (8px base unit) */
-  --space-xs:  4px;
-  --space-sm:  8px;
-  --space-md:  16px;
-  --space-lg:  24px;
-  --space-xl:  32px;
+  /* One structural accent: near-ink (CTA, focus, active nav). No “brand teal.” */
+  --accent-color: #1a1816;
+  --accent-dark: #0a0908;
+
+  --border-light: rgba(22, 20, 18, 0.08);
+  --border-medium: rgba(22, 20, 18, 0.14);
+
+  --success: #2d4a32;
+  --error: #9b2c2c;
+  --warning: #8a5a16;
+
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
   --space-2xl: 48px;
   --space-3xl: 64px;
-  --space-4xl: 80px;
+  --space-4xl: 88px;
 
-  /* Typography */
-  --font-serif: 'Crimson Text', Georgia, 'Times New Roman', serif;
-  --font-sans:  'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-mono:  'Courier New', 'Courier', monospace;
+  --font-serif: 'Fraunces', 'Georgia', 'Times New Roman', serif;
+  --font-sans: 'Karla', system-ui, sans-serif;
+  --font-mono: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
 
-  /* Layout */
-  --max-width: 900px;
-  --header-height: 64px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+
+  --max-width: 680px;
+  --header-height: 56px;
+
+  --shadow-card: 0 1px 0 rgba(22, 20, 18, 0.06);
 }
 
-/* ============================================================
-   Base HTML & Body
-   ============================================================ */
 html {
   font-size: 16px;
   scroll-behavior: smooth;
@@ -72,7 +63,8 @@ html {
 body {
   font-family: var(--font-sans);
   font-size: 1rem;
-  line-height: 1.6;
+  font-weight: 400;
+  line-height: 1.65;
   color: var(--text-primary);
   background-color: var(--bg-primary);
   -webkit-font-smoothing: antialiased;
@@ -80,43 +72,37 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* ============================================================
-   Typography Scale
-   ============================================================ */
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   font-family: var(--font-serif);
-  font-weight: 600;
+  font-weight: 500;
   color: var(--text-primary);
   line-height: 1.2;
+  letter-spacing: -0.02em;
 }
 
-h4, h5, h6 {
+h4,
+h5,
+h6 {
   font-family: var(--font-sans);
-  font-weight: 700;
+  font-weight: 600;
   color: var(--text-primary);
-  line-height: 1.5;
+  line-height: 1.35;
 }
 
 h1 {
-  font-size: 3rem;
-  letter-spacing: -0.02em;
-  margin-bottom: var(--space-lg);
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  margin-bottom: var(--space-md);
 }
 
 h2 {
-  font-size: 2rem;
-  letter-spacing: -0.01em;
-  margin-bottom: var(--space-md);
+  font-size: clamp(1.35rem, 2.5vw, 1.65rem);
+  margin-bottom: var(--space-sm);
 }
 
 h3 {
-  font-size: 1.375rem;
-  margin-bottom: var(--space-md);
-}
-
-h4 {
-  font-size: 1rem;
-  letter-spacing: 0.01em;
+  font-size: 1.2rem;
   margin-bottom: var(--space-sm);
 }
 
@@ -130,23 +116,19 @@ p:last-child {
   margin-bottom: 0;
 }
 
-/* ============================================================
-   Links
-   ============================================================ */
 a {
-  color: var(--accent-color);
-  text-decoration: none;
-  transition: color 0.2s ease;
+  color: var(--text-primary);
+  text-decoration: underline;
+  text-decoration-color: var(--border-medium);
+  text-underline-offset: 3px;
+  transition: color 0.15s ease, text-decoration-color 0.15s ease;
 }
 
 a:hover {
   color: var(--accent-dark);
-  text-decoration: underline;
+  text-decoration-color: var(--accent-color);
 }
 
-/* ============================================================
-   Base Form Elements — inherit font
-   ============================================================ */
 input,
 textarea,
 button,
@@ -155,29 +137,20 @@ select {
   font-size: 1rem;
 }
 
-/* ============================================================
-   Code
-   ============================================================ */
 code {
   font-family: var(--font-mono);
   font-size: 0.875rem;
-  background-color: var(--border-light);
+  background-color: var(--bg-tertiary);
   padding: 2px 6px;
-  border-radius: 0;
+  border-radius: var(--radius-sm);
   color: var(--text-primary);
 }
 
-/* ============================================================
-   Images
-   ============================================================ */
 img {
   max-width: 100%;
   display: block;
 }
 
-/* ============================================================
-   Focus Visible — Accessibility
-   ============================================================ */
 :focus {
   outline: 2px solid var(--accent-color);
   outline-offset: 2px;
@@ -192,24 +165,12 @@ img {
   outline-offset: 2px;
 }
 
-/* ============================================================
-   Responsive Typography
-   ============================================================ */
-@media (max-width: 1024px) {
-  h1 { font-size: 2.5rem; }
-  h2 { font-size: 1.75rem; }
-}
-
 @media (max-width: 640px) {
-  html { font-size: 15px; }
-  h1 { font-size: 2rem; }
-  h2 { font-size: 1.5rem; }
-  h3 { font-size: 1.25rem; }
+  html {
+    font-size: 16px;
+  }
 }
 
-/* ============================================================
-   Utility: Screen-reader only
-   ============================================================ */
 .sr-only {
   position: absolute;
   width: 1px;

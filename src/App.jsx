@@ -1,4 +1,4 @@
-﻿import { AuthProvider } from './components/AuthProvider'
+import { AuthProvider } from './components/AuthProvider'
 import { Auth } from './components/Auth'
 import { Timeline } from './components/Timeline'
 import { LogJournal } from './pages/LogJournal'
@@ -81,7 +81,10 @@ function App() {
             </div>
           </header>
 
-          <main className="main-container" role="main">
+          <main
+            className={`main-container${currentView === VIEWS.chat ? ' main-container--chat' : ''}${currentView === VIEWS.timeline ? ' main-container--wide' : ''}`}
+            role="main"
+          >
             {currentView === VIEWS.logJournal && (
               <LogJournal onActivitiesSaved={handleActivitiesSaved} />
             )}
@@ -90,14 +93,7 @@ function App() {
               <Timeline refreshKey={timelineRefreshKey} />
             )}
 
-            {currentView === VIEWS.chat && (
-              <>
-                <header className="page-header">
-                  <h1 className="page-title">Chat</h1>
-                </header>
-                <Chat />
-              </>
-            )}
+            {currentView === VIEWS.chat && <Chat />}
           </main>
         </div>
       ) : (
