@@ -25,12 +25,12 @@ test('Complete E2E: Text Input → Parse → Review → Save', async ({ page }) 
   await page.waitForLoadState('networkidle');
   await page.waitForTimeout(2000);
 
-  const loggedIn = await page.locator('button:has-text("Dashboard")').isVisible();
+  const loggedIn = await page.locator('button:has-text("Log & journal")').isVisible();
   console.log(`✅ Logged in: ${loggedIn}`);
 
   // Step 2: Find check-in section
   console.log('\n📍 STEP 2: Navigate to Check-in');
-  const typeBtn = page.locator('button:has-text("✍️ Type")');
+  const typeBtn = page.locator('button:has-text("Type")');
   const typeBtnExists = await typeBtn.isVisible({ timeout: 3000 }).catch(() => false);
 
   if (!typeBtnExists) {
@@ -63,7 +63,7 @@ Wrapped up with documentation from 5:30pm to 6pm.`;
 
   // Step 5: Click Parse
   console.log('\n📍 STEP 5: Click Parse & Continue');
-  const parseBtn = page.locator('button:has-text("Parse & Continue")');
+  const parseBtn = page.locator('button:has-text("Parse and review")');
   await parseBtn.click();
   console.log('⏳ Parsing... (calling Claude API)');
 

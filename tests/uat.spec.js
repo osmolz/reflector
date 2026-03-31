@@ -64,54 +64,52 @@ test.describe('Reflector E2E UAT - Complete Feature Testing', () => {
     });
   });
 
-  test.describe.serial('Dashboard Features (When Logged In)', () => {
+  test.describe.serial('Main app (when logged in)', () => {
     // These tests will pass if user is already logged in
 
-    test('DF-1: Dashboard section is accessible', async ({ page }) => {
+    test('DF-1: Log & journal nav is accessible', async ({ page }) => {
       await page.goto(baseUrl);
       await page.waitForLoadState('networkidle');
 
-      const dashboardBtn = page.locator('button:has-text("Dashboard")');
-      const isDashboardVisible = await dashboardBtn.isVisible().catch(() => false);
+      const logJournalBtn = page.locator('button:has-text("Log & journal")');
+      const isDashboardVisible = await logJournalBtn.isVisible().catch(() => false);
 
       if (isDashboardVisible) {
-        console.log('✓ Dashboard button is visible (user is logged in)');
+        console.log('✓ Log & journal button is visible (user is logged in)');
       } else {
-        console.log('ⓘ Dashboard button not visible (user not logged in - expected for first visit)');
+        console.log('ⓘ Log & journal button not visible (user not logged in - expected for first visit)');
       }
     });
 
-    test('DF-2: Voice Check-in component renders', async ({ page }) => {
+    test('DF-2: Log time section renders', async ({ page }) => {
       await page.goto(baseUrl);
       await page.waitForLoadState('networkidle');
 
-      const voiceText = await page.locator('text=Voice Check-in').isVisible().catch(() => false);
+      const voiceText = await page.locator('text=Log time').isVisible().catch(() => false);
 
       if (voiceText) {
-        console.log('✓ Voice Check-in section is visible');
+        console.log('✓ Log time section is visible');
 
         // Look for record button or mic button
         const buttons = await page.locator('button').count();
         console.log(`  Found ${buttons} interactive buttons`);
       } else {
-        console.log('ⓘ Voice Check-in not visible (user may not be logged in)');
+        console.log('ⓘ Log time not visible (user may not be logged in)');
       }
     });
 
-    test('DF-3: Chat Analytics section renders', async ({ page }) => {
+    test('DF-3: Chat page renders', async ({ page }) => {
       await page.goto(baseUrl);
       await page.waitForLoadState('networkidle');
 
-      const chatText = await page.locator('text=Chat Analytics').isVisible().catch(() => false);
-
-      if (chatText) {
-        console.log('✓ Chat Analytics section is visible');
-
-        // Check for input
-        const chatInput = await page.locator('input, textarea').count() > 0;
-        console.log(`  Chat input available: ${chatInput}`);
+      const chatNav = page.locator('nav').getByRole('button', { name: 'Chat' });
+      if (await chatNav.isVisible().catch(() => false)) {
+        await chatNav.click();
+        const input = page.locator('input[name="message"]');
+        const ok = await input.isVisible().catch(() => false);
+        console.log(ok ? '✓ Chat page shows message input' : 'ⓘ Chat input not visible');
       } else {
-        console.log('ⓘ Chat Analytics not visible (user may not be logged in)');
+        console.log('ⓘ Chat nav not visible (user may not be logged in)');
       }
     });
   });
@@ -134,23 +132,23 @@ test.describe('Reflector E2E UAT - Complete Feature Testing', () => {
       }
     });
 
-    test('NV-2: Journal navigation works', async ({ page }) => {
+    test('NV-2: Journal section on Log & journal works', async ({ page }) => {
       await page.goto(baseUrl);
       await page.waitForLoadState('networkidle');
 
-      const journalBtn = page.locator('button:has-text("Journal")');
-      const isVisible = await journalBtn.isVisible().catch(() => false);
+      const logBtn = page.locator('button:has-text("Log & journal")');
+      const isVisible = await logBtn.isVisible().catch(() => false);
 
       if (isVisible) {
-        await journalBtn.click();
+        await logBtn.click();
         await page.waitForLoadState('networkidle');
 
         const bodyText = await page.locator('body').innerText();
-        const hasJournalContent = bodyText.includes('Journal') || bodyText.includes('Note') || bodyText.includes('Entry');
+        const hasJournalContent = bodyText.includes('Journal') && bodyText.includes('Save Entry');
 
-        console.log(`✓ Journal navigation works (Content loaded: ${hasJournalContent})`);
+        console.log(`✓ Journal area reachable (Save Entry visible: ${hasJournalContent})`);
       } else {
-        console.log('ⓘ Journal button not visible (user may not be logged in)');
+        console.log('ⓘ Log & journal not visible (user may not be logged in)');
       }
     });
   });

@@ -341,18 +341,19 @@ const Chat = () => {
   return (
     <div className="chat-container">
       <div className="session-strip">
-        <button className="session-new-btn" onClick={createNewSession} title="Start a new conversation">
-          + New
+        <button type="button" className="session-new-btn" onClick={createNewSession} title="Start a new conversation">
+          New chat
         </button>
         <div className="session-list">
           {sessions.map((session) => (
             <button
+              type="button"
               key={session.id}
               className={`session-chip ${sessionId === session.id ? 'active' : ''}`}
               onClick={() => switchSession(session.id)}
-              title={session.title || 'New Chat'}
+              title={session.title || 'Untitled session'}
             >
-              {session.title ? session.title.substring(0, 30) : 'New Chat'}
+              {session.title ? session.title.substring(0, 30) : 'Untitled'}
             </button>
           ))}
         </div>
@@ -360,7 +361,7 @@ const Chat = () => {
 
       <div className="chat-history" ref={chatHistoryRef}>
         {messages.length === 0 && !loading && (
-          <p className="chat-empty">No messages yet. Ask a question to get started.</p>
+          <p className="chat-empty">No messages yet. Ask about your time or your day.</p>
         )}
         {messages.map((msg) => (
           <div key={msg.id} className={`chat-message ${msg.role}`}>
@@ -381,7 +382,11 @@ const Chat = () => {
                 </div>
               )}
               <div>{msg.content}</div>
-              {msg.isStreaming && <span className="streaming-indicator">●</span>}
+              {msg.isStreaming && (
+                <span className="streaming-indicator" aria-label="Still receiving response">
+                  …
+                </span>
+              )}
             </div>
           </div>
         ))}
@@ -391,8 +396,8 @@ const Chat = () => {
       {error && (
         <div className="error-banner">
           <span>Error: {error}</span>
-          <button onClick={() => setError(null)} className="error-dismiss">
-            ✕
+          <button type="button" onClick={() => setError(null)} className="error-dismiss" aria-label="Dismiss error">
+            Dismiss
           </button>
         </div>
       )}

@@ -298,3 +298,12 @@
     width: 100%;
   }
 }
+
+
+.journal-history-heading {
+  font-family: var(--font-serif);
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: var(--space-xl) 0 var(--space-md);
+  color: var(--text-primary);
+}

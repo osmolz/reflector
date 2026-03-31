@@ -34,7 +34,7 @@ test.describe('Full Flow - Text Input, Parsing, and Chat', () => {
     await page.waitForLoadState('networkidle');
 
     // Check if we're logged in by looking for dashboard content
-    const dashboardContent = page.locator('button:has-text("Timeline"), button:has-text("Journal"), h2');
+    const dashboardContent = page.locator('button:has-text("Timeline"), button:has-text("Chat"), h1');
     const isVisible = await dashboardContent.first().isVisible({ timeout: 5000 }).catch(() => false);
 
     if (isVisible) {
@@ -103,7 +103,7 @@ test.describe('Full Flow - Text Input, Parsing, and Chat', () => {
     console.log('✅ Check-in section found');
 
     // Click Type button
-    const typeBtn = page.locator('button:has-text("✍️ Type")');
+    const typeBtn = page.locator('button:has-text("Type")');
     const typeBtnExists = await typeBtn.isVisible({ timeout: 3000 }).catch(() => false);
 
     if (!typeBtnExists) {
@@ -139,7 +139,7 @@ test.describe('Full Flow - Text Input, Parsing, and Chat', () => {
     console.log('✅ Text verified in textarea');
 
     // Click Parse & Continue button
-    const parseBtn = page.locator('button:has-text("Parse & Continue")');
+    const parseBtn = page.locator('button:has-text("Parse and review")');
     const parseBtnEnabled = await parseBtn.isEnabled({ timeout: 3000 });
 
     if (!parseBtnEnabled) {
@@ -311,7 +311,7 @@ test.describe('Full Flow - Text Input, Parsing, and Chat', () => {
       await page.waitForLoadState('networkidle');
     }
 
-    const journalBtn = page.locator('button:has-text("Journal")');
+    const journalBtn = page.locator('button:has-text("Log & journal")');
     if (await journalBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
       await journalBtn.click();
       await page.waitForLoadState('networkidle');

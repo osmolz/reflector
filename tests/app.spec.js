@@ -87,7 +87,7 @@ test.describe('Reflector App - E2E Tests', () => {
 
     if (await headerUser.isVisible()) {
       // Look for voice check-in section
-      const voiceSection = page.locator('text=Voice Check-in');
+      const voiceSection = page.locator('h2:has-text("Log time")');
       await expect(voiceSection).toBeVisible();
 
       // Look for mic button
@@ -98,30 +98,24 @@ test.describe('Reflector App - E2E Tests', () => {
     }
   });
 
-  test('6. Journal page is accessible', async ({ page }) => {
-    // Check if user is logged in
-    const journalBtn = page.locator('button:has-text("Journal")');
+  test('6. Journal section on Log & journal', async ({ page }) => {
+    const logBtn = page.locator('button:has-text("Log & journal")');
 
-    if (await journalBtn.isVisible()) {
-      await journalBtn.click();
+    if (await logBtn.isVisible()) {
+      await logBtn.click();
 
-      // Check for journal content area
       const journalContent = page.locator('[class*="journal"], textarea, [contenteditable]');
       await expect(journalContent.first()).toBeVisible({ timeout: 5000 });
     }
   });
 
-  test('7. Chat section is visible on dashboard', async ({ page }) => {
-    // Check if user is logged in
+  test('7. Chat page is reachable from nav', async ({ page }) => {
     const headerUser = page.locator('[class*="header-user"]');
 
     if (await headerUser.isVisible()) {
-      // Look for chat section
-      const chatSection = page.locator('text=Chat Analytics, text=Ask about your time');
-
-      if (await chatSection.first().isVisible()) {
-        console.log('Chat section is visible');
-      }
+      await page.locator('nav').getByRole('button', { name: 'Chat' }).click();
+      const chatInput = page.locator('input[name="message"], input.chat-input');
+      await expect(chatInput).toBeVisible({ timeout: 5000 });
     }
   });
 

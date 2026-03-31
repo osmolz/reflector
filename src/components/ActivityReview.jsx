@@ -57,6 +57,7 @@ export function ActivityReview({
       <div className="activity-review-empty">
         <p>No activities parsed. Try recording again or edit your transcript.</p>
         <button
+          type="button"
           onClick={onDiscard}
           aria-label="Start over with a new recording"
         >
@@ -162,6 +163,7 @@ export function ActivityReview({
               <div className="activity-item-actions">
                 {editingIndex !== index && (
                   <button
+                    type="button"
                     onClick={() => handleEditStart(index)}
                     className="btn-edit"
                     aria-label={`Edit ${activity.activity}`}
@@ -170,6 +172,7 @@ export function ActivityReview({
                   </button>
                 )}
                 <button
+                  type="button"
                   onClick={() => handleDelete(index)}
                   className="btn-delete"
                   aria-label={`Delete ${activity.activity}`}
@@ -190,6 +193,7 @@ export function ActivityReview({
 
       <div className="activity-review-controls">
         <button
+          type="button"
           onClick={handleSave}
           disabled={isSaving || editedActivities.length === 0}
           className="btn-save-activities"
@@ -198,11 +202,12 @@ export function ActivityReview({
           {isSaving ? 'Saving...' : 'Save to Timeline'}
         </button>
         <button
+          type="button"
           onClick={onDiscard}
           className="btn-discard"
-          aria-label="Discard and start over"
+          aria-label="Discard parsed activities and start over"
         >
-          Discard & Start Over
+          Discard
         </button>
       </div>
     </div>

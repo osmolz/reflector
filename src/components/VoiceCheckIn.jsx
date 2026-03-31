@@ -131,10 +131,11 @@ export function VoiceCheckIn({ onActivitiesSaved }) {
   if (stage === 'saved') {
     return (
       <div className="voice-check-in">
-        <h2>Activities Saved</h2>
-        <p>Your check-in has been saved to the timeline.</p>
-        <button className="btn btn-primary" onClick={handleDiscard}>
-          Record Another Check-in
+        <p className="voice-check-in-status" role="status">
+          Saved. Those entries are on your timeline.
+        </p>
+        <button type="button" className="btn btn-primary" onClick={handleDiscard}>
+          Log more time
         </button>
       </div>
     );
@@ -142,15 +143,14 @@ export function VoiceCheckIn({ onActivitiesSaved }) {
 
   return (
     <div className="voice-check-in">
-      <h2>Check-in</h2>
       {stage === 'recording' && (
         <>
           {!inputMode && (
             <div className="voice-check-in-mode-select">
-              <button className="btn btn-primary" onClick={() => setInputMode('voice')}>
+              <button type="button" className="btn btn-primary" onClick={() => setInputMode('voice')}>
                 Speak
               </button>
-              <button className="btn btn-primary" onClick={() => setInputMode('text')}>
+              <button type="button" className="btn btn-primary" onClick={() => setInputMode('text')}>
                 Type
               </button>
             </div>
@@ -158,52 +158,54 @@ export function VoiceCheckIn({ onActivitiesSaved }) {
 
           {inputMode === 'voice' && (
             <>
-              <button className="btn btn-secondary voice-check-in-back" onClick={() => setInputMode(null)}>
-                Back
-              </button>
+              <button type="button" className="btn btn-secondary voice-check-in-back" onClick={() => setInputMode(null)} aria-label="Back to choose speak or type">Back</button>
               <MicButton onTranscriptReady={handleTranscriptReady} />
             </>
           )}
 
           {inputMode === 'text' && (
             <>
-              <button className="btn btn-secondary voice-check-in-back" onClick={() => setInputMode(null)}>
-                Back
-              </button>
+              <button type="button" className="btn btn-secondary voice-check-in-back" onClick={() => setInputMode(null)} aria-label="Back to choose speak or type">Back</button>
               <div className="form-group">
-                <label>What did you do today?</label>
+                <label htmlFor="voice-check-in-transcript">Activities and times (for the parser)</label>
                 <textarea
+                  id="voice-check-in-transcript"
                   value={transcript}
                   onChange={(e) => setTranscript(e.target.value)}
-                  placeholder="Describe your activities, times, and durations..."
+                  placeholder="Example: 9am–12pm deep work, lunch 12–1, meetings 2–4…"
                   className="voice-check-in-textarea"
                 />
               </div>
               <button
+                type="button"
                 className="btn btn-primary"
                 onClick={() => handleTranscriptReady(transcript)}
                 disabled={isLoading || !transcript.trim()}
               >
-                {isLoading ? 'Parsing...' : 'Parse & Continue'}
+                {isLoading ? 'Parsing...' : 'Parse and review'}
               </button>
             </>
           )}
 
           {transcript && inputMode === 'voice' && (
             <div className="voice-check-in-transcript">
-              <h3>Your transcript</h3>
+              <label className="voice-check-in-transcript-label" htmlFor="voice-check-in-transcript-edit">
+                Edit transcript before parsing
+              </label>
               <textarea
+                id="voice-check-in-transcript-edit"
                 value={transcript}
                 onChange={(e) => setTranscript(e.target.value)}
                 className="voice-check-in-textarea"
               />
               <button
+                type="button"
                 className="btn btn-primary"
                 onClick={() => handleTranscriptReady(transcript)}
                 disabled={isLoading}
                 style={{ marginTop: 'var(--space-md)' }}
               >
-                {isLoading ? 'Parsing...' : 'Parse Transcript'}
+                {isLoading ? 'Parsing...' : 'Parse and review'}
               </button>
             </div>
           )}
@@ -222,3 +224,5 @@ export function VoiceCheckIn({ onActivitiesSaved }) {
     </div>
   );
 }
+
+

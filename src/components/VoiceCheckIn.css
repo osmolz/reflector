@@ -77,3 +77,18 @@
   margin-top: var(--space-md);
   font-size: 0.875rem;
 }
+
+
+.voice-check-in-status {
+  margin: 0 0 var(--space-md);
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+
+.voice-check-in-transcript-label {
+  display: block;
+  margin-bottom: var(--space-sm);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}

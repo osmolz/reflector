@@ -40,7 +40,7 @@ test('Text input button shows textarea with proper placeholder', async ({ page }
   await page.waitForLoadState('networkidle');
 
   // Look for the Type button
-  const typeBtn = page.locator('button:has-text("✍️ Type")');
+  const typeBtn = page.locator('button:has-text("Type")');
   const btnExists = await typeBtn.isVisible({ timeout: 2000 }).catch(() => false);
 
   if (!btnExists) {
@@ -72,7 +72,7 @@ test('Text input button shows textarea with proper placeholder', async ({ page }
   console.log('✅ Can type in textarea successfully');
 
   // Verify Parse & Continue button exists and is enabled
-  const parseBtn = page.locator('button:has-text("Parse & Continue")');
+  const parseBtn = page.locator('button:has-text("Parse and review")');
   await expect(parseBtn).toBeVisible();
   const isDisabled = await parseBtn.isDisabled();
   expect(isDisabled).toBe(false);
@@ -85,7 +85,7 @@ test('Back button returns to input mode selection', async ({ page }) => {
   await page.waitForLoadState('networkidle');
 
   // Look for the Type button
-  const typeBtn = page.locator('button:has-text("✍️ Type")');
+  const typeBtn = page.locator('button:has-text("Type")');
   const btnExists = await typeBtn.isVisible({ timeout: 2000 }).catch(() => false);
 
   if (!btnExists) {
@@ -107,8 +107,8 @@ test('Back button returns to input mode selection', async ({ page }) => {
   await page.waitForLoadState('networkidle');
 
   // Verify we're back to mode selection (both buttons visible)
-  const speakBtn = page.locator('button:has-text("🎤 Speak")');
-  const typeBtnAgain = page.locator('button:has-text("✍️ Type")');
+  const speakBtn = page.locator('button:has-text("Speak")');
+  const typeBtnAgain = page.locator('button:has-text("Type")');
 
   await expect(speakBtn).toBeVisible();
   await expect(typeBtnAgain).toBeVisible();
@@ -121,8 +121,8 @@ test('Voice button is still accessible alongside text button', async ({ page }) 
   await page.waitForLoadState('networkidle');
 
   // Look for both buttons
-  const speakBtn = page.locator('button:has-text("🎤 Speak")');
-  const typeBtn = page.locator('button:has-text("✍️ Type")');
+  const speakBtn = page.locator('button:has-text("Speak")');
+  const typeBtn = page.locator('button:has-text("Type")');
 
   const speakVisible = await speakBtn.isVisible({ timeout: 2000 }).catch(() => false);
   const typeVisible = await typeBtn.isVisible({ timeout: 2000 }).catch(() => false);

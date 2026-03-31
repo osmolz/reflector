@@ -46,13 +46,13 @@ test('Debug: Chat failure investigation', async ({ page }) => {
 
   // Create some activities first
   console.log('\n📍 STEP 2: Create activities for chat to analyze');
-  const typeBtn = page.locator('button:has-text("✍️ Type")');
+  const typeBtn = page.locator('button:has-text("Type")');
   if (await typeBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
     await typeBtn.click();
     const textarea = page.locator('textarea').first();
     await textarea.fill('Worked from 9am to 5pm with 1 hour lunch at noon. Total 7 hours work.');
 
-    const parseBtn = page.locator('button:has-text("Parse & Continue")');
+    const parseBtn = page.locator('button:has-text("Parse and review")');
     await parseBtn.click();
 
     const reviewTitle = page.locator('h3:has-text("Review")');

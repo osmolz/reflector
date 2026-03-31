@@ -71,6 +71,7 @@ export function MicButton({ onTranscriptReady }) {
     <div className="mic-button-wrapper">
       <div className="mic-button-container">
         <button
+          type="button"
           onClick={handleClick}
           className={`mic-button ${isRecording ? 'recording' : ''}`}
           aria-label={isRecording ? 'Stop recording' : 'Start recording'}

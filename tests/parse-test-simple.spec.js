@@ -49,7 +49,7 @@ test('Simple parse test with error details', async ({ page }) => {
 
   // Test parse
   console.log('\n📝 Typing text...');
-  const typeBtn = page.locator('button:has-text("✍️ Type")');
+  const typeBtn = page.locator('button:has-text("Type")');
   await typeBtn.click();
   await page.waitForTimeout(1000);
 
@@ -57,7 +57,7 @@ test('Simple parse test with error details', async ({ page }) => {
   await textarea.fill('Woke up at 7am. Worked for 8 hours. Lunch at noon.');
 
   console.log('⏳ Clicking Parse...');
-  const parseBtn = page.locator('button:has-text("Parse & Continue")');
+  const parseBtn = page.locator('button:has-text("Parse and review")');
   await parseBtn.click();
 
   console.log('⏳ Waiting for response (30s)...');

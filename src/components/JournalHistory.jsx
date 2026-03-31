@@ -62,14 +62,14 @@ export function JournalHistory({ refreshKey }) {
   if (entries.length === 0) {
     return (
       <div style={{ padding: '1rem', color: '#666', fontStyle: 'italic' }}>
-        No journal entries yet. Start writing!
+        No entries yet.
       </div>
     );
   }
 
   return (
     <div>
-      <h2>Journal History</h2>
+      <h3 className="journal-history-heading">Previous entries</h3>
       <div style={{ marginTop: '1rem' }}>
         {entries.map((entry) => (
           <div
@@ -100,6 +100,8 @@ export function JournalHistory({ refreshKey }) {
                 </span>
               </div>
               <button
+                type="button"
+                aria-expanded={expandedId === entry.id}
                 onClick={() => setExpandedId(expandedId === entry.id ? null : entry.id)}
                 style={{
                   background: 'none',
@@ -111,7 +113,7 @@ export function JournalHistory({ refreshKey }) {
                   padding: '0.25rem 0.5rem',
                 }}
               >
-                {expandedId === entry.id ? 'Collapse' : 'Expand'}
+                {expandedId === entry.id ? 'Show less' : 'Show full note'}
               </button>
             </div>
             {expandedId === entry.id ? (

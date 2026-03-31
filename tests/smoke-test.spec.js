@@ -30,10 +30,9 @@ test.describe('Reflector Smoke Tests', () => {
     // Look for logged-in indicators
     const bodyText = await page.locator('body').innerText();
 
-    const isLoggedIn = bodyText.includes('Sign out') ||
-                      bodyText.includes('Dashboard') ||
-                      bodyText.includes('Timeline') ||
-                      bodyText.includes('Journal');
+    const isLoggedIn = bodyText.includes('Sign out') &&
+                      (bodyText.includes('Log & journal') || bodyText.includes('Timeline')) &&
+                      bodyText.includes('Chat');
 
     console.log('User appears to be logged in:', isLoggedIn);
 
@@ -53,19 +52,21 @@ test.describe('Reflector Smoke Tests', () => {
         console.log('Timeline has activity data:', hasActivities);
       }
 
-      // Try to access journal
-      const journalBtn = page.locator('button:has-text("Journal")');
-      if (await journalBtn.isVisible()) {
-        await journalBtn.click();
-        await page.waitForLoadState('networkidle');
-        const journalText = await page.locator('body').innerText();
-        console.log('Journal section loaded');
+      // Journal is on Log & journal (default); confirm section heading
+      const journalSection = page.locator('h2:has-text("Journal")');
+      if (await journalSection.isVisible().catch(() => false)) {
+        console.log('Journal section visible on Log & journal');
       }
 
-      // Go back to dashboard
-      const dashBtn = page.locator('button:has-text("Dashboard")');
-      if (await dashBtn.isVisible()) {
-        await dashBtn.click();
+      const chatNav = page.locator('nav').getByRole('button', { name: 'Chat' });
+      if (await chatNav.isVisible()) {
+        await chatNav.click();
+        await page.waitForLoadState('networkidle');
+      }
+
+      const logNav = page.locator('nav').getByRole('button', { name: 'Log & journal' });
+      if (await logNav.isVisible()) {
+        await logNav.click();
         await page.waitForLoadState('networkidle');
       }
     }
@@ -75,8 +76,8 @@ test.describe('Reflector Smoke Tests', () => {
     await page.goto(baseUrl);
     await page.waitForLoadState('networkidle');
 
-    const voiceText = await page.locator('text=Voice Check-in').isVisible();
-    console.log('Voice Check-in section visible:', voiceText);
+    const voiceText = await page.locator('text=Log time').isVisible();
+    console.log('Log time section visible:', voiceText);
 
     if (voiceText) {
       // Look for mic button or record button
@@ -93,30 +94,19 @@ test.describe('Reflector Smoke Tests', () => {
     await page.goto(baseUrl);
     await page.waitForLoadState('networkidle');
 
-    const chatText = await page.locator('text=Chat Analytics').isVisible();
-    console.log('Chat section visible:', chatText);
+    await page.locator('nav').getByRole('button', { name: 'Chat' }).click();
+    await page.waitForLoadState('networkidle');
+    const chatInput = page.locator('input[placeholder*="time"], input[placeholder*="Ask"]');
 
-    if (chatText) {
-      // Look for input field
-      const chatInput = page.locator('input[placeholder*="Ask"], textarea[placeholder*="Ask"], input[placeholder*="question"]');
+    if (await chatInput.isVisible().catch(() => false)) {
+      console.log('Chat input visible on Chat page');
 
-      if (await chatInput.isVisible()) {
-        console.log('Chat input found');
-
-        // Try to type a question
-        await chatInput.click();
-        await chatInput.fill('What is my schedule?');
-
-        // Look for send button
-        const sendBtn = page.locator('button:has-text("Send"), button[type="submit"], button:has-text("Ask")');
-
-        if (await sendBtn.isVisible()) {
-          console.log('Send button found');
-
-          // Don't actually send (to avoid API calls)
-          // await sendBtn.click();
-        }
+      const sendBtn = page.locator('button:has-text("Send")');
+      if (await sendBtn.isVisible()) {
+        console.log('Send button found');
       }
+    } else {
+      console.log('Chat input not visible (may need login)');
     }
   });
 

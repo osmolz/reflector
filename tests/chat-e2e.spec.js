@@ -207,7 +207,7 @@ test.describe('Chat Functionality E2E Tests', () => {
     console.log(`✅ Message visible on page: ${found}`);
 
     // Navigate away and back
-    const dashboardBtn = page.locator('button:has-text("Dashboard")');
+    const dashboardBtn = page.locator('button:has-text("Log & journal")');
     if (await dashboardBtn.isVisible({ timeout: 1000 }).catch(() => false)) {
       await dashboardBtn.click();
       await page.waitForLoadState('networkidle');

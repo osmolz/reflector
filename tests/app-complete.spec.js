@@ -28,12 +28,12 @@ test.describe('Complete App Functionality Tests', () => {
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000);
 
-    const loggedIn = await page.locator('button:has-text("Dashboard")').isVisible();
+    const loggedIn = await page.locator('button:has-text("Log & journal")').isVisible();
     console.log(`✅ Logged in: ${loggedIn}`);
 
     // STEP 2: Create activity via text input
     console.log('\n📍 STEP 2: Create Activities via Text Input');
-    const typeBtn = page.locator('button:has-text("✍️ Type")');
+    const typeBtn = page.locator('button:has-text("Type")');
     const typeBtnExists = await typeBtn.isVisible({ timeout: 2000 }).catch(() => false);
 
     if (!typeBtnExists) {
@@ -57,7 +57,7 @@ Relaxed in the evening from 6:30pm to 8pm.`;
     console.log(`✅ Transcript entered (${transcript.length} chars)`);
 
     // Parse
-    const parseBtn = page.locator('button:has-text("Parse & Continue")');
+    const parseBtn = page.locator('button:has-text("Parse and review")');
     await parseBtn.click();
     console.log('⏳ Parsing activities...');
 
@@ -82,20 +82,10 @@ Relaxed in the evening from 6:30pm to 8pm.`;
     const timelineVisible = await page.locator('[class*="timeline"], text=/morning|breakfast|coding/i').isVisible({ timeout: 3000 }).catch(() => false);
     console.log(`✅ Timeline view accessible: ${timelineVisible}`);
 
-    // STEP 4: Use Chat Analytics
-    console.log('\n📍 STEP 4: Chat Analytics');
-    await page.evaluate(() => window.scrollTo(0, 0));
-    await page.waitForTimeout(300);
-
-    const dashboardBtn = page.locator('button:has-text("Dashboard")');
-    if (await dashboardBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
-      await dashboardBtn.click();
-      await page.waitForLoadState('networkidle');
-      await page.waitForTimeout(1000);
-    }
-
-    // Scroll to chat
-    await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    // STEP 4: Chat (dedicated page)
+    console.log('\n📍 STEP 4: Chat');
+    await page.locator('nav').getByRole('button', { name: 'Chat' }).click();
+    await page.waitForLoadState('networkidle');
     await page.waitForTimeout(500);
 
     const chatInput = page.locator('input[placeholder*="time"]').first();
@@ -125,13 +115,13 @@ Relaxed in the evening from 6:30pm to 8pm.`;
       console.log('⚠️  Chat not accessible');
     }
 
-    // STEP 5: View Journal
-    console.log('\n📍 STEP 5: View Journal');
-    const journalBtn = page.locator('button:has-text("Journal")');
-    if (await journalBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
-      await journalBtn.click();
-      await page.waitForLoadState('networkidle');
-      console.log('✅ Journal page accessible');
+    // STEP 5: Journal lives on Log & journal
+    console.log('\n📍 STEP 5: Journal section');
+    await page.locator('nav').getByRole('button', { name: 'Log & journal' }).click();
+    await page.waitForLoadState('networkidle');
+    const journalHeading = page.locator('h2:has-text("Journal")');
+    if (await journalHeading.isVisible({ timeout: 2000 }).catch(() => false)) {
+      console.log('✅ Journal section visible on Log & journal');
     }
 
     // STEP 6: Sign Out
@@ -168,7 +158,7 @@ Relaxed in the evening from 6:30pm to 8pm.`;
     await page.waitForTimeout(2000);
     console.log('✅ Logged in');
 
-    const pages = ['Dashboard', 'Timeline', 'Journal'];
+    const pages = ['Log & journal', 'Timeline', 'Chat'];
     const results = {};
 
     for (const pageName of pages) {
@@ -210,8 +200,8 @@ Relaxed in the evening from 6:30pm to 8pm.`;
     console.log('✅ Logged in');
 
     // Check both buttons exist
-    const speakBtn = page.locator('button:has-text("🎤 Speak")');
-    const typeBtn = page.locator('button:has-text("✍️ Type")');
+    const speakBtn = page.locator('button:has-text("Speak")');
+    const typeBtn = page.locator('button:has-text("Type")');
 
     const speakExists = await speakBtn.isVisible({ timeout: 2000 }).catch(() => false);
     const typeExists = await typeBtn.isVisible({ timeout: 2000 }).catch(() => false);
@@ -255,13 +245,13 @@ Relaxed in the evening from 6:30pm to 8pm.`;
     await page.waitForTimeout(2000);
 
     // Create activities
-    const typeBtn = page.locator('button:has-text("✍️ Type")');
+    const typeBtn = page.locator('button:has-text("Type")');
     await typeBtn.click();
 
     const textarea = page.locator('textarea').first();
     await textarea.fill('Worked from 9am to 5pm. Lunch at noon for 1 hour.');
 
-    const parseBtn = page.locator('button:has-text("Parse & Continue")');
+    const parseBtn = page.locator('button:has-text("Parse and review")');
     await parseBtn.click();
 
     const reviewTitle = page.locator('h3:has-text("Review")');
@@ -363,10 +353,10 @@ Relaxed in the evening from 6:30pm to 8pm.`;
 
     // Try empty transcript
     console.log('📝 Testing empty input submission...');
-    const typeBtn = page.locator('button:has-text("✍️ Type")');
+    const typeBtn = page.locator('button:has-text("Type")');
     await typeBtn.click();
 
-    const parseBtn = page.locator('button:has-text("Parse & Continue")');
+    const parseBtn = page.locator('button:has-text("Parse and review")');
     const isDisabled = await parseBtn.isDisabled();
     console.log(`✅ Parse button disabled on empty: ${isDisabled}`);
 
@@ -402,14 +392,14 @@ Relaxed in the evening from 6:30pm to 8pm.`;
     await page.waitForTimeout(2000);
 
     // Create an activity and save it
-    const typeBtn = page.locator('button:has-text("✍️ Type")');
+    const typeBtn = page.locator('button:has-text("Type")');
     await typeBtn.click();
 
     const textarea = page.locator('textarea').first();
     const uniqueActivity = `Unique activity ${Date.now()} at 10am for 2 hours`;
     await textarea.fill(uniqueActivity);
 
-    const parseBtn = page.locator('button:has-text("Parse & Continue")');
+    const parseBtn = page.locator('button:has-text("Parse and review")');
     await parseBtn.click();
 
     const reviewTitle = page.locator('h3:has-text("Review")');
@@ -421,8 +411,8 @@ Relaxed in the evening from 6:30pm to 8pm.`;
     await page.waitForTimeout(2000);
 
     // Navigate away
-    const dashboardBtn = page.locator('button:has-text("Dashboard")');
-    await dashboardBtn.click();
+    const logJournalBtn = page.locator('button:has-text("Log & journal")');
+    await logJournalBtn.click();
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(1000);
     console.log('✅ Navigated away');

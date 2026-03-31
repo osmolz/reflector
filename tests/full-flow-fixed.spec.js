@@ -36,7 +36,7 @@ test.describe('Full Flow - Text Input, Parsing, and Chat', () => {
 
     // Click Type button
     console.log('📝 Finding Type button...');
-    const typeBtn = page.locator('button:has-text("✍️ Type")');
+    const typeBtn = page.locator('button:has-text("Type")');
     await expect(typeBtn).toBeVisible();
     await typeBtn.click();
     console.log('✅ Type button clicked');
@@ -61,7 +61,7 @@ Relaxed and watched TV from 7:15 PM to 9 PM.`;
 
     // Click Parse & Continue
     console.log('⏳ Clicking Parse & Continue (calling Claude API)...');
-    const parseBtn = page.locator('button:has-text("Parse & Continue")');
+    const parseBtn = page.locator('button:has-text("Parse and review")');
     await expect(parseBtn).toBeEnabled();
     await parseBtn.click();
 
@@ -218,7 +218,7 @@ Relaxed and watched TV from 7:15 PM to 9 PM.`;
       console.log('📍 Navigated to Timeline');
     }
 
-    const journalBtn = page.locator('button:has-text("Journal")');
+    const journalBtn = page.locator('button:has-text("Log & journal")');
     if (await journalBtn.isVisible()) {
       await journalBtn.click();
       await page.waitForLoadState('networkidle');

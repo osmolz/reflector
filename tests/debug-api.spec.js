@@ -57,14 +57,14 @@ test('Debug API calls and network errors', async ({ page }) => {
 
   // Try parsing
   console.log('\n📝 Starting parse test...');
-  const typeBtn = page.locator('button:has-text("✍️ Type")');
+  const typeBtn = page.locator('button:has-text("Type")');
   await typeBtn.click();
 
   const textarea = page.locator('textarea').first();
   await textarea.fill('Woke up at 7am. Worked 8 hours. Had lunch. Went to gym.');
 
   console.log('⏳ Clicking Parse button...');
-  const parseBtn = page.locator('button:has-text("Parse & Continue")');
+  const parseBtn = page.locator('button:has-text("Parse and review")');
   await parseBtn.click();
 
   // Wait and watch for API calls

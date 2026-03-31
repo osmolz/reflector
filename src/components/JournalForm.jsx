@@ -68,15 +68,12 @@ export function JournalForm({ onEntryCreated }) {
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="Write your thoughts here... or use the voice button below"
+          placeholder="Write today's note"
           rows={4}
           disabled={loading}
           className="journal-textarea"
           aria-label="Journal entry text"
         />
-        <div className="journal-char-count">
-          {text.length} characters
-        </div>
       </div>
 
       <div className="journal-form-controls">
@@ -85,10 +82,10 @@ export function JournalForm({ onEntryCreated }) {
           onClick={handleVoiceInput}
           disabled={loading}
           className={`journal-voice-button ${isListening ? 'listening' : ''}`}
-          aria-label={isListening ? 'Stop recording' : 'Start recording'}
+          aria-label={isListening ? 'Stop dictating' : 'Dictate note with voice'}
           aria-pressed={isListening}
         >
-          {isListening ? 'Stop Recording' : 'Start Voice Input'}
+          {isListening ? 'Stop dictating' : 'Dictate'}
         </button>
         {!isSupported && (
           <span className="journal-error" role="alert">

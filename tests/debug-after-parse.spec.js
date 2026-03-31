@@ -21,14 +21,14 @@ test('Debug: Check page state after parsing', async ({ page }) => {
   await page.waitForTimeout(2000);
 
   // Click Type and enter text
-  const typeBtn = page.locator('button:has-text("✍️ Type")');
+  const typeBtn = page.locator('button:has-text("Type")');
   await typeBtn.click();
   const textarea = page.locator('textarea').first();
   await textarea.fill('Woke at 7am. Worked 8 hours. Lunch noon. Gym at 5pm.');
 
   // Click Parse
   console.log('\n⏳ Clicking Parse...');
-  const parseBtn = page.locator('button:has-text("Parse & Continue")');
+  const parseBtn = page.locator('button:has-text("Parse and review")');
   await parseBtn.click();
 
   // Wait and check page content at different intervals
