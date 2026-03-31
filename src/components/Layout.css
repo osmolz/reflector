@@ -7,6 +7,14 @@
   background-color: var(--bg-primary);
 }
 
+/* Chat route: viewport lock — only transcript scrolls inside Chat */
+.app-shell--chat {
+  min-height: 100dvh;
+  max-height: 100dvh;
+  height: 100dvh;
+  overflow: hidden;
+}
+
 .header {
   position: sticky;
   top: 0;

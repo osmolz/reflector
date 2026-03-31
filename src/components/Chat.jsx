@@ -1,27 +1,140 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react'
 import { useAuthStore } from '../store/authStore'
 import { supabase } from '../lib/supabase'
 import { useChatPersistence } from '../hooks/useChatPersistence'
 import './Chat.css'
 
-const Chat = () => {
-  const { user } = useAuthStore()
+const SIDEBAR_LS_KEY = 'chat-sidebar-open'
+
+function formatSessionMeta(createdAt) {
+  const d = new Date(createdAt)
+  const now = new Date()
+  const sameDay =
+    d.getDate() === now.getDate() &&
+    d.getMonth() === now.getMonth() &&
+    d.getFullYear() === now.getFullYear()
+  if (sameDay) {
+    return d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' })
+  }
+  return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
+}
+
+function IconPlus() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M12 5v14M5 12h14"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+    </svg>
+  )
+}
+
+function IconSearch() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
+      <path d="M20 20l-4-4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function IconSessions() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M6 9a3 3 0 116 0 3 3 0 01-6 0zM12 15a3 3 0 013 3v1H3v-1a3 3 0 013-3h6z"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M14 7a2.5 2.5 0 114 2.2M17 13.5h.5a2.5 2.5 0 012.5 2.5V17h-3"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+function IconGear() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M12 15a3 3 0 100-6 3 3 0 000 6z"
+        stroke="currentColor"
+        strokeWidth="2"
+      />
+      <path
+        d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82 1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+export default function Chat({ views, currentView, onViewChange, user: userProp, onSignOut }) {
+  const storeUser = useAuthStore((s) => s.user)
+  const user = userProp ?? storeUser
   const { saveUserMessage, saveAssistantMessage } = useChatPersistence()
 
-  // Session state
+  const [layoutReady, setLayoutReady] = useState(false)
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
+  const [searchInput, setSearchInput] = useState('')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
   const [sessions, setSessions] = useState([])
   const [sessionId, setSessionId] = useState(null)
   const [sessionLoading, setSessionLoading] = useState(true)
-
-  // Message state
+  const [creatingSession, setCreatingSession] = useState(false)
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const chatHistoryRef = useRef(null)
   const isStreamingRef = useRef(false)
+  const searchFieldRef = useRef(null)
 
-  // Load sessions on mount
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(SIDEBAR_LS_KEY)
+      if (raw !== null) {
+        setSidebarOpen(JSON.parse(raw))
+      } else {
+        setSidebarOpen(typeof window !== 'undefined' && window.matchMedia('(min-width: 768px)').matches)
+      }
+    } catch {
+      setSidebarOpen(true)
+    }
+    setLayoutReady(true)
+  }, [])
+
+  useEffect(() => {
+    if (!layoutReady) return
+    try {
+      localStorage.setItem(SIDEBAR_LS_KEY, JSON.stringify(sidebarOpen))
+    } catch {
+      /* ignore */
+    }
+  }, [sidebarOpen, layoutReady])
+
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedSearch(searchInput.trim()), 300)
+    return () => clearTimeout(t)
+  }, [searchInput])
+
+  useEffect(() => {
+    if (!searchOpen) return
+    const id = requestAnimationFrame(() => searchFieldRef.current?.focus())
+    return () => cancelAnimationFrame(id)
+  }, [searchOpen])
+
   useEffect(() => {
     const loadSessions = async () => {
       if (!user) {
@@ -35,15 +148,16 @@ const Chat = () => {
           .select('id, title, created_at')
           .eq('user_id', user.id)
           .order('created_at', { ascending: false })
-          .limit(20)
+          .limit(40)
 
         if (fetchError) throw fetchError
 
         setSessions(data || [])
-
-        // Set active session to most recent
         if (data && data.length > 0) {
-          setSessionId(data[0].id)
+          setSessionId((prev) => {
+            if (prev && data.some((s) => s.id === prev)) return prev
+            return data[0].id
+          })
         }
       } catch (err) {
         console.error('[chat] Failed to load sessions:', err)
@@ -56,7 +170,6 @@ const Chat = () => {
     loadSessions()
   }, [user?.id])
 
-  // Load messages when session changes
   useEffect(() => {
     const loadMessages = async () => {
       if (isStreamingRef.current) return
@@ -93,16 +206,37 @@ const Chat = () => {
     loadMessages()
   }, [user?.id, sessionId])
 
-  // Auto-scroll to bottom
   useEffect(() => {
     if (chatHistoryRef.current) {
       chatHistoryRef.current.scrollTop = chatHistoryRef.current.scrollHeight
     }
   }, [messages, loading])
 
-  const createNewSession = async () => {
-    if (!user) return
+  const filteredSessions = useMemo(() => {
+    if (!debouncedSearch) return sessions
+    const q = debouncedSearch.toLowerCase()
+    return sessions.filter((s) => (s.title || 'Untitled').toLowerCase().includes(q))
+  }, [sessions, debouncedSearch])
 
+  const openSearch = useCallback(() => {
+    setSidebarOpen(false)
+    setSearchOpen(true)
+  }, [])
+
+  const closeSearch = useCallback(() => {
+    setSearchOpen(false)
+    setSearchInput('')
+    setDebouncedSearch('')
+  }, [])
+
+  const toggleSessions = useCallback(() => {
+    if (searchOpen) closeSearch()
+    setSidebarOpen((o) => !o)
+  }, [searchOpen, closeSearch])
+
+  const createNewSession = async () => {
+    if (!user || creatingSession) return
+    setCreatingSession(true)
     try {
       const { data, error: createError } = await supabase
         .from('chat_sessions')
@@ -116,9 +250,23 @@ const Chat = () => {
       setSessionId(data.id)
       setMessages([])
       setError(null)
+      if (window.matchMedia('(max-width: 767px)').matches) {
+        setSidebarOpen(false)
+      }
     } catch (err) {
       console.error('[chat] Failed to create session:', err)
       setError('Failed to create new chat')
+    } finally {
+      setCreatingSession(false)
+    }
+  }
+
+  const switchSession = (sid) => {
+    setSessionId(sid)
+    setError(null)
+    if (window.matchMedia('(max-width: 767px)').matches) {
+      setSidebarOpen(false)
+      setSearchOpen(false)
     }
   }
 
@@ -133,13 +281,11 @@ const Chat = () => {
       isStreaming: false,
     }
 
-    // [1] Add user message
     setMessages((prev) => [...prev, userMessage])
     setInput('')
     setLoading(true)
     setError(null)
 
-    // Save user message to DB
     try {
       await saveUserMessage(user.id, sessionId, userMessage.content)
     } catch (err) {
@@ -149,11 +295,12 @@ const Chat = () => {
       return
     }
 
-    /** Set only after placeholder is created — catch must not reference before assignment */
     let streamingId = null
 
     try {
-      const { data: { session } } = await supabase.auth.getSession()
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
       if (!session?.access_token) {
         throw new Error('Not authenticated')
       }
@@ -164,7 +311,6 @@ const Chat = () => {
         throw new Error('App misconfigured: missing Supabase URL or anon key')
       }
 
-      // [2] Create placeholder with unique ID for streaming
       streamingId = new Date(Date.now() + 1).toISOString()
       const placeholder = {
         id: streamingId,
@@ -176,23 +322,18 @@ const Chat = () => {
         isStreaming: true,
       }
 
-      // Add placeholder to messages
       setMessages((prev) => [...prev, placeholder])
 
-      // [3] Define updater that targets ONLY this message
       const updateStreaming = (updater) => {
-        setMessages((prev) =>
-          prev.map((m) => (m.id === streamingId ? updater(m) : m))
-        )
+        setMessages((prev) => prev.map((m) => (m.id === streamingId ? updater(m) : m)))
       }
 
-      // [4] Fetch with SSE
       const response = await fetch(`${supabaseUrl}/functions/v1/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session.access_token}`,
-          'apikey': supabaseAnonKey,
+          Authorization: `Bearer ${session.access_token}`,
+          apikey: supabaseAnonKey,
         },
         body: JSON.stringify({
           message: userMessage.content,
@@ -208,7 +349,6 @@ const Chat = () => {
       const contentType = response.headers.get('content-type')
 
       if (contentType && contentType.includes('text/event-stream')) {
-        // [5] Parse SSE stream
         isStreamingRef.current = true
         const reader = response.body.getReader()
         const decoder = new TextDecoder()
@@ -228,7 +368,6 @@ const Chat = () => {
             try {
               const event = JSON.parse(line.slice(6))
 
-              // [6] Update placeholder (NOT append)
               if (event.type === 'thinking') {
                 updateStreaming((m) => ({
                   ...m,
@@ -245,28 +384,17 @@ const Chat = () => {
                   content: (m.content || '') + event.text,
                 }))
               } else if (event.type === 'done') {
-                // Combine streaming completion and persistence into a single state update
                 setMessages((prev) => {
                   const updatedMessages = prev.map((m) =>
                     m.id === streamingId ? { ...m, isStreaming: false } : m
                   )
-
-                  // Find the completed message
                   const completedMessage = updatedMessages.find((m) => m.id === streamingId)
-
                   if (completedMessage) {
-                    // Save to DB after marking complete in UI
-                    // Fire-and-forget is acceptable here since message is already visible
-                    saveAssistantMessage(
-                      user.id,
-                      sessionId,
-                      completedMessage.content
-                    ).catch((err) => {
+                    saveAssistantMessage(user.id, sessionId, completedMessage.content).catch((err) => {
                       console.error('[chat] Failed to persist assistant message:', err)
                       setError('Message sent but failed to save. Check your connection.')
                     })
                   }
-
                   return updatedMessages
                 })
               } else if (event.type === 'error') {
@@ -278,7 +406,6 @@ const Chat = () => {
           }
         }
       } else {
-        // Fallback for fast-path JSON response
         const data = await response.json()
         if (data.type === 'fast_path' && data.result.status === 'ok') {
           setMessages((prev) =>
@@ -308,7 +435,6 @@ const Chat = () => {
         }
       }
       setError(errorMsg)
-      // Remove the placeholder on error (only if we added one)
       if (streamingId) {
         setMessages((prev) => prev.filter((msg) => msg.id !== streamingId))
       }
@@ -325,107 +451,313 @@ const Chat = () => {
     }
   }
 
-  const switchSession = (sid) => {
-    setSessionId(sid)
-    setError(null)
-  }
-
   if (!user) {
     return <p className="chat-not-logged-in">Please log in to use chat.</p>
   }
 
-  if (sessionLoading) {
-    return <p className="chat-loading">Loading chats...</p>
+  if (!layoutReady) {
+    return null
   }
 
-  return (
-    <div className="chat-container">
-      <h1 className="sr-only">Chat</h1>
-      <div className="session-strip">
-        <button type="button" className="session-new-btn" onClick={createNewSession} title="Start a new conversation">
-          New chat
-        </button>
-        <div className="session-list">
-          {sessions.map((session) => (
-            <button
-              type="button"
-              key={session.id}
-              className={`session-chip ${sessionId === session.id ? 'active' : ''}`}
-              onClick={() => switchSession(session.id)}
-              title={session.title || 'Untitled session'}
-            >
-              {session.title ? session.title.substring(0, 30) : 'Untitled'}
-            </button>
-          ))}
-        </div>
+  if (sessionLoading) {
+    return (
+      <div className="chat-viewport chat-container">
+        <p className="chat-loading">Loading chats…</p>
       </div>
+    )
+  }
 
-      <div className="chat-history" ref={chatHistoryRef}>
-        {messages.length === 0 && !loading && (
-          <p className="chat-empty">No messages yet. Ask about your time or your day.</p>
-        )}
-        {messages.map((msg) => (
-          <div
-            key={msg.id}
-            className={`chat-message ${msg.role}${msg.isStreaming ? ' message-in-progress' : ''}`}
+  const showSessionsPanel = sidebarOpen && !searchOpen
+  const showSearchPanel = searchOpen
+
+  const sessionListContent = (onPick) => (
+    <>
+      <div className="chat-panel-header">
+        <span className="chat-panel-label">Account</span>
+      </div>
+      <div className="chat-panel-actions">
+        <button
+          type="button"
+          className="chat-panel-new-chat session-new-btn"
+          onClick={createNewSession}
+          disabled={creatingSession}
+        >
+          {creatingSession ? 'Starting…' : 'New chat'}
+        </button>
+      </div>
+      <div className="chat-panel-list" role="list">
+        {sessions.map((session) => (
+          <button
+            key={session.id}
+            type="button"
+            role="listitem"
+            className={`chat-session-row session-chip${sessionId === session.id ? ' chat-session-row--active active' : ''}`}
+            onClick={() => onPick(session.id)}
           >
-            <div
-              className={`chat-message-block ${msg.role === 'user' ? 'user-message' : 'claude-message'}`}
-            >
-              <span className="chat-message-role">{msg.role === 'user' ? 'You' : 'Coach'}</span>
-              {msg.thinking && (
-                <div className="message-thinking">
-                  <em>Thinking: {msg.thinking}</em>
+            <span className="chat-session-row-title">
+              {session.title ? session.title.substring(0, 48) : 'Untitled'}
+            </span>
+            <span className="chat-session-row-meta">{formatSessionMeta(session.created_at)}</span>
+          </button>
+        ))}
+      </div>
+    </>
+  )
+
+  return (
+    <div className="chat-viewport chat-container">
+      <h1 className="sr-only">Chat</h1>
+      <main className="chat-main" role="main">
+        <div className="chat-layout">
+          {/* Row 1 — primary nav */}
+          <header className="chat-nav-band">
+            <div className="chat-nav-inner">
+              <nav className="chat-nav-links" aria-label="Primary navigation">
+                <button
+                  type="button"
+                  className={`chat-nav-link${currentView === views.chat ? ' chat-nav-link--active' : ''}`}
+                  onClick={() => onViewChange(views.chat)}
+                  aria-current={currentView === views.chat ? 'page' : undefined}
+                >
+                  Chat
+                </button>
+                <button
+                  type="button"
+                  className={`chat-nav-link${currentView === views.logJournal ? ' chat-nav-link--active' : ''}`}
+                  onClick={() => onViewChange(views.logJournal)}
+                  aria-current={currentView === views.logJournal ? 'page' : undefined}
+                >
+                  Log
+                </button>
+                <button
+                  type="button"
+                  className={`chat-nav-link${currentView === views.timeline ? ' chat-nav-link--active' : ''}`}
+                  onClick={() => onViewChange(views.timeline)}
+                  aria-current={currentView === views.timeline ? 'page' : undefined}
+                >
+                  Timeline
+                </button>
+              </nav>
+              <div className="chat-nav-right">
+                <span className="chat-nav-email" title={user.email}>
+                  {user.email}
+                </span>
+                <details className="chat-nav-account">
+                  <summary className="chat-nav-icon-btn" aria-label="Account menu">
+                    <IconGear />
+                  </summary>
+                  <div className="chat-nav-account-panel">
+                    <button type="button" className="chat-nav-account-action" onClick={() => onSignOut?.()}>
+                      Sign out
+                    </button>
+                  </div>
+                </details>
+              </div>
+            </div>
+          </header>
+
+          {/* Row 2 — rail + optional panels + main */}
+          <div className="chat-row2">
+            {showSessionsPanel && (
+              <button
+                type="button"
+                className="chat-sidebar-backdrop"
+                aria-label="Close sessions"
+                onClick={() => setSidebarOpen(false)}
+              />
+            )}
+            {showSearchPanel && (
+              <button
+                type="button"
+                className="chat-search-backdrop"
+                aria-label="Close search"
+                onClick={closeSearch}
+              />
+            )}
+
+            <aside className="chat-rail" aria-label="Chat tools">
+              <button
+                type="button"
+                className="chat-rail-btn session-new-btn"
+                onClick={createNewSession}
+                disabled={creatingSession}
+                aria-label="New chat"
+                title="New chat"
+              >
+                <IconPlus />
+              </button>
+              <button
+                type="button"
+                className="chat-rail-btn"
+                onClick={openSearch}
+                aria-label="Search conversations"
+                title="Search conversations"
+              >
+                <IconSearch />
+              </button>
+              <button
+                type="button"
+                className={`chat-rail-btn${sidebarOpen && !searchOpen ? ' chat-rail-btn--active' : ''}`}
+                onClick={toggleSessions}
+                aria-label="Sessions"
+                title="Sessions"
+                aria-pressed={sidebarOpen && !searchOpen}
+              >
+                <IconSessions />
+              </button>
+            </aside>
+
+            {/* Sessions column / sheet */}
+            {showSessionsPanel && (
+              <aside className="chat-sidebar" aria-label="Conversations">
+                {sessionListContent(switchSession)}
+              </aside>
+            )}
+
+            {/* Search column / sheet */}
+            {showSearchPanel && (
+              <aside className="chat-search-panel" aria-label="Search conversations">
+                <div className="chat-search-header">
+                  <div className="chat-search-field-wrap">
+                    <span className="chat-search-icon" aria-hidden="true">
+                      <IconSearch />
+                    </span>
+                    <input
+                      ref={searchFieldRef}
+                      type="search"
+                      className="chat-search-field"
+                      placeholder="Search conversations…"
+                      value={searchInput}
+                      onChange={(e) => setSearchInput(e.target.value)}
+                      autoComplete="off"
+                    />
+                  </div>
+                  <button type="button" className="chat-search-close" onClick={closeSearch} aria-label="Close search">
+                    ✕
+                  </button>
+                </div>
+                <div className="chat-search-body">
+                  {!debouncedSearch && (
+                    <p className="chat-search-empty">Start typing to filter conversations.</p>
+                  )}
+                  {debouncedSearch && filteredSessions.length === 0 && (
+                    <p className="chat-search-empty">No conversations found.</p>
+                  )}
+                  {debouncedSearch && filteredSessions.length > 0 && (
+                    <div className="chat-search-results" role="list">
+                      {filteredSessions.map((session) => (
+                        <button
+                          key={session.id}
+                          type="button"
+                          role="listitem"
+                          className="chat-search-result-row"
+                          onClick={() => {
+                            switchSession(session.id)
+                            closeSearch()
+                          }}
+                        >
+                          <span className="chat-search-result-title">
+                            {session.title || 'Untitled'}
+                          </span>
+                          <span className="chat-search-result-preview">
+                            {formatSessionMeta(session.created_at)}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </aside>
+            )}
+
+            {/* Transcript + composer */}
+            <div className="chat-main-col">
+              {error && (
+                <div className="chat-inline-error" role="alert">
+                  <span>{error}</span>
+                  <button type="button" className="chat-inline-error-dismiss" onClick={() => setError(null)}>
+                    Dismiss
+                  </button>
                 </div>
               )}
-              {msg.toolCalls && msg.toolCalls.length > 0 && (
-                <div className="message-tools">
-                  {msg.toolCalls.map((tc, idx) => (
-                    <div key={idx} className="tool-line">
-                      {tc.tool}
+
+              <div className="chat-transcript-scroll" ref={chatHistoryRef}>
+                <div className="chat-transcript-inner">
+                  {messages.length === 0 && !loading && (
+                    <p className="chat-empty">No messages yet. Ask about your time or your day.</p>
+                  )}
+                  {messages.map((msg) => (
+                    <div
+                      key={msg.id}
+                      className={`chat-message chat-message--${msg.role}${
+                        msg.isStreaming ? ' chat-message--streaming' : ''
+                      }`}
+                    >
+                      {msg.role === 'assistant' ? (
+                        <div className={`chat-bubble chat-bubble--assistant claude-message`}>
+                          {msg.thinking && (
+                            <div className="chat-thinking">
+                              <em>Thinking: {msg.thinking}</em>
+                            </div>
+                          )}
+                          {msg.toolCalls && msg.toolCalls.length > 0 && (
+                            <div className="chat-tools">
+                              {msg.toolCalls.map((tc, idx) => (
+                                <div key={idx} className="chat-tool-line">
+                                  {tc.tool}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                          <div className="chat-message-body chat-prose">
+                            {msg.content}
+                            {msg.isStreaming && <span className="chat-stream-cursor" aria-hidden="true" />}
+                          </div>
+                        </div>
+                      ) : (
+                        <div className={`chat-bubble chat-bubble--user user-message`}>
+                          <div className="chat-message-body">{msg.content}</div>
+                        </div>
+                      )}
                     </div>
                   ))}
+                  {loading && <div className="chat-loading-inline">Coach is thinking…</div>}
                 </div>
-              )}
-              <div className="chat-message-body">
-                {msg.content}
-                {msg.isStreaming && (
-                  <span aria-label="Still receiving response"> …</span>
-                )}
+              </div>
+
+              <div className="chat-composer-wrap">
+                <div className="chat-composer-inner">
+                  <form className="chat-composer-form" onSubmit={(e) => { e.preventDefault(); handleSend() }}>
+                    <div className="chat-composer-box">
+                      <textarea
+                        className="chat-composer-input chat-input"
+                        placeholder="Ask about your time…"
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        disabled={loading}
+                        name="message"
+                        rows={1}
+                        autoComplete="off"
+                      />
+                      <span className="chat-model-pill" aria-hidden="true">
+                        Coach
+                      </span>
+                      <button
+                        type="submit"
+                        className="chat-composer-send chat-send-button"
+                        disabled={loading || !input.trim()}
+                      >
+                        Send
+                      </button>
+                    </div>
+                  </form>
+                </div>
               </div>
             </div>
           </div>
-        ))}
-        {loading && <div className="loading-indicator">Coach is thinking...</div>}
-      </div>
-
-      {error && (
-        <div className="error-banner">
-          <span>Error: {error}</span>
-          <button type="button" onClick={() => setError(null)} className="error-dismiss" aria-label="Dismiss error">
-            Dismiss
-          </button>
         </div>
-      )}
-
-      <form className="chat-input-container" onSubmit={(e) => { e.preventDefault(); handleSend() }}>
-        <input
-          type="text"
-          placeholder="Ask about your time..."
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          disabled={loading}
-          className="chat-input"
-          name="message"
-          autoComplete="off"
-        />
-        <button type="submit" disabled={loading || !input.trim()} className="chat-send-button">
-          Send
-        </button>
-      </form>
+      </main>
     </div>
   )
 }
-
-export default Chat

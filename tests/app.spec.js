@@ -114,7 +114,7 @@ test.describe('Reflector App - E2E Tests', () => {
 
     if (await headerUser.isVisible()) {
       await page.locator('nav').getByRole('button', { name: 'Chat' }).click();
-      const chatInput = page.locator('input[name="message"], input.chat-input');
+      const chatInput = page.locator('textarea[name="message"], input[name="message"], .chat-input');
       await expect(chatInput).toBeVisible({ timeout: 5000 });
     }
   });

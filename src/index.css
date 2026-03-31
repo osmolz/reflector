@@ -55,6 +55,20 @@
 
   --max-width: 680px;
   --header-height: 56px;
+
+  /* Chat shell (Claude-style layout contract) */
+  --app-header-height: 5rem;
+  --chat-rail-width: 3rem;
+  --chat-panel-width: 16rem;
+  --chat-reading-max: 42rem;
+  --chat-gap-medium: 40px;
+  --chat-gap-message-y: 20px;
+  --chat-accent-muted-bg: rgba(160, 100, 78, 0.14);
+  --chat-surface-hover: rgba(28, 26, 23, 0.07);
+  --chat-border-subtle: rgba(28, 26, 23, 0.1);
+  --chat-z-backdrop: 30;
+  --chat-z-sheet: 40;
+  --chat-z-dropdown: 50;
 }
 
 html {
