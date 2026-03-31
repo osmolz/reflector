@@ -218,7 +218,7 @@ export function Timeline({ refreshKey = 0 }) {
             {dayActivities.length === 0 ? (
               <div className="timeline-empty-day">No activities logged today</div>
             ) : (
-              dayActivities.map((activity) => {
+              dayActivities.map((activity, stackIndex) => {
                 const { top, height } = calculatePositionAndHeight(activity)
                 const isCalendarEvent = activity.type === 'calendar_event'
 
@@ -226,7 +226,7 @@ export function Timeline({ refreshKey = 0 }) {
                   <div
                     key={activity.id}
                     className={`timeline-activity ${isCalendarEvent ? 'calendar-event' : ''}`}
-                    style={{ top: `${top}px`, height: `${height}px` }}
+                    style={{ top: `${top}px`, height: `${height}px`, zIndex: stackIndex + 1 }}
                     onClick={() => !isCalendarEvent && setEditingActivity(activity)}
                     role={isCalendarEvent ? undefined : 'button'}
                     tabIndex={isCalendarEvent ? undefined : 0}

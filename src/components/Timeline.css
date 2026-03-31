@@ -183,9 +183,12 @@
   right: 0;
   margin: 1px;
   padding: var(--space-xs) var(--space-sm);
-  background-color: rgba(43, 90, 107, 0.1);
-  border: 1px solid rgba(43, 90, 107, 0.3);
+  /* Opaque fill so overlapping blocks (common in day view) do not show each other's labels */
+  background-color: var(--bg-secondary);
+  border: 1px solid rgba(43, 90, 107, 0.35);
+  border-left: 3px solid rgba(43, 90, 107, 0.55);
   border-radius: 2px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
   cursor: pointer;
   transition: all 0.1s ease;
   overflow: hidden;
@@ -196,20 +199,23 @@
 }
 
 .timeline-activity:hover {
-  background-color: rgba(43, 90, 107, 0.2);
+  background-color: var(--bg-tertiary);
   border-color: var(--accent-color);
-  z-index: 2;
+  border-left-color: var(--accent-color);
+  z-index: 100;
 }
 
 .timeline-activity.calendar-event {
-  background-color: rgba(173, 216, 230, 0.15);
-  border-color: rgba(112, 179, 216, 0.3);
+  background-color: var(--bg-secondary);
+  border-color: rgba(112, 179, 216, 0.45);
+  border-left-color: rgba(70, 140, 190, 0.85);
   cursor: default;
 }
 
 .timeline-activity.calendar-event:hover {
-  background-color: rgba(173, 216, 230, 0.25);
-  border-color: rgba(112, 179, 216, 0.5);
+  background-color: var(--bg-tertiary);
+  border-color: rgba(112, 179, 216, 0.65);
+  border-left-color: rgba(50, 120, 175, 0.95);
 }
 
 .timeline-activity-inner {
@@ -272,6 +278,7 @@
   position: absolute;
   left: 0;
   right: 0;
+  z-index: 0;
   background: repeating-linear-gradient(
     45deg,
     rgba(245, 124, 0, 0.08),
