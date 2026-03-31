@@ -2,11 +2,29 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { useAuthStore } from '../store/authStore'
 import { ActivityEditForm } from './ActivityEditForm'
-import { SyncCalendarModal } from './SyncCalendarModal'
-import { AddToCalendarModal } from './AddToCalendarModal'
 import { calculateGaps, formatTime } from '../utils/timelineUtils'
-import { mergeEvents } from '../utils/calendarUtils'
 import './Timeline.css'
+
+// Import calendar components dynamically only if available
+let SyncCalendarModal = null
+let AddToCalendarModal = null
+
+const loadCalendarComponents = async () => {
+  try {
+    const sync = await import('./SyncCalendarModal')
+    SyncCalendarModal = sync.SyncCalendarModal
+  } catch (e) {
+    // Calendar components not available
+  }
+  try {
+    const add = await import('./AddToCalendarModal')
+    AddToCalendarModal = add.AddToCalendarModal
+  } catch (e) {
+    // Calendar components not available
+  }
+}
+
+loadCalendarComponents()
 
 const HOUR_HEIGHT = 40
 const DAY_START = 5
@@ -74,17 +92,42 @@ export function Timeline({ refreshKey = 0 }) {
 
       if (timeEntriesError) throw timeEntriesError
 
-      const { data: calendarEventsData, error: calendarEventsError } = await supabase
-        .from('calendar_events')
-        .select('id, gcp_event_id, user_id, title, description, start_time, end_time, calendar_id, synced_at, created_at, updated_at')
-        .eq('user_id', user.id)
-        .gte('start_time', startDate.toISOString())
-        .lte('start_time', endDate.toISOString())
-        .order('start_time', { ascending: true })
+      // Try to fetch calendar events, but continue if they're not available
+      let calendarEventsData = []
+      try {
+        const { data, error: calendarEventsError } = await supabase
+          .from('calendar_events')
+          .select('id, gcp_event_id, user_id, title, description, start_time, end_time, calendar_id, synced_at, created_at, updated_at')
+          .eq('user_id', user.id)
+          .gte('start_time', startDate.toISOString())
+          .lte('start_time', endDate.toISOString())
+          .order('start_time', { ascending: true })
 
-      if (calendarEventsError) throw calendarEventsError
+        if (!calendarEventsError && data) {
+          calendarEventsData = data
+        }
+      } catch (err) {
+        // Calendar events table might not exist or calendar integration not set up
+        calendarEventsData = []
+      }
 
-      const merged = mergeEvents(timeEntriesData || [], calendarEventsData || [])
+      // Merge events if calendar utilities are available, otherwise just use time entries
+      let merged
+      try {
+        const { mergeEvents: mergeEventsFn } = await import('../utils/calendarUtils')
+        merged = mergeEventsFn(timeEntriesData || [], calendarEventsData)
+      } catch (err) {
+        // Calendar utilities not available, just use time entries with basic transformation
+        merged = (timeEntriesData || []).map((e) => ({
+          id: e.id,
+          type: 'time_entry',
+          title: e.activity_name,
+          start_time: new Date(e.start_time),
+          end_time: new Date(new Date(e.start_time).getTime() + e.duration_minutes * 60 * 1000),
+          duration_minutes: e.duration_minutes,
+          category: e.category,
+        }))
+      }
 
       const displayActivities = merged.map((event) => {
         if (event.type === 'time_entry') {
@@ -194,7 +237,7 @@ export function Timeline({ refreshKey = 0 }) {
                       {height > 35 && (
                         <span className="timeline-activity-duration">{activity.duration_minutes}m</span>
                       )}
-                      {!isCalendarEvent && (
+                      {!isCalendarEvent && AddToCalendarModal && (
                         <button
                           className="timeline-add-cal-btn"
                           onClick={(e) => {
@@ -359,9 +402,11 @@ export function Timeline({ refreshKey = 0 }) {
       <div className="timeline-header">
         <div className="timeline-header-top">
           <h1 className="timeline-page-title">Timeline</h1>
-          <button className="btn-sync-calendar" onClick={() => setSyncModalOpen(true)}>
-            Sync with Google Calendar
-          </button>
+          {SyncCalendarModal && (
+            <button className="btn-sync-calendar" onClick={() => setSyncModalOpen(true)}>
+              Sync with Google Calendar
+            </button>
+          )}
         </div>
       </div>
 
@@ -399,24 +444,28 @@ export function Timeline({ refreshKey = 0 }) {
         />
       )}
 
-      <SyncCalendarModal
-        isOpen={syncModalOpen}
-        onClose={() => setSyncModalOpen(false)}
-        onSyncComplete={() => {
-          setSyncModalOpen(false)
-          fetchActivities()
-        }}
-      />
+      {SyncCalendarModal && (
+        <SyncCalendarModal
+          isOpen={syncModalOpen}
+          onClose={() => setSyncModalOpen(false)}
+          onSyncComplete={() => {
+            setSyncModalOpen(false)
+            fetchActivities()
+          }}
+        />
+      )}
 
-      <AddToCalendarModal
-        isOpen={!!addToCalendarEntry}
-        timeEntry={addToCalendarEntry}
-        onClose={() => setAddToCalendarEntry(null)}
-        onSuccess={() => {
-          setAddToCalendarEntry(null)
-          fetchActivities()
-        }}
-      />
+      {AddToCalendarModal && (
+        <AddToCalendarModal
+          isOpen={!!addToCalendarEntry}
+          timeEntry={addToCalendarEntry}
+          onClose={() => setAddToCalendarEntry(null)}
+          onSuccess={() => {
+            setAddToCalendarEntry(null)
+            fetchActivities()
+          }}
+        />
+      )}
     </div>
   )
 }
