@@ -91,12 +91,52 @@ export function getActivityEndTime(activity) {
 }
 
 /**
+ * Start–end time label for an activity (e.g. "7:15 AM–7:37 AM")
+ */
+export function formatActivityTimeWindow(activity) {
+  const start = new Date(activity.start_time);
+  const end = getActivityEndTime(activity);
+  return `${formatTime(start)}–${formatTime(end)}`;
+}
+
+/**
  * Sort activities chronologically
  */
 export function sortActivities(activities) {
   return [...activities].sort(
     (a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime()
   );
+}
+
+/**
+ * Ordered activities plus gap rows (≥ minGapMinutes) for agenda-style day views
+ */
+export function buildDayAgendaWithGaps(activities, minGapMinutes = 15) {
+  const sorted = sortActivities(activities);
+  const items = [];
+
+  for (let i = 0; i < sorted.length; i++) {
+    items.push({ kind: 'activity', activity: sorted[i] });
+    if (i < sorted.length - 1) {
+      const cur = sorted[i];
+      const nxt = sorted[i + 1];
+      const curEnd = new Date(cur.start_time).getTime() + cur.duration_minutes * 60 * 1000;
+      const nextStart = new Date(nxt.start_time).getTime();
+      if (nextStart > curEnd) {
+        const gapMin = Math.round((nextStart - curEnd) / 60000);
+        if (gapMin >= minGapMinutes) {
+          items.push({
+            kind: 'gap',
+            startTime: new Date(curEnd),
+            endTime: new Date(nextStart),
+            durationMinutes: gapMin,
+          });
+        }
+      }
+    }
+  }
+
+  return items;
 }
 
 /**

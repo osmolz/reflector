@@ -2,7 +2,13 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import { useAuthStore } from '../store/authStore'
 import { ActivityEditForm } from './ActivityEditForm'
-import { calculateGaps, formatDurationShort, formatTime } from '../utils/timelineUtils'
+import {
+  buildDayAgendaWithGaps,
+  formatActivityTimeWindow,
+  formatDate,
+  formatDurationShort,
+  formatTime,
+} from '../utils/timelineUtils'
 import './Timeline.css'
 
 // Import calendar components dynamically only if available
@@ -26,19 +32,11 @@ const loadCalendarComponents = async () => {
 
 loadCalendarComponents()
 
-const HOUR_HEIGHT = 52
-const DAY_START = 5
-const DAY_END = 24
-/** Below this pixel height, activity uses a single-line compact layout */
-const COMPACT_ACTIVITY_PX = 56
-const MIN_ACTIVITY_PX = 30
-
 export function Timeline({ refreshKey = 0 }) {
   const { user } = useAuthStore()
   const [view, setView] = useState('day')
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [activities, setActivities] = useState([])
-  const [gaps, setGaps] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [editingActivity, setEditingActivity] = useState(null)
@@ -155,10 +153,6 @@ export function Timeline({ refreshKey = 0 }) {
       })
 
       setActivities(displayActivities)
-
-      const timeEntriesOnly = displayActivities.filter((a) => a.type === 'time_entry')
-      const calculatedGaps = calculateGaps(timeEntriesOnly)
-      setGaps(calculatedGaps)
     } catch (err) {
       setError(err.message || 'Failed to load timeline')
     } finally {
@@ -174,143 +168,95 @@ export function Timeline({ refreshKey = 0 }) {
     )
   }
 
-  const calculatePositionAndHeight = (activity) => {
-    const start = new Date(activity.start_time)
-    const startHour = start.getHours()
-    const startMinute = start.getMinutes()
-
-    const minutesSince5am = (startHour - DAY_START) * 60 + startMinute
-    const top = (minutesSince5am / 60) * HOUR_HEIGHT
-
-    const proportional = (activity.duration_minutes / 60) * HOUR_HEIGHT
-    const height = Math.max(MIN_ACTIVITY_PX, proportional)
-
-    return { top, height }
-  }
-
   const renderDayView = () => {
     const dayActivities = activities.filter((a) => {
       const aDate = new Date(a.start_time)
       return aDate.toDateString() === selectedDate.toDateString()
     })
 
+    const agendaItems = buildDayAgendaWithGaps(dayActivities)
+
     return (
-      <div className="timeline-day-view" style={{ '--tl-hour': `${HOUR_HEIGHT}px` }}>
+      <div className="timeline-day-view">
         <div className="timeline-day-nav">
-          <button className="timeline-nav-btn" onClick={() => setSelectedDate(new Date(selectedDate.getTime() - 86400000))}>
+          <button type="button" className="timeline-nav-btn" onClick={() => setSelectedDate(new Date(selectedDate.getTime() - 86400000))}>
             ← Prev
           </button>
-          <span className="timeline-day-label">{selectedDate.toDateString()}</span>
-          <button className="timeline-nav-btn" onClick={() => setSelectedDate(new Date(selectedDate.getTime() + 86400000))}>
+          <span className="timeline-day-label">{formatDate(selectedDate)}</span>
+          <button type="button" className="timeline-nav-btn" onClick={() => setSelectedDate(new Date(selectedDate.getTime() + 86400000))}>
             Next →
           </button>
         </div>
 
-        <div className="timeline-grid">
-          <div className="timeline-hours">
-            {Array.from({ length: 19 }).map((_, i) => {
-              const hour = DAY_START + i
-              const h12 = hour % 12 || 12
-              const period = hour >= 12 ? 'PM' : 'AM'
-              return (
-                <div key={i} className="timeline-hour" style={{ height: `${HOUR_HEIGHT}px` }}>
-                  <span className="timeline-hour-label">
-                    <span className="timeline-hour-num">{h12}</span>
-                    <span className="timeline-hour-period">{period}</span>
-                  </span>
-                </div>
-              )
-            })}
-          </div>
-
-          <div className="timeline-activities-container">
-            {dayActivities.length === 0 ? (
-              <div className="timeline-empty-day">No activities logged today</div>
-            ) : (
-              dayActivities.map((activity, stackIndex) => {
-                const { top, height } = calculatePositionAndHeight(activity)
-                const isCalendarEvent = activity.type === 'calendar_event'
-                const isCompact = height < COMPACT_ACTIVITY_PX
-                const durLabel = formatDurationShort(activity.duration_minutes)
-
+        {dayActivities.length === 0 ? (
+          <p className="timeline-day-empty">No activities logged this day.</p>
+        ) : (
+          <section className="timeline-day-agenda" aria-label="Day schedule">
+            {agendaItems.map((item) => {
+              if (item.kind === 'gap') {
                 return (
                   <div
-                    key={activity.id}
-                    className={['timeline-activity', isCalendarEvent && 'calendar-event', isCompact && 'timeline-activity--compact'].filter(Boolean).join(' ')}
-                    style={{ top: `${top}px`, height: `${height}px`, zIndex: stackIndex + 1 }}
-                    onClick={() => !isCalendarEvent && setEditingActivity(activity)}
-                    role={isCalendarEvent ? undefined : 'button'}
-                    tabIndex={isCalendarEvent ? undefined : 0}
+                    key={`gap-${item.startTime.getTime()}`}
+                    className="timeline-day-gap"
                   >
-                    {isCompact ? (
-                      <div className="timeline-activity-compact-row">
-                        <span className="timeline-activity-time">{formatTime(activity.start_time)}</span>
-                        <span className="timeline-activity-compact-sep" aria-hidden="true">
-                          ·
-                        </span>
-                        <span className="timeline-activity-name">{activity.activity_name}</span>
-                        <span className="timeline-activity-duration">{durLabel}</span>
-                        {!isCalendarEvent && AddToCalendarModal && (
-                          <button
-                            type="button"
-                            className="timeline-add-cal-btn timeline-add-cal-btn--icon"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              setAddToCalendarEntry(activity)
-                            }}
-                            aria-label="Add to Google Calendar"
-                          >
-                            +
-                          </button>
-                        )}
-                      </div>
-                    ) : (
-                      <>
-                        <div className="timeline-activity-inner">
-                          <div className="timeline-activity-meta">
-                            <span className="timeline-activity-time">{formatTime(activity.start_time)}</span>
-                            <span className="timeline-activity-duration">{durLabel}</span>
-                          </div>
-                          <span className="timeline-activity-name">{activity.activity_name}</span>
-                        </div>
-                        {!isCalendarEvent && AddToCalendarModal && (
-                          <button
-                            type="button"
-                            className="timeline-add-cal-btn"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              setAddToCalendarEntry(activity)
-                            }}
-                          >
-                            + Cal
-                          </button>
-                        )}
-                      </>
-                    )}
+                    <div className="timeline-day-gap-window">
+                      {formatTime(item.startTime)}–{formatTime(item.endTime)}
+                    </div>
+                    <div className="timeline-day-gap-body">
+                      <span className="timeline-day-gap-label">Unaccounted time</span>
+                      <span className="timeline-day-gap-duration">{formatDurationShort(item.durationMinutes)}</span>
+                    </div>
                   </div>
                 )
-              })
-            )}
+              }
 
-            {gaps.map((gap, i) => {
-              const gapDate = new Date(gap.startTime)
-              if (gapDate.toDateString() !== selectedDate.toDateString()) return null
-
-              const minutesSince5am = (gap.startTime.getHours() - DAY_START) * 60 + gap.startTime.getMinutes()
-              const top = (minutesSince5am / 60) * HOUR_HEIGHT
-              const height = (gap.durationMinutes / 60) * HOUR_HEIGHT
+              const activity = item.activity
+              const isCalendarEvent = activity.type === 'calendar_event'
+              const durLabel = formatDurationShort(activity.duration_minutes)
 
               return (
                 <div
-                  key={`gap-${i}`}
-                  className="timeline-gap-block"
-                  style={{ top: `${top}px`, height: `${height}px` }}
-                  title={`${gap.durationMinutes}m gap`}
-                />
+                  key={activity.id}
+                  className={['timeline-day-row', isCalendarEvent && 'timeline-day-row--calendar'].filter(Boolean).join(' ')}
+                  aria-label={isCalendarEvent ? undefined : `Edit entry: ${activity.activity_name}`}
+                  onClick={() => !isCalendarEvent && setEditingActivity(activity)}
+                  onKeyDown={(e) => {
+                    if (isCalendarEvent) return
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      setEditingActivity(activity)
+                    }
+                  }}
+                  tabIndex={isCalendarEvent ? undefined : 0}
+                >
+                  <div className="timeline-day-window">{formatActivityTimeWindow(activity)}</div>
+                  <div className="timeline-day-body">
+                    <p className="timeline-day-title">{activity.activity_name}</p>
+                    <div className="timeline-day-meta">
+                      <span className="timeline-day-duration">{durLabel}</span>
+                      {activity.category ? (
+                        <span className="timeline-day-category">{activity.category}</span>
+                      ) : null}
+                      {isCalendarEvent ? <span className="timeline-day-source">Calendar</span> : null}
+                    </div>
+                    {!isCalendarEvent && AddToCalendarModal && (
+                      <button
+                        type="button"
+                        className="timeline-day-cal-link"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setAddToCalendarEntry(activity)
+                        }}
+                      >
+                        Add to Google Calendar
+                      </button>
+                    )}
+                  </div>
+                </div>
               )
             })}
-          </div>
-        </div>
+          </section>
+        )}
       </div>
     )
   }
