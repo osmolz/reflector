@@ -1,4 +1,4 @@
-/* App shell — quiet header, reading-width main */
+/* App shell — solid header, reading-width main */
 
 .app-shell {
   min-height: 100vh;
@@ -17,9 +17,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-lg);
-  background-color: rgba(255, 252, 248, 0.88);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background-color: var(--bg-secondary);
   border-bottom: 1px solid var(--border-light);
 }
 
@@ -29,8 +27,8 @@
 
 .header-title {
   font-family: var(--font-serif);
-  font-size: 1.25rem;
-  font-weight: 500;
+  font-size: 1.125rem;
+  font-weight: 700;
   letter-spacing: -0.03em;
   color: var(--text-primary);
   line-height: 1;
@@ -40,7 +38,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(2px, 1.5vw, 8px);
+  gap: var(--space-xs);
   list-style: none;
   flex: 1;
   min-width: 0;
@@ -55,7 +53,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 14px;
+  padding: var(--space-sm) var(--space-md);
   font-family: var(--font-sans);
   font-size: 0.9375rem;
   font-weight: 500;
@@ -64,30 +62,27 @@
   background: none;
   border: none;
   cursor: pointer;
-  border-radius: var(--radius-sm);
+  border-radius: 0;
   line-height: 1.2;
-  transition: color 0.15s ease, background-color 0.15s ease;
+  transition: color 0.15s ease;
 }
 
 .header-nav-link:hover {
   color: var(--text-primary);
-  background-color: rgba(22, 20, 18, 0.04);
 }
 
 .header-nav-link.active {
   color: var(--text-primary);
   font-weight: 600;
-  background-color: transparent;
 }
 
 .header-nav-link.active::after {
   content: '';
   position: absolute;
-  left: 14px;
-  right: 14px;
-  bottom: 6px;
+  left: var(--space-md);
+  right: var(--space-md);
+  bottom: 0;
   height: 2px;
-  border-radius: 1px;
   background-color: var(--accent-color);
 }
 
@@ -115,18 +110,18 @@
   background: none;
   border: none;
   cursor: pointer;
-  padding: 8px 10px;
-  border-radius: var(--radius-sm);
+  padding: var(--space-sm) var(--space-sm);
+  border-radius: 0;
   font-family: var(--font-sans);
   text-decoration: underline;
-  text-decoration-color: transparent;
+  text-decoration-color: var(--border-medium);
   text-underline-offset: 3px;
   transition: color 0.15s ease, text-decoration-color 0.15s ease;
 }
 
 .header-sign-out:hover {
-  color: var(--text-primary);
-  text-decoration-color: var(--border-medium);
+  color: var(--accent-hover);
+  text-decoration-color: var(--accent-color);
 }
 
 .main-container {
@@ -155,8 +150,8 @@
 
 .page-title {
   font-family: var(--font-serif);
-  font-size: clamp(1.75rem, 4vw, 2.35rem);
-  font-weight: 500;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 700;
   letter-spacing: -0.03em;
   color: var(--text-primary);
   line-height: 1.12;
@@ -187,8 +182,8 @@
 
 .section-title {
   font-family: var(--font-serif);
-  font-size: 1.35rem;
-  font-weight: 500;
+  font-size: 1.375rem;
+  font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--text-primary);
   margin-bottom: 0;
@@ -230,8 +225,8 @@
   border-left: 3px solid var(--error);
   color: var(--error);
   font-size: 0.875rem;
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-  background: rgba(155, 44, 44, 0.06);
+  border-radius: 0;
+  background: rgba(143, 40, 40, 0.06);
 }
 
 .status-success {
@@ -239,8 +234,8 @@
   border-left: 3px solid var(--success);
   color: var(--success);
   font-size: 0.875rem;
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-  background: rgba(45, 74, 50, 0.06);
+  border-radius: 0;
+  background: rgba(42, 74, 48, 0.06);
 }
 
 @media (max-width: 640px) {
@@ -257,7 +252,7 @@
     width: 100%;
     justify-content: flex-start;
     overflow-x: auto;
-    padding-top: var(--space-xs);
+    padding-top: var(--space-sm);
     border-top: 1px solid var(--border-light);
     margin-top: var(--space-xs);
     -webkit-overflow-scrolling: touch;
@@ -269,7 +264,7 @@
   }
 
   .header-nav-link {
-    padding: 10px 12px;
+    padding: var(--space-sm) var(--space-md);
     font-size: 0.875rem;
     white-space: nowrap;
   }
@@ -279,7 +274,7 @@
   }
 
   .page-title {
-    font-size: 1.65rem;
+    font-size: 1.75rem;
   }
 
   .page-header {

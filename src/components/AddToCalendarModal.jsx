@@ -147,10 +147,7 @@ export function AddToCalendarModal({ isOpen, timeEntry, onClose, onSuccess }) {
 
         {success ? (
           <div className="add-to-calendar-success" role="status">
-            <div className="success-icon" aria-hidden="true">✓</div>
-            <p className="success-message">
-              Event added to Google Calendar
-            </p>
+            <p className="success-message">Event added to Google Calendar</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="modal-form">

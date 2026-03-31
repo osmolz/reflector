@@ -1,11 +1,3 @@
-/* ============================================================
-   Reflector — AddToCalendarModal Component
-   Google Calendar Integration
-   ============================================================ */
-
-/* ============================================================
-   Duration Display (Read-only Field)
-   ============================================================ */
 .duration-display {
   padding: var(--space-md);
   border: 1px solid var(--border-light);
@@ -17,57 +9,30 @@
   line-height: 1.5;
 }
 
-/* ============================================================
-   Success State
-   ============================================================ */
 .add-to-calendar-success {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-lg);
+  gap: var(--space-md);
   padding: var(--space-xl) var(--space-lg);
   text-align: center;
-  animation: success-fade-in 0.4s ease-out;
-}
-
-.success-icon {
-  font-size: 3rem;
-  color: var(--success);
-  font-weight: 600;
-  line-height: 1;
 }
 
 .success-message {
-  font-size: 1.125rem;
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 700;
   color: var(--text-primary);
   margin: 0;
-  font-weight: 500;
+  line-height: 1.35;
 }
 
-@keyframes success-fade-in {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* ============================================================
-   Responsive Design
-   ============================================================ */
 @media (max-width: 640px) {
   .duration-display {
-    font-size: 16px; /* Prevents zoom on iOS */
-  }
-
-  .success-icon {
-    font-size: 2.5rem;
+    font-size: 16px;
   }
 
   .success-message {
-    font-size: 1rem;
+    font-size: 1.125rem;
   }
 }

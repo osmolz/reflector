@@ -179,7 +179,7 @@ select {
   transition: border-color 0.2s ease;
   -webkit-appearance: none;
   appearance: none;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231A1A1A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231c1a17' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
   background-repeat: no-repeat;
   background-position: right var(--space-md) center;
   background-size: 16px;
@@ -204,11 +204,11 @@ select:disabled {
 button,
 .btn {
   cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
   border-radius: var(--radius-sm);
   font-weight: 600;
   font-size: 0.9375rem;
-  padding: 12px 20px;
+  padding: var(--space-md) var(--space-lg);
   border: none;
   font-family: var(--font-sans);
   text-transform: none;
@@ -216,22 +216,20 @@ button,
   letter-spacing: 0.01em;
 }
 
-/* Primary Button (Main CTA) */
 .btn-primary,
 button.btn-primary {
-  background-color: var(--accent-color);
-  color: var(--bg-secondary);
-  box-shadow: var(--shadow-card);
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-fg);
 }
 
 .btn-primary:hover:not(:disabled),
 button.btn-primary:hover:not(:disabled) {
-  background-color: var(--accent-dark);
+  background-color: var(--btn-primary-hover-bg);
 }
 
 .btn-primary:active:not(:disabled),
 button.btn-primary:active:not(:disabled) {
-  background-color: var(--accent-color);
+  background-color: var(--btn-primary-bg);
 }
 
 /* Secondary Button (Alternative) */
@@ -261,7 +259,7 @@ button.btn-tertiary {
 
 .btn-tertiary:hover:not(:disabled),
 button.btn-tertiary:hover:not(:disabled) {
-  color: var(--accent-color);
+  color: var(--accent-hover);
   text-decoration: underline;
 }
 
@@ -382,7 +380,7 @@ input[type="radio"] {
 .form-section-title {
   font-family: var(--font-serif);
   font-size: 1.25rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-primary);
   margin-bottom: var(--space-lg);
   letter-spacing: -0.01em;

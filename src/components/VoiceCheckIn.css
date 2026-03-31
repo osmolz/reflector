@@ -7,7 +7,7 @@
 .voice-check-in h2,
 .voice-check-in h3 {
   font-family: var(--font-serif);
-  font-weight: 500;
+  font-weight: 700;
   color: var(--text-primary);
 }
 
@@ -38,20 +38,19 @@
   min-height: 140px;
   padding: var(--space-md) var(--space-lg);
   border: 1px solid var(--border-medium);
-  border-radius: var(--radius-md);
+  border-radius: 0;
   background-color: var(--bg-secondary);
   color: var(--text-primary);
   font-family: var(--font-sans);
   font-size: 1rem;
   line-height: 1.65;
   resize: vertical;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: border-color 0.15s ease;
 }
 
 .voice-check-in-textarea:focus {
   outline: none;
   border-color: var(--accent-color);
-  box-shadow: 0 0 0 3px rgba(26, 24, 22, 0.08);
 }
 
 .voice-check-in-transcript {

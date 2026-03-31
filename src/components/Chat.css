@@ -1,43 +1,16 @@
-/* ============================================================
-   Reflector — Chat Component
-   Phase 7: Streaming & Animation
-   Editorial aesthetic, cohesive with timeline
-   ============================================================ */
+/* Chat — editorial transcript: alignment + type, no bubble colors */
 
-/* ============================================================
-   Streaming Animation (Subtle Fade-In as Text Appears)
-   ============================================================ */
-@keyframes stream-in {
-  from {
-    opacity: 0.7;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.streaming-text {
-  animation: stream-in 0.4s ease-out;
-}
-
-/* ============================================================
-   Chat Container
-   ============================================================ */
 .chat-container {
   display: flex;
   flex-direction: column;
   flex: 1;
-  min-height: min(520px, calc(100vh - var(--header-height) - 5rem));
+  min-height: min(520px, calc(100vh - var(--header-height) - var(--space-2xl)));
   background-color: var(--bg-secondary);
   border: 1px solid var(--border-light);
-  border-radius: var(--radius-md);
+  border-radius: 0;
   overflow: hidden;
-  box-shadow: var(--shadow-card);
 }
 
-/* ============================================================
-   Session Strip (Horizontal Tabs)
-   ============================================================ */
 .session-strip {
   display: flex;
   align-items: center;
@@ -47,102 +20,81 @@
   background-color: var(--bg-primary);
   overflow-x: auto;
   overflow-y: hidden;
-  min-height: 52px;
+  min-height: 48px;
 }
 
-.session-strip::-webkit-scrollbar {
-  height: 4px;
+.session-strip::-webkit-scrollbar,
+.session-list::-webkit-scrollbar {
+  height: var(--space-xs);
 }
 
-.session-strip::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.session-strip::-webkit-scrollbar-thumb {
+.session-strip::-webkit-scrollbar-thumb,
+.session-list::-webkit-scrollbar-thumb {
   background: var(--border-medium);
-  border-radius: 2px;
+  border-radius: 0;
 }
 
 .session-list {
   display: flex;
-  gap: var(--space-sm);
+  gap: var(--space-md);
   flex: 1;
   overflow-x: auto;
   overflow-y: hidden;
+  align-items: flex-end;
 }
 
-.session-list::-webkit-scrollbar {
-  height: 4px;
-}
-
-.session-list::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.session-list::-webkit-scrollbar-thumb {
-  background: var(--border-medium);
-  border-radius: 2px;
-}
-
-/* Session chip (tab) */
 .session-chip {
-  padding: 8px 14px;
-  background-color: transparent;
-  color: var(--text-secondary);
-  border: 1px solid transparent;
-  border-radius: 999px;
+  padding: var(--space-sm) 0;
+  background: none;
+  color: var(--text-tertiary);
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: 0;
   cursor: pointer;
   font-family: var(--font-sans);
   font-size: 0.8125rem;
   font-weight: 500;
   line-height: 1.3;
   white-space: nowrap;
-  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  transition: color 0.15s ease, border-color 0.15s ease;
   flex-shrink: 0;
+  margin-bottom: -1px;
 }
 
 .session-chip:hover {
-  background-color: rgba(22, 20, 18, 0.05);
   color: var(--text-primary);
 }
 
 .session-chip.active {
-  background-color: var(--accent-color);
-  color: var(--bg-secondary);
-  border-color: var(--accent-color);
+  color: var(--text-primary);
   font-weight: 600;
+  border-bottom-color: var(--accent-color);
 }
 
-/* New session button */
 .session-new-btn {
-  padding: 8px 14px;
-  background-color: var(--bg-secondary);
+  padding: var(--space-sm) var(--space-md);
+  background-color: transparent;
   color: var(--text-primary);
   border: 1px solid var(--border-medium);
-  border-radius: 999px;
+  border-radius: 0;
   cursor: pointer;
   font-family: var(--font-sans);
   font-size: 0.8125rem;
   font-weight: 600;
   white-space: nowrap;
-  transition: background-color 0.15s ease, border-color 0.15s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
   flex-shrink: 0;
 }
 
 .session-new-btn:hover {
-  background-color: var(--text-primary);
-  color: var(--bg-secondary);
-  border-color: var(--text-primary);
+  background-color: var(--bg-secondary);
+  border-color: var(--text-tertiary);
 }
 
 .session-new-btn:active {
-  background-color: var(--accent-dark);
-  border-color: var(--accent-dark);
+  background-color: var(--bg-tertiary);
 }
 
-/* ============================================================
-   Chat History (Message Area)
-   ============================================================ */
 .chat-history {
   flex: 1;
   overflow-y: auto;
@@ -155,7 +107,7 @@
 }
 
 .chat-history::-webkit-scrollbar {
-  width: 6px;
+  width: var(--space-sm);
 }
 
 .chat-history::-webkit-scrollbar-track {
@@ -167,88 +119,73 @@
   border-radius: 0;
 }
 
-.chat-history::-webkit-scrollbar-thumb:hover {
-  background: var(--border-light);
-}
-
-/* ============================================================
-   Chat Message
-   ============================================================ */
 .chat-message {
   display: flex;
-  margin-bottom: var(--space-md);
+  flex-direction: column;
   width: 100%;
+  max-width: 100%;
 }
 
 .chat-message.user {
-  flex-direction: row-reverse;
-  justify-content: flex-end;
+  align-items: flex-end;
 }
 
 .chat-message.assistant {
-  flex-direction: row;
-  justify-content: flex-start;
+  align-items: flex-start;
 }
 
-/* User message — distinct background color */
-.user-message {
-  background-color: var(--bg-tertiary);
-  color: var(--text-primary);
+.chat-message-block {
   max-width: 85%;
-  padding: var(--space-md) var(--space-lg);
-  border-radius: var(--radius-md) var(--radius-md) 4px var(--radius-md);
-  text-align: left;
-  word-wrap: break-word;
-  line-height: 1.65;
-  border: 1px solid var(--border-light);
-}
-
-.user-message strong {
-  font-weight: 600;
-  margin-right: var(--space-sm);
-  font-size: 0.6875rem;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  color: var(--text-tertiary);
-}
-
-/* Assistant message — open field, not a second “bubble color war” */
-.claude-message {
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  max-width: 85%;
-  padding: var(--space-md) var(--space-lg);
-  border-radius: var(--radius-md) var(--radius-md) var(--radius-md) 4px;
-  text-align: left;
-  word-wrap: break-word;
-  line-height: 1.65;
-  border: 1px solid var(--border-light);
-}
-
-.claude-message strong {
-  font-weight: 600;
-  margin-right: var(--space-sm);
-  font-size: 0.6875rem;
-  text-transform: uppercase;
-  letter-spacing: 0.07em;
-  color: var(--text-tertiary);
-}
-
-/* Message currently being streamed — subtle styling difference */
-.message-in-progress .claude-message {
-  color: var(--text-secondary);
-  opacity: 0.9;
-}
-
-/* Visual separation between streamed text and next message */
-.message-complete {
+  padding: 0 0 var(--space-md);
   border-bottom: 1px solid var(--border-light);
-  padding-bottom: var(--space-lg);
+  text-align: left;
+  word-wrap: break-word;
+  line-height: 1.65;
+  color: var(--text-primary);
+  background: transparent;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  border-radius: 0;
 }
 
-/* ============================================================
-   Status Messages
-   ============================================================ */
+.chat-message-role {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+  margin-bottom: var(--space-sm);
+}
+
+.message-in-progress .chat-message-body {
+  color: var(--text-secondary);
+}
+
+.message-tools {
+  margin-bottom: var(--space-sm);
+  font-size: 0.8125rem;
+  color: var(--text-tertiary);
+  line-height: 1.5;
+}
+
+.tool-line {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+.message-thinking {
+  font-size: 0.8125rem;
+  color: var(--text-tertiary);
+  margin-bottom: var(--space-sm);
+  padding: var(--space-sm) 0;
+  line-height: 1.45;
+  border-left: 2px solid var(--border-medium);
+  padding-left: var(--space-md);
+}
+
 .loading-indicator {
   color: var(--text-tertiary);
   padding: var(--space-md);
@@ -260,10 +197,15 @@
 
 .error-banner {
   color: var(--error);
-  padding: var(--space-md) 0 var(--space-md) var(--space-md);
+  padding: var(--space-md) var(--space-lg);
   border-left: 2px solid var(--error);
-  margin-bottom: var(--space-sm);
+  margin: 0;
   font-size: 0.875rem;
+  background: rgba(143, 40, 40, 0.06);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
 }
 
 .chat-not-logged-in {
@@ -288,9 +230,6 @@
   font-size: 0.9375rem;
 }
 
-/* ============================================================
-   Chat Input Section
-   ============================================================ */
 .chat-input-container {
   display: flex;
   gap: var(--space-sm);
@@ -302,9 +241,9 @@
 
 .chat-input {
   flex: 1;
-  padding: 12px 16px;
+  padding: var(--space-md);
   border: 1px solid var(--border-medium);
-  border-radius: var(--radius-sm);
+  border-radius: 0;
   background-color: var(--bg-secondary);
   color: var(--text-primary);
   font-family: var(--font-sans);
@@ -312,7 +251,7 @@
   line-height: 1.45;
   resize: none;
   transition: border-color 0.15s ease;
-  min-height: 44px;
+  min-height: 48px;
   max-height: 120px;
 }
 
@@ -333,11 +272,11 @@
 }
 
 .chat-send-button {
-  padding: 12px 20px;
-  background-color: var(--accent-color);
-  color: var(--bg-secondary);
+  padding: var(--space-md) var(--space-lg);
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-fg);
   border: none;
-  border-radius: var(--radius-sm);
+  border-radius: 0;
   cursor: pointer;
   font-weight: 600;
   font-size: 0.875rem;
@@ -348,11 +287,11 @@
 }
 
 .chat-send-button:hover:not(:disabled) {
-  background-color: var(--accent-dark);
+  background-color: var(--btn-primary-hover-bg);
 }
 
 .chat-send-button:active:not(:disabled) {
-  background-color: var(--accent-color);
+  background-color: var(--btn-primary-bg);
 }
 
 .chat-send-button:disabled {
@@ -360,9 +299,23 @@
   cursor: not-allowed;
 }
 
-/* ============================================================
-   Responsive Design
-   ============================================================ */
+.error-dismiss {
+  padding: var(--space-xs) var(--space-sm);
+  background: none;
+  border: none;
+  color: var(--error);
+  cursor: pointer;
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-family: var(--font-sans);
+}
+
+.error-dismiss:hover {
+  color: var(--text-primary);
+}
+
 @media (max-width: 640px) {
   .chat-container {
     max-height: none;
@@ -373,25 +326,19 @@
     padding: var(--space-md);
   }
 
-  .user-message,
-  .claude-message {
+  .chat-message-block {
     max-width: 90%;
-    line-height: 1.6;
   }
 
   .chat-input-container {
     padding: var(--space-md);
-    gap: var(--space-sm);
   }
 
   .chat-input {
-    font-size: 16px; /* Prevents zoom on iOS */
+    font-size: 16px;
   }
 }
 
-/* ============================================================
-   Extra Small Mobile (375px+)
-   ============================================================ */
 @media (max-width: 480px) {
   .chat-history {
     padding: var(--space-sm);
@@ -401,85 +348,4 @@
   .chat-message {
     word-break: break-word;
   }
-
-  .loading-indicator {
-    padding: var(--space-sm);
-    font-size: 0.9rem;
-  }
-
-  .error-banner {
-    padding: var(--space-sm) 0 var(--space-sm) var(--space-sm);
-    font-size: 0.8rem;
-  }
-}
-
-/* ============================================================
-   Streaming-Specific Styles (Thinking, Tools, Indicator)
-   ============================================================ */
-
-.message-thinking {
-  font-size: 0.8125rem;
-  color: var(--text-tertiary);
-  margin-bottom: 0.65em;
-  padding: 0.65em 0.85em;
-  background: var(--bg-primary);
-  border-radius: var(--radius-sm);
-  border-left: 3px solid var(--border-medium);
-  line-height: 1.45;
-}
-
-.message-tools {
-  display: flex;
-  gap: 0.35em;
-  margin-bottom: 0.5em;
-  flex-wrap: wrap;
-}
-
-.tool-badge {
-  display: inline-block;
-  background: var(--bg-tertiary);
-  color: var(--text-secondary);
-  padding: 0.2em 0.55em;
-  border-radius: var(--radius-sm);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  border: 1px solid var(--border-light);
-}
-
-.streaming-indicator {
-  display: inline-block;
-  margin-left: 0.35em;
-  color: var(--text-tertiary);
-  font-size: 1rem;
-  animation: pulse 1.2s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
-}
-
-/* Error dismiss button */
-.error-dismiss {
-  margin-left: 0.75em;
-  padding: 0.15em 0.4em;
-  background: none;
-  border: none;
-  color: inherit;
-  cursor: pointer;
-  font-size: 0.8125rem;
-  line-height: 1.2;
-  opacity: 0.85;
-  text-decoration: underline;
-  transition: opacity 0.2s;
-}
-
-.error-dismiss:hover {
-  opacity: 1;
 }

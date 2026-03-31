@@ -1,6 +1,6 @@
-/* Reflector — design system (warm editorial, intentional rhythm) */
+/* Reflector — Phase 21: editorial tokens, terracotta accent, ink CTAs */
 
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=Karla:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Karla:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
 
 *,
 *::before,
@@ -11,26 +11,30 @@
 }
 
 :root {
-  /* Surfaces — warm plaster + paper (Gebbia-like hospitality, not cold gray) */
-  --bg-primary: #f0ebe3;
-  --bg-secondary: #fffcf8;
-  --bg-tertiary: #e8e2d8;
+  /* Surfaces — one warm off-white family */
+  --bg-primary: #f3efe8;
+  --bg-secondary: #faf8f4;
+  --bg-tertiary: #e9e4db;
 
-  /* Type colors */
-  --text-primary: #161412;
-  --text-secondary: #45423d;
-  --text-tertiary: #6e6960;
+  /* Type — charcoal, not pure black; tertiary dark enough for AA on paper */
+  --text-primary: #1c1a17;
+  --text-secondary: #3f3c37;
+  --text-tertiary: #5a554c;
 
-  /* One structural accent: near-ink (CTA, focus, active nav). No “brand teal.” */
-  --accent-color: #1a1816;
-  --accent-dark: #0a0908;
+  /* Accent — terracotta: links, active nav, focus ring, meaningful emphasis only */
+  --accent-color: #9c5a45;
+  --accent-hover: #7d4836;
+  /* Ink — primary filled actions (distinct from accent) */
+  --btn-primary-bg: #1c1a17;
+  --btn-primary-fg: #faf8f4;
+  --btn-primary-hover-bg: #0f0e0c;
 
-  --border-light: rgba(22, 20, 18, 0.08);
-  --border-medium: rgba(22, 20, 18, 0.14);
+  --border-light: rgba(28, 26, 23, 0.1);
+  --border-medium: rgba(28, 26, 23, 0.18);
 
-  --success: #2d4a32;
-  --error: #9b2c2c;
-  --warning: #8a5a16;
+  --success: #2a4a30;
+  --error: #8f2828;
+  --warning: #7a4f12;
 
   --space-xs: 4px;
   --space-sm: 8px;
@@ -39,7 +43,7 @@
   --space-xl: 32px;
   --space-2xl: 48px;
   --space-3xl: 64px;
-  --space-4xl: 88px;
+  --space-4xl: 96px;
 
   --font-serif: 'Fraunces', 'Georgia', 'Times New Roman', serif;
   --font-sans: 'Karla', system-ui, sans-serif;
@@ -51,8 +55,6 @@
 
   --max-width: 680px;
   --header-height: 56px;
-
-  --shadow-card: 0 1px 0 rgba(22, 20, 18, 0.06);
 }
 
 html {
@@ -76,9 +78,9 @@ h1,
 h2,
 h3 {
   font-family: var(--font-serif);
-  font-weight: 500;
+  font-weight: 700;
   color: var(--text-primary);
-  line-height: 1.2;
+  line-height: 1.15;
   letter-spacing: -0.02em;
 }
 
@@ -92,17 +94,17 @@ h6 {
 }
 
 h1 {
-  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-size: clamp(2.25rem, 5vw, 3rem);
   margin-bottom: var(--space-md);
 }
 
 h2 {
-  font-size: clamp(1.35rem, 2.5vw, 1.65rem);
+  font-size: clamp(1.5rem, 3vw, 1.75rem);
   margin-bottom: var(--space-sm);
 }
 
 h3 {
-  font-size: 1.2rem;
+  font-size: 1.125rem;
   margin-bottom: var(--space-sm);
 }
 
@@ -119,14 +121,14 @@ p:last-child {
 a {
   color: var(--text-primary);
   text-decoration: underline;
-  text-decoration-color: var(--border-medium);
+  text-decoration-color: var(--accent-color);
   text-underline-offset: 3px;
   transition: color 0.15s ease, text-decoration-color 0.15s ease;
 }
 
 a:hover {
-  color: var(--accent-dark);
-  text-decoration-color: var(--accent-color);
+  color: var(--accent-hover);
+  text-decoration-color: var(--accent-hover);
 }
 
 input,
@@ -141,7 +143,7 @@ code {
   font-family: var(--font-mono);
   font-size: 0.875rem;
   background-color: var(--bg-tertiary);
-  padding: 2px 6px;
+  padding: var(--space-xs) var(--space-sm);
   border-radius: var(--radius-sm);
   color: var(--text-primary);
 }

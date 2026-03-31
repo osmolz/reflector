@@ -14,7 +14,7 @@
 .activity-review-title {
   font-family: var(--font-serif);
   font-size: 1.25rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--text-primary);
   margin-bottom: var(--space-lg);
   letter-spacing: -0.01em;
@@ -28,7 +28,7 @@
   margin-bottom: var(--space-sm);
   border: 1px solid var(--border-light);
   background-color: var(--bg-secondary);
-  border-radius: var(--radius-md);
+  border-radius: 0;
   transition: border-color 0.15s ease;
 }
 
@@ -158,9 +158,9 @@
 }
 
 .activity-item-form-group input {
-  padding: 10px 12px;
+  padding: var(--space-sm) var(--space-md);
   border: 1px solid var(--border-medium);
-  border-radius: var(--radius-sm);
+  border-radius: 0;
   background-color: var(--bg-secondary);
   color: var(--text-primary);
   font-family: var(--font-sans);
@@ -183,9 +183,9 @@
 }
 
 .activity-item-edit-actions button {
-  padding: 10px 16px;
+  padding: var(--space-md) var(--space-md);
   border: none;
-  border-radius: var(--radius-sm);
+  border-radius: 0;
   cursor: pointer;
   font-weight: 600;
   font-size: 0.8125rem;
@@ -194,13 +194,13 @@
 }
 
 .activity-item-edit-actions .btn-save {
-  background-color: var(--accent-color);
-  color: var(--bg-secondary);
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-fg);
   flex: 1;
 }
 
 .activity-item-edit-actions .btn-save:hover:not(:disabled) {
-  background-color: var(--accent-dark);
+  background-color: var(--btn-primary-hover-bg);
 }
 
 .activity-item-edit-actions .btn-cancel {
@@ -213,7 +213,7 @@
 .activity-item-edit-actions .btn-cancel:hover:not(:disabled) {
   background-color: var(--bg-primary);
   border-color: var(--accent-color);
-  color: var(--accent-color);
+  color: var(--accent-hover);
 }
 
 /* ============================================================
@@ -228,9 +228,9 @@
 }
 
 .activity-review-controls button {
-  padding: 12px 20px;
+  padding: var(--space-md) var(--space-lg);
   border: none;
-  border-radius: var(--radius-sm);
+  border-radius: 0;
   cursor: pointer;
   font-weight: 600;
   font-size: 0.9375rem;
@@ -240,12 +240,12 @@
 }
 
 .activity-review-controls .btn-save-activities {
-  background-color: var(--accent-color);
-  color: var(--bg-secondary);
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-fg);
 }
 
 .activity-review-controls .btn-save-activities:hover:not(:disabled) {
-  background-color: var(--accent-dark);
+  background-color: var(--btn-primary-hover-bg);
 }
 
 .activity-review-controls .btn-discard {
@@ -297,11 +297,11 @@
 }
 
 .activity-review-empty button {
-  padding: 12px 22px;
-  background-color: var(--accent-color);
-  color: var(--bg-secondary);
+  padding: var(--space-md) var(--space-lg);
+  background-color: var(--btn-primary-bg);
+  color: var(--btn-primary-fg);
   border: none;
-  border-radius: var(--radius-sm);
+  border-radius: 0;
   cursor: pointer;
   font-weight: 600;
   font-family: var(--font-sans);
@@ -309,7 +309,7 @@
 }
 
 .activity-review-empty button:hover {
-  background-color: var(--accent-dark);
+  background-color: var(--btn-primary-hover-bg);
 }
 
 /* ============================================================
@@ -317,7 +317,6 @@
    ============================================================ */
 .activity-review-error {
   padding: var(--space-md) var(--space-lg);
-  border-left: 2px solid var(--error); padding-left: var(--space-md);
   border-left: 2px solid var(--error);
   color: var(--error);
   font-size: 0.875rem;

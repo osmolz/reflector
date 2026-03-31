@@ -48,12 +48,16 @@ async function getLatestResponse(page) {
 
   const messages = await page.locator('[class*="claude-message"]').all();
   if (messages.length === 0) {
-    throw new Error('No Claude response found');
+    throw new Error('No assistant response found');
   }
 
   const lastMessage = messages[messages.length - 1];
+  const body = lastMessage.locator('.chat-message-body');
+  if ((await body.count()) > 0) {
+    return (await body.textContent()).trim();
+  }
   const text = await lastMessage.textContent();
-  return text.replace(/^Claude:\s*/, '').trim();
+  return text.replace(/^Coach\s*/i, '').replace(/^Claude:\s*/i, '').trim();
 }
 
 // ============================================================================

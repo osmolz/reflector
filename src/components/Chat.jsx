@@ -365,9 +365,14 @@ const Chat = () => {
           <p className="chat-empty">No messages yet. Ask about your time or your day.</p>
         )}
         {messages.map((msg) => (
-          <div key={msg.id} className={`chat-message ${msg.role}`}>
-            <div className={msg.role === 'user' ? 'user-message' : 'claude-message'}>
-              <strong>{msg.role === 'user' ? 'You' : 'Coach'}:</strong>
+          <div
+            key={msg.id}
+            className={`chat-message ${msg.role}${msg.isStreaming ? ' message-in-progress' : ''}`}
+          >
+            <div
+              className={`chat-message-block ${msg.role === 'user' ? 'user-message' : 'claude-message'}`}
+            >
+              <span className="chat-message-role">{msg.role === 'user' ? 'You' : 'Coach'}</span>
               {msg.thinking && (
                 <div className="message-thinking">
                   <em>Thinking: {msg.thinking}</em>
@@ -376,18 +381,18 @@ const Chat = () => {
               {msg.toolCalls && msg.toolCalls.length > 0 && (
                 <div className="message-tools">
                   {msg.toolCalls.map((tc, idx) => (
-                    <span key={idx} className="tool-badge">
+                    <div key={idx} className="tool-line">
                       {tc.tool}
-                    </span>
+                    </div>
                   ))}
                 </div>
               )}
-              <div>{msg.content}</div>
-              {msg.isStreaming && (
-                <span className="streaming-indicator" aria-label="Still receiving response">
-                  …
-                </span>
-              )}
+              <div className="chat-message-body">
+                {msg.content}
+                {msg.isStreaming && (
+                  <span aria-label="Still receiving response"> …</span>
+                )}
+              </div>
             </div>
           </div>
         ))}

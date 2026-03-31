@@ -45,7 +45,7 @@ function App() {
                     onClick={() => setCurrentView(VIEWS.logJournal)}
                     aria-current={currentView === VIEWS.logJournal ? 'page' : undefined}
                   >
-                    Log &amp; journal
+                    Log
                   </button>
                 </li>
                 <li className="header-nav-item">

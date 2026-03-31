@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { VoiceCheckIn } from '../components/VoiceCheckIn';
 import { JournalForm } from '../components/JournalForm';
 import { JournalHistory } from '../components/JournalHistory';
@@ -9,7 +9,7 @@ export function LogJournal({ onActivitiesSaved }) {
   return (
     <>
       <header className="page-header">
-        <h1 className="page-title">Log and journal</h1>
+        <h1 className="page-title">Log</h1>
       </header>
 
       <section className="section" aria-labelledby="log-time-heading">

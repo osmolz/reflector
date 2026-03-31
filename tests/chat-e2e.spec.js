@@ -265,7 +265,7 @@ test.describe('Chat Functionality E2E Tests', () => {
 
     // Check response (even if no entries, Claude should respond)
     const bodyText = await page.textContent('body');
-    const hasResponse = bodyText.includes('Claude:') || bodyText.length > 500;
-    console.log(`✅ Claude responded: ${hasResponse}`);
+    const hasResponse = bodyText.includes('Coach') || bodyText.length > 500;
+    console.log(`✅ Assistant responded: ${hasResponse}`);
   });
 });
