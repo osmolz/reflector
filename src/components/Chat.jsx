@@ -330,8 +330,6 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
         role: 'assistant',
         content: '',
         created_at: streamingId,
-        thinking: '',
-        toolCalls: [],
         isStreaming: true,
       }
 
@@ -381,16 +379,8 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
             try {
               const event = JSON.parse(line.slice(6))
 
-              if (event.type === 'thinking') {
-                updateStreaming((m) => ({
-                  ...m,
-                  thinking: (m.thinking || '') + event.text,
-                }))
-              } else if (event.type === 'tool_use') {
-                updateStreaming((m) => ({
-                  ...m,
-                  toolCalls: [...(m.toolCalls || []), { tool: event.tool }],
-                }))
+              if (event.type === 'thinking' || event.type === 'tool_use') {
+                // Extended thinking and tool calls stay server-side; transcript is coach text only.
               } else if (event.type === 'text') {
                 updateStreaming((m) => ({
                   ...m,
@@ -708,20 +698,6 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
                     >
                       {msg.role === 'assistant' ? (
                         <div className={`chat-bubble chat-bubble--assistant claude-message`}>
-                          {msg.thinking && (
-                            <div className="chat-thinking">
-                              <em>Thinking: {msg.thinking}</em>
-                            </div>
-                          )}
-                          {msg.toolCalls && msg.toolCalls.length > 0 && (
-                            <div className="chat-tools">
-                              {msg.toolCalls.map((tc, idx) => (
-                                <div key={idx} className="chat-tool-line">
-                                  {tc.tool}
-                                </div>
-                              ))}
-                            </div>
-                          )}
                           <div className="chat-message-body chat-prose">
                             {msg.content}
                             {msg.isStreaming && <span className="chat-stream-cursor" aria-hidden="true" />}
@@ -734,7 +710,9 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
                       )}
                     </div>
                   ))}
-                  {loading && <div className="chat-loading-inline">Coach is thinking…</div>}
+                  <span className="sr-only" aria-live="polite">
+                    {loading ? 'Coach is replying.' : ''}
+                  </span>
                 </div>
               </div>
 

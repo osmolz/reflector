@@ -4,6 +4,7 @@ import Anthropic from 'https://esm.sh/@anthropic-ai/sdk@0.80.0'
 import { classifyIntent } from './intent-classifier.ts'
 import { TOOL_DEFINITIONS, executeTool } from './tools.ts'
 import { buildSystemPrompt } from './system-prompt.ts'
+import { stripMarkdownArtifacts, stripMarkdownStreamDelta } from './markdown.ts'
 import { loadConversationContext, saveMessage, maybeSetSessionTitle, createSession } from './memory.ts'
 import type { SSEEvent } from './types.ts'
 
@@ -163,14 +164,11 @@ Deno.serve(async (req) => {
                     thinking: { type: 'enabled', budget_tokens: 2048 },
                   })
 
-                  // Attach listeners BEFORE awaiting
-                  stream.on('thinking', (delta: string) => {
-                    emit({ type: 'thinking', text: delta })
-                  })
-
+                  // Attach listeners BEFORE awaiting (extended thinking stays in-model only; not streamed to client)
                   stream.on('text', (delta: string) => {
-                    finalText += delta
-                    emit({ type: 'text', text: delta })
+                    const cleaned = stripMarkdownStreamDelta(delta)
+                    finalText += cleaned
+                    emit({ type: 'text', text: cleaned })
                   })
 
                   // Wait for stream to complete
@@ -184,23 +182,11 @@ Deno.serve(async (req) => {
                   // Process tool calls
                   const toolUseBlocks = response.content.filter((b: any) => b.type === 'tool_use')
 
-                  for (const toolUse of toolUseBlocks) {
-                    emit({ type: 'tool_use', tool: toolUse.name })
-                  }
-
                   // Execute tools in parallel with error handling
                   const toolResults = await Promise.all(
                     toolUseBlocks.map(async (block: any) => {
                       try {
                         const result = await executeTool(supabase, userId, block.name, block.input as Record<string, unknown>)
-
-                        // Check for no_data and continue gracefully
-                        if (result.status === 'no_data') {
-                          emit({
-                            type: 'text',
-                            text: ` (Note: ${result.message || 'No data available'})\n`,
-                          })
-                        }
 
                         return {
                           type: 'tool_result',
@@ -209,11 +195,6 @@ Deno.serve(async (req) => {
                         }
                       } catch (toolError) {
                         console.error(`[chat] Tool ${block.name} failed:`, toolError)
-
-                        emit({
-                          type: 'text',
-                          text: ` (Unable to retrieve ${block.name}. Continuing...)\n`,
-                        })
 
                         return {
                           type: 'tool_result',
@@ -241,18 +222,16 @@ Deno.serve(async (req) => {
             ])
           } catch (timeoutErr) {
             if (timeoutErr instanceof Error && timeoutErr.message.includes('timeout')) {
-              emit({
-                type: 'text',
-                text: '\n\n(Response took too long. Sending partial analysis...)',
-              })
+              // Partial reply already streamed; no meta message to the user.
             } else {
               throw timeoutErr
             }
           }
 
           // Save assistant message before closing stream
-          if (finalText) {
-            await saveMessage(supabase, userId, 'assistant', finalText, sessionId)
+          const persistedText = finalText ? stripMarkdownArtifacts(finalText) : ''
+          if (persistedText) {
+            await saveMessage(supabase, userId, 'assistant', persistedText, sessionId)
             await maybeSetSessionTitle(supabase, sessionId, message)
           }
 

@@ -32,7 +32,7 @@ async function askQuestion(page, question) {
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
   await page.waitForTimeout(500);
 
-  const chatInput = page.locator('input[placeholder*="time"]').first();
+  const chatInput = page.locator('textarea[placeholder*="time"], input[placeholder*="time"]').first();
   if (!(await chatInput.isVisible({ timeout: 2000 }).catch(() => false))) {
     throw new Error('Chat input not accessible');
   }
