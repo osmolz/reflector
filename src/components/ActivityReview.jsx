@@ -37,8 +37,12 @@ export function ActivityReview({
     setSaveError(null);
     try {
       await onSave(editedActivities);
+      // #region agent log
+      fetch('http://127.0.0.1:7272/ingest/9a054363-0560-4f2a-a7fd-71d649a23059',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'773e28'},body:JSON.stringify({sessionId:'773e28',location:'ActivityReview.jsx:handleSave',message:'onSave fulfilled',data:{},timestamp:Date.now(),runId:'post-fix',hypothesisId:'A'})}).catch(()=>{});
+      // #endregion
     } catch (error) {
       setSaveError(error.message || 'Failed to save activities.');
+    } finally {
       setIsSaving(false);
     }
   };

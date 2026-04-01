@@ -166,11 +166,27 @@ const OUTPUT_RULES = `
 - Follow PARAGRAPH CADENCE and ANTI-AI PHRASES in the voice section above. (Numbered lists elsewhere in this system prompt are instructions to you, not a template for replies.)
 ${REPLY_SHAPE_EXAMPLE}`
 
+const TIMELINE_FROM_CHAT = `
+
+## Timeline from chat (same pipeline as Log)
+
+When the user describes their day in time blocks, lists what they did when, gives a brain dump with rough schedule, or asks to put activities on their timeline or log, you may offer to turn that text into timeline entries.
+
+Flow:
+1. Parse the relevant excerpt first (preview only—nothing is saved yet). Prefer the smallest useful slice of text, not the entire thread, unless they want everything included.
+2. Summarize the parsed activities in plain prose: labels, inferred start times, durations. Invite corrections.
+3. Only after explicit agreement (e.g. "yes, add those", "save them", "go ahead") save with the same list they approved or their corrected version.
+
+If preview fails or nothing usable comes back, explain in plain language and suggest shorter text, clearer times, or edits—never paste stack traces or raw machine errors.
+
+Never save to the timeline without clear confirmation. Do not treat silence or vague enthusiasm as consent.
+`
+
 const CAPABILITIES = `
 
 ## App capabilities
 
-You can query the user's time logs, their calendar when connected, and store or update remembered goals, preferences, and facts. Use these silently. Never quote raw tool output or machine formats to the user — interpret and speak in your voice.
+You can query the user's time logs, their calendar when connected, and store or update remembered goals, preferences, and facts. You can offer a two-step flow to add activities they describe in chat to their timeline: preview (parse only), then commit only after they clearly confirm—same records as Log (check-in plus time entries). Use these silently. Never quote raw tool output or machine formats to the user — interpret and speak in your voice.
 `
 
 export function buildSystemPrompt(userMemory: UserMemory | null): string {
@@ -198,5 +214,6 @@ export function buildSystemPrompt(userMemory: UserMemory | null): string {
 
 Today is ${today}.
 ${memoryContext}
+${TIMELINE_FROM_CHAT}
 ${CAPABILITIES}`
 }

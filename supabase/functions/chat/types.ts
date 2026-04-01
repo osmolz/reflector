@@ -15,6 +15,15 @@ export interface TimeEntry {
   created_at: string
 }
 
+/** Same shape as Log / parse API activities; used for timeline commit tool input. */
+export interface ParsedTimelineActivity {
+  activity: string
+  duration_minutes: number
+  start_time_inferred: string
+  category?: string
+  notes?: string
+}
+
 export interface ChatMessage {
   role: 'user' | 'assistant'
   content: string
@@ -26,6 +35,8 @@ export interface SSEEvent {
   text?: string
   tool?: string
   message?: string
+  /** Present on `done` when extended thinking produced a one-line summary */
+  thinkingSummary?: string
 }
 
 export interface IntentMatch {

@@ -599,6 +599,42 @@
   text-decoration: underline;
 }
 
+.chat-thinking-summary {
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--text-tertiary);
+  margin: 0 0 var(--space-md);
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--chat-border-subtle);
+}
+
+.chat-thinking-live {
+  margin-bottom: var(--space-md);
+  padding-left: var(--space-md);
+  border-left: 2px solid var(--border-medium);
+}
+
+.chat-thinking-live-label {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: var(--space-xs);
+}
+
+.chat-thinking-live-body {
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
 .chat-prose p {
   margin: 0;
 }
@@ -645,13 +681,88 @@
   }
 }
 
-.chat-empty {
+.chat-transcript-loading {
   font-family: var(--font-sans);
   font-size: 0.9375rem;
   color: var(--text-tertiary);
-  text-align: center;
   line-height: 1.55;
   padding: var(--space-xl) 0;
+  margin: 0;
+}
+
+.chat-empty-state {
+  padding: var(--space-xl) 0 var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  align-items: stretch;
+  text-align: left;
+}
+
+.chat-empty-state__title {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.chat-empty-state__lede {
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin: 0;
+  max-width: 42em;
+}
+
+.chat-empty-state__starters {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-top: var(--space-xs);
+}
+
+.chat-empty-starter {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: left;
+  padding: var(--space-md) var(--space-lg);
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.45;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-medium);
+  border-radius: 0;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.chat-empty-starter:hover:not(:disabled) {
+  border-color: var(--accent-color);
+  color: var(--text-primary);
+  background-color: var(--bg-secondary);
+}
+
+.chat-empty-starter:focus {
+  outline: none;
+}
+
+.chat-empty-starter:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+.chat-empty-starter:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 .chat-composer-wrap {

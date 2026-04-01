@@ -1,0 +1,28 @@
+{
+  "version": "5",
+  "remote": {
+    "https://esm.sh/@anthropic-ai/sdk@0.80.0": "a1f420eea699496c10a9d5e9b962f8be9bcfe42c3f9b8e47ee36728476cd74dc",
+    "https://esm.sh/@supabase/supabase-js@2.38.1": "2f6c52cfc3d962f7c64a4874bfecb39561bafd892cfbe60470000c8fd3441d5a",
+    "https://esm.sh/fetch-blob@3.2.0/from.js": "aa91ebb7c56576b2ef4b65c1c609de98a0f3c51ec2dac0736bdf3ad09c07ffa0",
+    "https://esm.sh/formdata-polyfill@4.0.10/esm.min.js": "1ac76051dd150f7e961b625426616a4cdabe1862a9916a18140fdcc8f19f9a7e",
+    "https://esm.sh/undici-types@7.24.4/handlers": "fabf6997a3adf11e45d11e3c4d58d0634ab98f9d72f3116f3694123818ccd457",
+    "https://esm.sh/undici-types@7.24.4/retry-handler": "fabf6997a3adf11e45d11e3c4d58d0634ab98f9d72f3116f3694123818ccd457",
+    "https://esm.sh/undici@7.24.4/types/handlers": "fabf6997a3adf11e45d11e3c4d58d0634ab98f9d72f3116f3694123818ccd457",
+    "https://esm.sh/undici@7.24.4/types/retry-handler": "fabf6997a3adf11e45d11e3c4d58d0634ab98f9d72f3116f3694123818ccd457"
+  },
+  "workspace": {
+    "packageJson": {
+      "dependencies": [
+        "npm:@anthropic-ai/sdk@0.80",
+        "npm:@playwright/test@^1.58.2",
+        "npm:@supabase/supabase-js@^2.100.1",
+        "npm:@vitejs/plugin-react@^6.0.1",
+        "npm:react-dom@^19.2.4",
+        "npm:react@^19.2.4",
+        "npm:supabase@^2.22.6",
+        "npm:vite@^8.0.3",
+        "npm:zustand@^5.0.12"
+      ]
+    }
+  }
+}

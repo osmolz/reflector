@@ -24,21 +24,23 @@ export function useChatPersistence() {
     }
   }
 
-  const saveAssistantMessage = async (userId, sessionId, content) => {
+  const saveAssistantMessage = async (userId, sessionId, content, thinkingSummary = null) => {
     if (userId == null || sessionId == null || content == null) {
       throw new Error('Missing required parameters: userId, sessionId, content')
     }
 
     try {
-      const { error } = await supabase
-        .from('chat_messages')
-        .insert({
-          user_id: userId,
-          session_id: sessionId,
-          role: 'assistant',
-          content: content,
-          created_at: new Date().toISOString(),
-        })
+      const row = {
+        user_id: userId,
+        session_id: sessionId,
+        role: 'assistant',
+        content: content,
+        created_at: new Date().toISOString(),
+      }
+      if (thinkingSummary && String(thinkingSummary).trim()) {
+        row.thinking_summary = String(thinkingSummary).trim()
+      }
+      const { error } = await supabase.from('chat_messages').insert(row)
 
       if (error) throw error
     } catch (err) {

@@ -6,6 +6,14 @@ import './Chat.css'
 
 const SIDEBAR_LS_KEY = 'chat-sidebar-open'
 
+const CHAT_STARTER_PROMPTS = [
+  'Walk me through my day—what I planned versus what actually happened.',
+  'Where did my time go today, and what should I change tomorrow?',
+  'I want to look at one gap between what I intended and what I did.',
+  'Help me spot a pattern I might be repeating.',
+  "I don't have much logged yet—what should I share first?",
+]
+
 function formatSessionMeta(createdAt) {
   const d = new Date(createdAt)
   const now = new Date()
@@ -119,7 +127,7 @@ function IconGear() {
 export default function Chat({ views, currentView, onViewChange, user: userProp, onSignOut }) {
   const storeUser = useAuthStore((s) => s.user)
   const user = userProp ?? storeUser
-  const { saveUserMessage, saveAssistantMessage } = useChatPersistence()
+  const { saveUserMessage } = useChatPersistence()
 
   const [layoutReady, setLayoutReady] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -133,6 +141,7 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
+  const [historyLoading, setHistoryLoading] = useState(false)
   const [error, setError] = useState(null)
   const chatHistoryRef = useRef(null)
   const isStreamingRef = useRef(false)
@@ -212,13 +221,16 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
       if (isStreamingRef.current) return
       if (!user?.id || !sessionId) {
         setMessages([])
+        setHistoryLoading(false)
         return
       }
 
+      setMessages([])
+      setHistoryLoading(true)
       try {
         const { data, error: fetchError } = await supabase
           .from('chat_messages')
-          .select('id, role, content, created_at')
+          .select('id, role, content, created_at, thinking_summary')
           .eq('user_id', user.id)
           .eq('session_id', sessionId)
           .order('created_at', { ascending: true })
@@ -231,12 +243,15 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
             role: msg.role,
             content: msg.content,
             created_at: msg.created_at,
+            thinkingSummary: msg.thinking_summary ?? null,
             isStreaming: false,
           }))
         )
       } catch (err) {
         console.error('[chat] Failed to load messages:', err)
         setError('Failed to load messages')
+      } finally {
+        setHistoryLoading(false)
       }
     }
 
@@ -307,19 +322,22 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
     }
   }
 
-  const handleSend = async () => {
-    if (!input.trim() || !user || !sessionId) return
+  const sendMessage = async (overrideText) => {
+    const fromComposer = overrideText === undefined
+    const text = (fromComposer ? input : String(overrideText)).trim()
+    if (!text || !user || !sessionId) return
+
+    if (fromComposer) setInput('')
 
     const userMessage = {
       id: Date.now().toString(),
       role: 'user',
-      content: input,
+      content: text,
       created_at: new Date().toISOString(),
       isStreaming: false,
     }
 
     setMessages((prev) => [...prev, userMessage])
-    setInput('')
     setLoading(true)
     setError(null)
 
@@ -354,6 +372,8 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
         role: 'assistant',
         content: '',
         created_at: streamingId,
+        thinking: '',
+        thinkingSummary: null,
         isStreaming: true,
       }
 
@@ -403,27 +423,32 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
             try {
               const event = JSON.parse(line.slice(6))
 
-              if (event.type === 'thinking' || event.type === 'tool_use') {
-                // Extended thinking and tool calls stay server-side; transcript is coach text only.
+              if (event.type === 'thinking') {
+                updateStreaming((m) => ({
+                  ...m,
+                  thinking: (m.thinking || '') + event.text,
+                }))
+              } else if (event.type === 'tool_use') {
+                // Tool names not shown in transcript
               } else if (event.type === 'text') {
                 updateStreaming((m) => ({
                   ...m,
                   content: (m.content || '') + event.text,
                 }))
               } else if (event.type === 'done') {
-                setMessages((prev) => {
-                  const updatedMessages = prev.map((m) =>
-                    m.id === streamingId ? { ...m, isStreaming: false } : m
+                setMessages((prev) =>
+                  prev.map((m) =>
+                    m.id === streamingId
+                      ? {
+                          ...m,
+                          isStreaming: false,
+                          thinking: '',
+                          thinkingSummary: event.thinkingSummary ?? m.thinkingSummary ?? null,
+                        }
+                      : m
                   )
-                  const completedMessage = updatedMessages.find((m) => m.id === streamingId)
-                  if (completedMessage) {
-                    saveAssistantMessage(user.id, sessionId, completedMessage.content).catch((err) => {
-                      console.error('[chat] Failed to persist assistant message:', err)
-                      setError('Message sent but failed to save. Check your connection.')
-                    })
-                  }
-                  return updatedMessages
-                })
+                )
+                // Assistant row (including thinking_summary) is persisted by the chat edge function
               } else if (event.type === 'error') {
                 setError(event.message || 'Stream error')
               }
@@ -471,12 +496,16 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
     }
   }
 
+  const handleSend = () => sendMessage()
+
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
-      handleSend()
+      sendMessage()
     }
   }
+
+  const startersDisabled = !sessionId || loading || historyLoading || creatingSession
 
   if (!user) {
     return <p className="chat-not-logged-in">Please log in to use chat.</p>
@@ -710,8 +739,42 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
 
               <div className="chat-transcript-scroll" ref={chatHistoryRef}>
                 <div className="chat-transcript-inner">
-                  {messages.length === 0 && !loading && (
-                    <p className="chat-empty">No messages yet. Ask about your time or your day.</p>
+                  {historyLoading && messages.length === 0 && (
+                    <p className="chat-transcript-loading" role="status" aria-live="polite">
+                      Loading messages…
+                    </p>
+                  )}
+                  {!historyLoading && messages.length === 0 && !loading && (
+                    <section
+                      className="chat-empty-state"
+                      aria-labelledby="chat-empty-heading"
+                    >
+                      <h2 id="chat-empty-heading" className="chat-empty-state__title">
+                        Start here
+                      </h2>
+                      <p className="chat-empty-state__lede">
+                        This thread is for reviewing your day with clear data: what you planned, what
+                        happened, and what to adjust tomorrow. Use a prompt below or write in your own
+                        words.
+                      </p>
+                      <div
+                        className="chat-empty-state__starters"
+                        role="group"
+                        aria-label="Suggested ways to start"
+                      >
+                        {CHAT_STARTER_PROMPTS.map((prompt) => (
+                          <button
+                            key={prompt}
+                            type="button"
+                            className="chat-empty-starter"
+                            disabled={startersDisabled}
+                            onClick={() => sendMessage(prompt)}
+                          >
+                            {prompt}
+                          </button>
+                        ))}
+                      </div>
+                    </section>
                   )}
                   {messages.map((msg) => (
                     <div
@@ -723,6 +786,15 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
                       {msg.role === 'assistant' ? (
                         <div className={`chat-bubble chat-bubble--assistant claude-message`}>
                           <div className="chat-message-body chat-prose">
+                            {msg.thinkingSummary ? (
+                              <p className="chat-thinking-summary">{msg.thinkingSummary}</p>
+                            ) : null}
+                            {msg.isStreaming && msg.thinking ? (
+                              <div className="chat-thinking-live" aria-label="Coach reasoning">
+                                <span className="chat-thinking-live-label">Thinking</span>
+                                <div className="chat-thinking-live-body">{msg.thinking}</div>
+                              </div>
+                            ) : null}
                             <AssistantMessageProse content={msg.content} isStreaming={msg.isStreaming} />
                           </div>
                         </div>
@@ -749,7 +821,7 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={handleKeyDown}
-                        disabled={loading}
+                        disabled={loading || historyLoading || creatingSession || !sessionId}
                         name="message"
                         rows={1}
                         autoComplete="off"
@@ -760,7 +832,13 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
                       <button
                         type="submit"
                         className="chat-composer-send chat-send-button"
-                        disabled={loading || !input.trim()}
+                        disabled={
+                          loading ||
+                          historyLoading ||
+                          creatingSession ||
+                          !sessionId ||
+                          !input.trim()
+                        }
                       >
                         Send
                       </button>

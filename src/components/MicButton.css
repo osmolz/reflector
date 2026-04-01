@@ -1,7 +1,7 @@
-/* Primary capture control — one clear circle, calm status copy */
+/* Capture control — outline circle (idle), strong state when recording */
 
 .mic-button-wrapper {
-  margin-bottom: var(--space-md);
+  margin-bottom: var(--space-sm);
 }
 
 .mic-button {
@@ -9,20 +9,23 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 56px;
-  height: 56px;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  background-color: var(--btn-primary-bg);
-  border: none;
-  color: var(--btn-primary-fg);
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-medium);
+  color: var(--text-primary);
   cursor: pointer;
-  transition: background-color 0.15s ease, transform 0.12s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
   padding: 0;
   font-family: var(--font-sans);
 }
 
-.mic-button:hover:not(:disabled) {
-  background-color: var(--btn-primary-hover-bg);
+.mic-button:hover:not(:disabled):not(.recording) {
+  background-color: var(--bg-primary);
+  border-color: var(--text-tertiary);
+  color: var(--text-primary);
 }
 
 .mic-button:active:not(:disabled) {
@@ -31,6 +34,14 @@
 
 .mic-button.recording {
   background-color: var(--error);
+  border-color: var(--error);
+  color: var(--btn-primary-fg);
+}
+
+.mic-button.recording:hover:not(:disabled) {
+  background-color: var(--error);
+  border-color: var(--error);
+  filter: brightness(0.95);
 }
 
 .mic-button:disabled {
@@ -48,17 +59,13 @@
   flex-shrink: 0;
 }
 
-.mic-button.recording .mic-button-icon {
-  color: var(--btn-primary-fg);
-}
-
 .mic-button-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-md);
-  margin: var(--space-xl) 0;
-  padding: var(--space-md) 0;
+  gap: var(--space-sm);
+  margin: var(--space-md) 0;
+  padding: 0;
 }
 
 .mic-status {
@@ -97,13 +104,15 @@
   background: rgba(155, 44, 44, 0.06);
 }
 
-@media (max-width: 640px) {
-  .mic-button {
-    width: 52px;
-    height: 52px;
+@media (min-width: 480px) {
+  .mic-button-container {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--space-md);
   }
 
-  .mic-button-container {
-    margin: var(--space-lg) 0;
+  .mic-status {
+    text-align: left;
   }
 }

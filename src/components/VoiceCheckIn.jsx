@@ -37,6 +37,9 @@ export function VoiceCheckIn({ onActivitiesSaved }) {
   };
 
   const handleSaveActivities = async (activities) => {
+    // #region agent log
+    fetch('http://127.0.0.1:7272/ingest/9a054363-0560-4f2a-a7fd-71d649a23059',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'773e28'},body:JSON.stringify({sessionId:'773e28',location:'VoiceCheckIn.jsx:handleSaveActivities',message:'save invoked',data:{activityCount:activities?.length},timestamp:Date.now(),hypothesisId:'A'})}).catch(()=>{});
+    // #endregion
     setError(null);
     setIsLoading(true);
 
@@ -85,11 +88,19 @@ export function VoiceCheckIn({ onActivitiesSaved }) {
 
       if (entriesError) throw entriesError;
 
+      // #region agent log
+      fetch('http://127.0.0.1:7272/ingest/9a054363-0560-4f2a-a7fd-71d649a23059',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'773e28'},body:JSON.stringify({sessionId:'773e28',location:'VoiceCheckIn.jsx:handleSaveActivities',message:'save success path',data:{checkInId},timestamp:Date.now(),hypothesisId:'B'})}).catch(()=>{});
+      // #endregion
+      setIsLoading(false);
       setStage('saved');
       onActivitiesSaved?.();
     } catch (err) {
+      // #region agent log
+      fetch('http://127.0.0.1:7272/ingest/9a054363-0560-4f2a-a7fd-71d649a23059',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'773e28'},body:JSON.stringify({sessionId:'773e28',location:'VoiceCheckIn.jsx:handleSaveActivities',message:'save catch (rethrowing to caller)',data:{message:err?.message,code:err?.code},timestamp:Date.now(),hypothesisId:'A'})}).catch(()=>{});
+      // #endregion
       setError(err.message || 'Failed to save activities. Please try again.');
       setIsLoading(false);
+      throw err;
     }
   };
 
@@ -126,6 +137,7 @@ export function VoiceCheckIn({ onActivitiesSaved }) {
     setError(null);
     setStage('recording');
     setInputMode(null);
+    setIsLoading(false);
   };
 
   if (stage === 'saved') {
@@ -147,10 +159,10 @@ export function VoiceCheckIn({ onActivitiesSaved }) {
         <>
           {!inputMode && (
             <div className="voice-check-in-mode-select">
-              <button type="button" className="btn btn-primary" onClick={() => setInputMode('voice')}>
+              <button type="button" className="btn btn-secondary btn-small" onClick={() => setInputMode('voice')}>
                 Speak
               </button>
-              <button type="button" className="btn btn-primary" onClick={() => setInputMode('text')}>
+              <button type="button" className="btn btn-secondary btn-small" onClick={() => setInputMode('text')}>
                 Type
               </button>
             </div>
@@ -214,12 +226,19 @@ export function VoiceCheckIn({ onActivitiesSaved }) {
         </>
       )}
       {stage === 'review' && (
-        <ActivityReview
-          activities={parsedActivities}
-          isLoading={isLoading}
-          onSave={handleSaveActivities}
-          onDiscard={handleDiscard}
-        />
+        <>
+          {error && (
+            <div className="voice-check-in-error" role="alert">
+              {error}
+            </div>
+          )}
+          <ActivityReview
+            activities={parsedActivities}
+            isLoading={isLoading}
+            onSave={handleSaveActivities}
+            onDiscard={handleDiscard}
+          />
+        </>
       )}
     </div>
   );

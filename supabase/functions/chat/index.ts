@@ -5,6 +5,7 @@ import { classifyIntent } from './intent-classifier.ts'
 import { TOOL_DEFINITIONS, executeTool } from './tools.ts'
 import { buildSystemPrompt } from './system-prompt.ts'
 import { stripMarkdownArtifacts, stripMarkdownStreamDelta } from './markdown.ts'
+import { extractFirstSentence } from './thinking-summary.ts'
 import { loadConversationContext, saveMessage, maybeSetSessionTitle, createSession } from './memory.ts'
 import type { SSEEvent } from './types.ts'
 
@@ -141,6 +142,7 @@ Deno.serve(async (req) => {
 
           let maxHops = 5
           let finalText = ''
+          let fullThinking = ''
           let currentMessages = [...contextMessages, { role: 'user' as const, content: message }]
 
           // Set 55-second timeout (Vercel limit is 60s)
@@ -164,7 +166,12 @@ Deno.serve(async (req) => {
                     thinking: { type: 'enabled', budget_tokens: 2048 },
                   })
 
-                  // Attach listeners BEFORE awaiting (extended thinking stays in-model only; not streamed to client)
+                  // Attach listeners BEFORE awaiting
+                  stream.on('thinking', (delta: string) => {
+                    fullThinking += delta
+                    emit({ type: 'thinking', text: delta })
+                  })
+
                   stream.on('text', (delta: string) => {
                     const cleaned = stripMarkdownStreamDelta(delta)
                     finalText += cleaned
@@ -230,12 +237,23 @@ Deno.serve(async (req) => {
 
           // Save assistant message before closing stream
           const persistedText = finalText ? stripMarkdownArtifacts(finalText) : ''
+          const thinkingSummary = extractFirstSentence(fullThinking)
           if (persistedText) {
-            await saveMessage(supabase, userId, 'assistant', persistedText, sessionId)
+            await saveMessage(
+              supabase,
+              userId,
+              'assistant',
+              persistedText,
+              sessionId,
+              thinkingSummary || null,
+            )
             await maybeSetSessionTitle(supabase, sessionId, message)
           }
 
-          emit({ type: 'done' })
+          emit({
+            type: 'done',
+            ...(thinkingSummary ? { thinkingSummary } : {}),
+          })
         } catch (error) {
           console.error('[chat] Stream error:', error)
           emit({

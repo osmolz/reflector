@@ -35,7 +35,11 @@ export function JournalForm({ onEntryCreated }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!text.trim() || !user) {
+    if (!text.trim()) {
+      return;
+    }
+    if (!user) {
+      setError('You need to be signed in to save a journal entry.');
       return;
     }
 

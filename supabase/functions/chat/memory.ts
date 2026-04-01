@@ -49,6 +49,7 @@ export async function saveMessage(
   role: 'user' | 'assistant',
   content: string,
   sessionId: string | null,
+  thinkingSummary?: string | null,
 ): Promise<void> {
   const row: Record<string, unknown> = {
     user_id: userId,
@@ -59,6 +60,10 @@ export async function saveMessage(
 
   if (sessionId) {
     row.session_id = sessionId
+  }
+
+  if (role === 'assistant' && thinkingSummary && thinkingSummary.trim()) {
+    row.thinking_summary = thinkingSummary.trim()
   }
 
   const { error } = await supabase.from('chat_messages').insert(row)

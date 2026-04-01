@@ -20,13 +20,14 @@
 .voice-check-in-mode-select {
   display: flex;
   gap: var(--space-sm);
-  margin-bottom: var(--space-xl);
+  margin-bottom: var(--space-lg);
   flex-wrap: wrap;
 }
 
 .voice-check-in-mode-select .btn {
-  flex: 1;
+  flex: 0 1 auto;
   min-width: 120px;
+  min-height: 44px;
 }
 
 .voice-check-in-back {
