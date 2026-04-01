@@ -100,7 +100,7 @@ async function debug() {
       console.log(`Messages after switching back: ${messagesAfterSwitch}`);
 
       if (messagesAfterSwitch === messagesInCurrentSession) {
-        console.log('✓ Messages PERSISTED');
+        console.log('[ok] Messages PERSISTED');
       } else {
         console.log(`✗ Messages LOST (was ${messagesInCurrentSession}, now ${messagesAfterSwitch})`);
       }

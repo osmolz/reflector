@@ -14,7 +14,7 @@ test.describe('Chat Sessions & Streaming - Integration Tests', () => {
     const isLoginVisible = await emailInput.isVisible().catch(() => false);
 
     if (isLoginVisible) {
-      console.log('📝 Logging in with credentials...');
+      console.log('[note] Logging in with credentials...');
       // Use credentials from .env
       await emailInput.fill('olivermolz05@gmail.com');
 
@@ -30,9 +30,9 @@ test.describe('Chat Sessions & Streaming - Integration Tests', () => {
 
       // Wait for Dashboard or Chat to appear
       await page.waitForSelector('.dashboard, .chat-container, [role="main"]', { timeout: 10000 }).catch(() => null);
-      console.log('✅ Login completed');
+      console.log('[OK] Login completed');
     } else {
-      console.log('✅ Already logged in');
+      console.log('[OK] Already logged in');
     }
   });
 
@@ -40,13 +40,13 @@ test.describe('Chat Sessions & Streaming - Integration Tests', () => {
     // Check if session strip exists
     const sessionStrip = page.locator('.session-strip');
     await expect(sessionStrip).toBeVisible({ timeout: 5000 });
-    console.log('✅ Session strip is visible');
+    console.log('[OK] Session strip is visible');
 
     // Check if + New button exists
     const newButton = page.locator('.session-new-btn');
     await expect(newButton).toBeVisible();
     await expect(newButton).toContainText('New');
-    console.log('✅ + New button is visible and contains "New" text');
+    console.log('[OK] + New button is visible and contains "New" text');
   });
 
   test('Can create a new chat session', async ({ page }) => {
@@ -61,7 +61,7 @@ test.describe('Chat Sessions & Streaming - Integration Tests', () => {
     const sessionChips = page.locator('.session-chip');
     const chipCount = await sessionChips.count();
 
-    console.log(`✅ New session created - total sessions: ${chipCount}`);
+    console.log(`[OK] New session created - total sessions: ${chipCount}`);
     expect(chipCount).toBeGreaterThan(0);
   });
 
@@ -77,12 +77,12 @@ test.describe('Chat Sessions & Streaming - Integration Tests', () => {
 
     // Check if it's visible
     await expect(firstChip).toBeVisible();
-    console.log('✅ Session chip is visible and clickable');
+    console.log('[OK] Session chip is visible and clickable');
 
     // Check if it has active state
     const activeChip = page.locator('.session-chip.active');
     await expect(activeChip).toHaveCount(1);
-    console.log('✅ Exactly one session chip has active state');
+    console.log('[OK] Exactly one session chip has active state');
   });
 
   test('Chat history shows empty state for new session', async ({ page }) => {
@@ -96,9 +96,9 @@ test.describe('Chat Sessions & Streaming - Integration Tests', () => {
     const isVisible = await emptyMessage.isVisible().catch(() => false);
 
     if (isVisible) {
-      console.log('✅ Empty state message displays for new session');
+      console.log('[OK] Empty state message displays for new session');
     } else {
-      console.log('⚠️  Empty state message not visible (session might have old messages)');
+      console.log('[WARN]  Empty state message not visible (session might have old messages)');
     }
   });
 
@@ -116,12 +116,12 @@ test.describe('Chat Sessions & Streaming - Integration Tests', () => {
     const sendButton = page.locator('.chat-send-button');
     await sendButton.click();
 
-    console.log('✅ Message sent successfully');
+    console.log('[OK] Message sent successfully');
 
     // Wait for response (checking if user message appears)
     const userMessage = page.locator('.user-message');
     await expect(userMessage).toBeVisible({ timeout: 10000 });
-    console.log('✅ User message appears in chat');
+    console.log('[OK] User message appears in chat');
   });
 
   test('Streaming - text flows gradually (not block dump)', async ({ page }) => {
@@ -168,11 +168,11 @@ test.describe('Chat Sessions & Streaming - Integration Tests', () => {
     }
 
     if (updateCount > 1) {
-      console.log(`✅ Streaming detected! Text updated ${updateCount} times (true streaming)`);
+      console.log(`[OK] Streaming detected! Text updated ${updateCount} times (true streaming)`);
     } else if (maxLength > 0) {
-      console.log(`⚠️  Text appears to be block arrival - only ${updateCount} update(s) detected`);
+      console.log(`[WARN]  Text appears to be block arrival - only ${updateCount} update(s) detected`);
     } else {
-      console.log('⚠️  No response received');
+      console.log('[WARN]  No response received');
     }
   });
 
@@ -197,14 +197,14 @@ test.describe('Chat Sessions & Streaming - Integration Tests', () => {
     const sessionChip = page.locator('.session-chip.active');
     const chipText = await sessionChip.textContent();
 
-    console.log(`📋 Active session title: "${chipText}"`);
+    console.log(`[log] Active session title: "${chipText}"`);
 
     if (chipText && chipText.includes('How') || chipText.includes('TESTING')) {
-      console.log('✅ Session title auto-generated from message content');
+      console.log('[OK] Session title auto-generated from message content');
     } else if (chipText && chipText !== 'New Chat') {
-      console.log('✅ Session title auto-generated (may be truncated)');
+      console.log('[OK] Session title auto-generated (may be truncated)');
     } else {
-      console.log('⚠️  Session title not auto-generated');
+      console.log('[WARN]  Session title not auto-generated');
     }
   });
 
@@ -241,7 +241,7 @@ test.describe('Chat Sessions & Streaming - Integration Tests', () => {
     const userMessages = page.locator('.user-message');
     const messageCount = await userMessages.count();
 
-    console.log(`✅ Switched to first session - found ${messageCount} message(s)`);
+    console.log(`[OK] Switched to first session - found ${messageCount} message(s)`);
     expect(messageCount).toBeGreaterThan(0);
   });
 
@@ -264,7 +264,7 @@ test.describe('Chat Sessions & Streaming - Integration Tests', () => {
     const activeSessionChip = page.locator('.session-chip.active');
     const sessionTitle = await activeSessionChip.textContent();
 
-    console.log(`📋 Testing persistence in session: "${sessionTitle}"`);
+    console.log(`[log] Testing persistence in session: "${sessionTitle}"`);
 
     // Switch to another session (or create a new one)
     await newButton.click();
@@ -279,9 +279,9 @@ test.describe('Chat Sessions & Streaming - Integration Tests', () => {
     const foundMessage = await userMessages.filter({ hasText: testMessage }).count();
 
     if (foundMessage > 0) {
-      console.log('✅ Message persisted in session after switching');
+      console.log('[OK] Message persisted in session after switching');
     } else {
-      console.log('⚠️  Message not found after session switch');
+      console.log('[WARN]  Message not found after session switch');
     }
   });
 
@@ -309,9 +309,9 @@ test.describe('Chat Sessions & Streaming - Integration Tests', () => {
     await page.waitForTimeout(2000);
 
     if (errors.length === 0) {
-      console.log('✅ No console errors during session operations');
+      console.log('[OK] No console errors during session operations');
     } else {
-      console.log(`⚠️  Found ${errors.length} console error(s):`);
+      console.log(`[WARN]  Found ${errors.length} console error(s):`);
       errors.forEach((err, i) => console.log(`  ${i + 1}. ${err}`));
     }
   });

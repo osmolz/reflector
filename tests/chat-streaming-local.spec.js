@@ -10,7 +10,7 @@ test.describe('Chat Streaming - Local Live Tests', () => {
   test('Chat component renders and is visible', async ({ page }) => {
     const chatContainer = page.locator('.chat-container');
     await expect(chatContainer).toBeVisible();
-    console.log('✅ Chat container is visible');
+    console.log('[OK] Chat container is visible');
   });
 
   test('Chat input field is functional', async ({ page }) => {
@@ -20,7 +20,7 @@ test.describe('Chat Streaming - Local Live Tests', () => {
     await chatInput.fill('What did I work on today?');
     const value = await chatInput.inputValue();
     expect(value).toBe('What did I work on today?');
-    console.log('✅ Chat input accepts text correctly');
+    console.log('[OK] Chat input accepts text correctly');
   });
 
   test('Chat send button responds to input', async ({ page }) => {
@@ -30,19 +30,19 @@ test.describe('Chat Streaming - Local Live Tests', () => {
     // Fill input and button should become enabled
     await chatInput.fill('Test question');
     await expect(sendButton).not.toBeDisabled();
-    console.log('✅ Send button responds to input');
+    console.log('[OK] Send button responds to input');
   });
 
   test('Chat history container exists', async ({ page }) => {
     const chatHistory = page.locator('.chat-history');
     await expect(chatHistory).toBeVisible();
-    console.log('✅ Chat history container is visible');
+    console.log('[OK] Chat history container is visible');
   });
 
   test('Empty state message shows', async ({ page }) => {
     const emptyMessage = page.locator('.chat-empty');
     await expect(emptyMessage).toContainText('No messages yet');
-    console.log('✅ Empty state displays correctly');
+    console.log('[OK] Empty state displays correctly');
   });
 
   test('Component is responsive at 375px (mobile)', async ({ page }) => {
@@ -50,7 +50,7 @@ test.describe('Chat Streaming - Local Live Tests', () => {
 
     const chatContainer = page.locator('.chat-container');
     await expect(chatContainer).toBeVisible();
-    console.log('✅ Component responsive at 375px');
+    console.log('[OK] Component responsive at 375px');
   });
 
   test('Component is responsive at 1280px (desktop)', async ({ page }) => {
@@ -58,7 +58,7 @@ test.describe('Chat Streaming - Local Live Tests', () => {
 
     const chatContainer = page.locator('.chat-container');
     await expect(chatContainer).toBeVisible();
-    console.log('✅ Component responsive at 1280px');
+    console.log('[OK] Component responsive at 1280px');
   });
 
   test('CSS styles are loaded', async ({ page }) => {
@@ -68,7 +68,7 @@ test.describe('Chat Streaming - Local Live Tests', () => {
     });
 
     expect(styleLoaded).toBe(true);
-    console.log('✅ CSS styles are loaded');
+    console.log('[OK] CSS styles are loaded');
   });
 
   test('Keyboard Enter key handling', async ({ page }) => {
@@ -80,7 +80,7 @@ test.describe('Chat Streaming - Local Live Tests', () => {
 
     // Input should still be there or cleared (depending on auth state)
     await expect(chatInput).toBeVisible();
-    console.log('✅ Keyboard Enter handling works');
+    console.log('[OK] Keyboard Enter handling works');
   });
 
   test('Error banner initially hidden', async ({ page }) => {
@@ -88,7 +88,7 @@ test.describe('Chat Streaming - Local Live Tests', () => {
     const errorVisible = await errorBanner.isVisible().catch(() => false);
 
     expect(errorVisible).toBe(false);
-    console.log('✅ Error banner initially hidden');
+    console.log('[OK] Error banner initially hidden');
   });
 });
 
@@ -113,7 +113,7 @@ test.describe('Streaming Parser Unit Tests', () => {
     });
 
     expect(result).toBe('Hello world');
-    console.log('✅ SSE event parsing works');
+    console.log('[OK] SSE event parsing works');
   });
 
   test('Markdown detection logic', async ({ page }) => {
@@ -124,7 +124,7 @@ test.describe('Streaming Parser Unit Tests', () => {
     });
 
     expect(markdownDetected).toBe(true);
-    console.log('✅ Markdown detection works');
+    console.log('[OK] Markdown detection works');
   });
 
   test('Plain prose validation', async ({ page }) => {
@@ -135,7 +135,7 @@ test.describe('Streaming Parser Unit Tests', () => {
     });
 
     expect(isPlainProse).toBe(true);
-    console.log('✅ Plain prose text passes validation');
+    console.log('[OK] Plain prose text passes validation');
   });
 
   test('Streaming text accumulation logic', async ({ page }) => {
@@ -149,7 +149,7 @@ test.describe('Streaming Parser Unit Tests', () => {
     });
 
     expect(accumulated).toBe('I notice you spent 3 hours');
-    console.log('✅ Text accumulation works correctly');
+    console.log('[OK] Text accumulation works correctly');
   });
 
   test('Response length validation', async ({ page }) => {
@@ -159,6 +159,6 @@ test.describe('Streaming Parser Unit Tests', () => {
     });
 
     expect(isValidLength).toBe(true);
-    console.log('✅ Response length validation works');
+    console.log('[OK] Response length validation works');
   });
 });

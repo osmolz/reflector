@@ -68,7 +68,7 @@ test.describe('Edge Cases - Markdown Artifacts', () => {
 
   test('EC.1 No partial markdown sequences', async ({ page }) => {
     test.setTimeout(35000);
-    console.log('\n🧪 TEST EC.1: No Partial Markdown Sequences');
+    console.log('\n[TEST] TEST EC.1: No Partial Markdown Sequences');
 
     await login(page);
     await askQuestion(page, 'What are my weaknesses in time management?');
@@ -79,12 +79,12 @@ test.describe('Edge Cases - Markdown Artifacts', () => {
     // Check for incomplete markdown that could render wrongly
     const hasPartialMarkdown = /\*[^*]*$/.test(response) || /_[^_]*$/.test(response);
     expect(hasPartialMarkdown).toBe(false);
-    console.log('✅ No partial markdown sequences');
+    console.log('[OK] No partial markdown sequences');
   });
 
   test('EC.2 No markdown in numbers or measurements', async ({ page }) => {
     test.setTimeout(35000);
-    console.log('\n🧪 TEST EC.2: Clean Numbers in Response');
+    console.log('\n[TEST] TEST EC.2: Clean Numbers in Response');
 
     await login(page);
     await askQuestion(page, 'How many hours did I spend on work?');
@@ -95,12 +95,12 @@ test.describe('Edge Cases - Markdown Artifacts', () => {
     // Check that numbers don't have markdown around them
     const hasMarkdownNumbers = /\*\d+\*|\*\*\d+\*\*|\d+\*\*|\*\*\d+|`\d+`/g.test(response);
     expect(hasMarkdownNumbers).toBe(false);
-    console.log('✅ Numbers are clean (no markdown formatting)');
+    console.log('[OK] Numbers are clean (no markdown formatting)');
   });
 
   test('EC.3 No markdown in proper nouns or categories', async ({ page }) => {
     test.setTimeout(35000);
-    console.log('\n🧪 TEST EC.3: Clean Proper Nouns');
+    console.log('\n[TEST] TEST EC.3: Clean Proper Nouns');
 
     await login(page);
     await askQuestion(page, 'What category names did Claude mention?');
@@ -111,12 +111,12 @@ test.describe('Edge Cases - Markdown Artifacts', () => {
     // Category names shouldn't be wrapped in markdown
     const hasMarkdownWrappedWords = /\*\*[A-Z][a-z]+\*\*|__[A-Z][a-z]+__/g.test(response);
     expect(hasMarkdownWrappedWords).toBe(false);
-    console.log('✅ Proper nouns are not wrapped in markdown');
+    console.log('[OK] Proper nouns are not wrapped in markdown');
   });
 
   test('EC.4 Response doesn\'t contain escape sequences', async ({ page }) => {
     test.setTimeout(35000);
-    console.log('\n🧪 TEST EC.4: No Escape Sequences');
+    console.log('\n[TEST] TEST EC.4: No Escape Sequences');
 
     await login(page);
     await askQuestion(page, 'Give me feedback on my productivity');
@@ -127,7 +127,7 @@ test.describe('Edge Cases - Markdown Artifacts', () => {
     // Check for escaped characters that shouldn't be there
     const hasEscapes = /\\[*_`\[\]{}#]/g.test(response);
     expect(hasEscapes).toBe(false);
-    console.log('✅ No escape sequences in response');
+    console.log('[OK] No escape sequences in response');
   });
 
 });
@@ -136,7 +136,7 @@ test.describe('Edge Cases - Response Quality', () => {
 
   test('EC.5 Response handles mixed case questions', async ({ page }) => {
     test.setTimeout(35000);
-    console.log('\n🧪 TEST EC.5: Mixed Case Question Handling');
+    console.log('\n[TEST] TEST EC.5: Mixed Case Question Handling');
 
     await login(page);
     await askQuestion(page, 'WhAt iS mY tOp AcTiViTy?');
@@ -146,12 +146,12 @@ test.describe('Edge Cases - Response Quality', () => {
 
     expect(response.length).toBeGreaterThan(0);
     expect(response).not.toContain('undefined');
-    console.log('✅ Handles mixed case questions');
+    console.log('[OK] Handles mixed case questions');
   });
 
   test('EC.6 Response handles ambiguous questions', async ({ page }) => {
     test.setTimeout(35000);
-    console.log('\n🧪 TEST EC.6: Ambiguous Question Handling');
+    console.log('\n[TEST] TEST EC.6: Ambiguous Question Handling');
 
     await login(page);
     await askQuestion(page, '?');
@@ -161,12 +161,12 @@ test.describe('Edge Cases - Response Quality', () => {
 
     // Even with minimal input, should respond gracefully
     expect(response.length).toBeGreaterThan(0);
-    console.log('✅ Handles ambiguous/minimal questions');
+    console.log('[OK] Handles ambiguous/minimal questions');
   });
 
   test('EC.7 Response maintains voice with various topics', async ({ page }) => {
     test.setTimeout(35000);
-    console.log('\n🧪 TEST EC.7: Consistent Voice Across Topics');
+    console.log('\n[TEST] TEST EC.7: Consistent Voice Across Topics');
 
     await login(page);
 
@@ -183,13 +183,13 @@ test.describe('Edge Cases - Response Quality', () => {
       // Verify coach tone is present regardless of topic
       const hasCoachTone = /I (notice|see|think|observe)|you (spent|logged)/i.test(response);
       expect(hasCoachTone).toBe(true);
-      console.log(`✅ Coach tone present for: "${question}"`);
+      console.log(`[OK] Coach tone present for: "${question}"`);
     }
   });
 
   test('EC.8 Response paragraph structure is consistent', async ({ page }) => {
     test.setTimeout(35000);
-    console.log('\n🧪 TEST EC.8: Consistent Paragraph Structure');
+    console.log('\n[TEST] TEST EC.8: Consistent Paragraph Structure');
 
     await login(page);
     await askQuestion(page, 'Analyze my activities comprehensively');
@@ -204,7 +204,7 @@ test.describe('Edge Cases - Response Quality', () => {
 
     expect(paragraphs).toBeLessThanOrEqual(2);
     expect(sentences).toBeGreaterThanOrEqual(2); // At least 2 sentences
-    console.log('✅ Paragraph structure is consistent');
+    console.log('[OK] Paragraph structure is consistent');
   });
 
 });
@@ -213,7 +213,7 @@ test.describe('Edge Cases - Stream Behavior', () => {
 
   test('EC.9 Stream handles rapid successive requests', async ({ page }) => {
     test.setTimeout(40000);
-    console.log('\n🧪 TEST EC.9: Rapid Successive Requests');
+    console.log('\n[TEST] TEST EC.9: Rapid Successive Requests');
 
     await login(page);
 
@@ -229,12 +229,12 @@ test.describe('Edge Cases - Stream Behavior', () => {
     // Both responses should exist and be different
     expect(response1.length).toBeGreaterThan(0);
     expect(response2.length).toBeGreaterThan(0);
-    console.log('✅ Handles rapid successive requests');
+    console.log('[OK] Handles rapid successive requests');
   });
 
   test('EC.10 Stream response is deterministic', async ({ page }) => {
     test.setTimeout(35000);
-    console.log('\n🧪 TEST EC.10: Response Quality Consistency');
+    console.log('\n[TEST] TEST EC.10: Response Quality Consistency');
 
     await login(page);
     await askQuestion(page, 'What activities did I log?');
@@ -246,12 +246,12 @@ test.describe('Edge Cases - Stream Behavior', () => {
     expect(response).toMatch(/[a-zA-Z]/); // Contains letters
     expect(response).not.toMatch(/^[\s\n]*$/); // Not just whitespace
 
-    console.log('✅ Stream response quality is consistent');
+    console.log('[OK] Stream response quality is consistent');
   });
 
   test('EC.11 Very long questions are handled', async ({ page }) => {
     test.setTimeout(35000);
-    console.log('\n🧪 TEST EC.11: Long Question Handling');
+    console.log('\n[TEST] TEST EC.11: Long Question Handling');
 
     await login(page);
 
@@ -263,16 +263,16 @@ test.describe('Edge Cases - Stream Behavior', () => {
 
       expect(response.length).toBeGreaterThan(0);
       expect(response).not.toContain('too long');
-      console.log('✅ Handles long questions gracefully');
+      console.log('[OK] Handles long questions gracefully');
     } catch (error) {
       // If request fails, that's fine - just log it
-      console.log('⚠️  Long question caused error (acceptable boundary)');
+      console.log('[WARN]  Long question caused error (acceptable boundary)');
     }
   });
 
   test('EC.12 Stream timeout handling', async ({ page }) => {
     test.setTimeout(35000);
-    console.log('\n🧪 TEST EC.12: Timeout Handling');
+    console.log('\n[TEST] TEST EC.12: Timeout Handling');
 
     await login(page);
 
@@ -285,12 +285,12 @@ test.describe('Edge Cases - Stream Behavior', () => {
 
       // Should complete within timeout, not hang indefinitely
       expect(elapsed).toBeLessThan(30000);
-      console.log(`✅ Response received in ${elapsed}ms`);
+      console.log(`[OK] Response received in ${elapsed}ms`);
     } catch (error) {
       // If timeout error occurs, verify it's handled gracefully
       const errorShown = await page.locator('[class*="error"]').isVisible().catch(() => false);
       expect(errorShown || true).toBe(true);
-      console.log('✅ Timeout handled gracefully');
+      console.log('[OK] Timeout handled gracefully');
     }
   });
 
@@ -300,7 +300,7 @@ test.describe('Edge Cases - Text Content', () => {
 
   test('EC.13 Response doesn\'t contain HTML tags', async ({ page }) => {
     test.setTimeout(35000);
-    console.log('\n🧪 TEST EC.13: No HTML Tags');
+    console.log('\n[TEST] TEST EC.13: No HTML Tags');
 
     await login(page);
     await askQuestion(page, 'Give me your feedback');
@@ -310,12 +310,12 @@ test.describe('Edge Cases - Text Content', () => {
 
     const hasHTMLTags = /<[a-z!][^>]*>/i.test(response);
     expect(hasHTMLTags).toBe(false);
-    console.log('✅ No HTML tags in response');
+    console.log('[OK] No HTML tags in response');
   });
 
   test('EC.14 Response doesn\'t contain JSON syntax', async ({ page }) => {
     test.setTimeout(35000);
-    console.log('\n🧪 TEST EC.14: No JSON Syntax');
+    console.log('\n[TEST] TEST EC.14: No JSON Syntax');
 
     await login(page);
     await askQuestion(page, 'What patterns do you see?');
@@ -326,12 +326,12 @@ test.describe('Edge Cases - Text Content', () => {
     // JSON structures shouldn't leak into response
     const hasJSONStructure = /\{[^}]*\}|\[[^\]]*\]/.test(response) && /["':]/.test(response);
     expect(hasJSONStructure).toBe(false);
-    console.log('✅ No JSON syntax detected');
+    console.log('[OK] No JSON syntax detected');
   });
 
   test('EC.15 Special characters are handled correctly', async ({ page }) => {
     test.setTimeout(35000);
-    console.log('\n🧪 TEST EC.15: Special Characters');
+    console.log('\n[TEST] TEST EC.15: Special Characters');
 
     await login(page);
     await askQuestion(page, 'How do percentages and numbers work in my data?');
@@ -342,12 +342,12 @@ test.describe('Edge Cases - Text Content', () => {
     // Response should contain readable text, may contain %, &, etc. as normal prose
     expect(response.length).toBeGreaterThan(0);
     expect(response).toMatch(/[a-zA-Z]/);
-    console.log('✅ Special characters handled correctly');
+    console.log('[OK] Special characters handled correctly');
   });
 
   test('EC.16 Unicode and emoji handling', async ({ page }) => {
     test.setTimeout(35000);
-    console.log('\n🧪 TEST EC.16: Unicode Safety');
+    console.log('\n[TEST] TEST EC.16: Unicode Safety');
 
     await login(page);
     await askQuestion(page, 'How is my time management?');
@@ -359,7 +359,7 @@ test.describe('Edge Cases - Text Content', () => {
     // No broken unicode sequences
     const hasBrokenUnicode = /[\uFFFD\uFFFE]/g.test(response);
     expect(hasBrokenUnicode).toBe(false);
-    console.log('✅ Unicode handled safely');
+    console.log('[OK] Unicode handled safely');
   });
 
 });
@@ -368,7 +368,7 @@ test.describe('Edge Cases - Tone & Language', () => {
 
   test('EC.17 Honest tone with minimal data', async ({ page }) => {
     test.setTimeout(35000);
-    console.log('\n🧪 TEST EC.17: Honest Tone with Minimal Data');
+    console.log('\n[TEST] TEST EC.17: Honest Tone with Minimal Data');
 
     await login(page);
     await askQuestion(page, 'What should I improve?');
@@ -379,12 +379,12 @@ test.describe('Edge Cases - Tone & Language', () => {
     // Should maintain honest tone even with potentially limited data
     const avoidsFlattery = !(/amazing|wonderful|excellent|fantastic/i.test(response));
     expect(avoidsFlattery).toBe(true);
-    console.log('✅ Maintains honest tone');
+    console.log('[OK] Maintains honest tone');
   });
 
   test('EC.18 Question marks at end of observations', async ({ page }) => {
     test.setTimeout(35000);
-    console.log('\n🧪 TEST EC.18: Actionable Observations');
+    console.log('\n[TEST] TEST EC.18: Actionable Observations');
 
     await login(page);
     await askQuestion(page, 'Reflect on my patterns');
@@ -397,12 +397,12 @@ test.describe('Edge Cases - Tone & Language', () => {
     const hasActionableLanguage = /consider|try|think about|notice|focus/i.test(response);
 
     expect(endsWithQuestion || hasActionableLanguage).toBe(true);
-    console.log('✅ Response is actionable');
+    console.log('[OK] Response is actionable');
   });
 
   test('EC.19 Doesn\'t use placeholder language', async ({ page }) => {
     test.setTimeout(35000);
-    console.log('\n🧪 TEST EC.19: No Placeholder Language');
+    console.log('\n[TEST] TEST EC.19: No Placeholder Language');
 
     await login(page);
     await askQuestion(page, 'Tell me something interesting');
@@ -412,12 +412,12 @@ test.describe('Edge Cases - Tone & Language', () => {
 
     const hasPlaceholders = /TK|TODO|FIXME|placeholder|coming soon|not available/i.test(response);
     expect(hasPlaceholders).toBe(false);
-    console.log('✅ No placeholder language');
+    console.log('[OK] No placeholder language');
   });
 
   test('EC.20 No robotic or overly structured language', async ({ page }) => {
     test.setTimeout(35000);
-    console.log('\n🧪 TEST EC.20: Natural Language');
+    console.log('\n[TEST] TEST EC.20: Natural Language');
 
     await login(page);
     await askQuestion(page, 'What should I know about my habits?');
@@ -428,7 +428,7 @@ test.describe('Edge Cases - Tone & Language', () => {
     // Check for overly structured/robotic patterns
     const hasRoboticLanguage = /hereby|furthermore|consequently|thus|we have determined|the following shows/i.test(response);
     expect(hasRoboticLanguage).toBe(false);
-    console.log('✅ Language is natural and conversational');
+    console.log('[OK] Language is natural and conversational');
   });
 
 });
@@ -440,44 +440,44 @@ test.describe('Edge Cases - Tone & Language', () => {
 test.describe('Edge Case Summary', () => {
 
   test('Generate edge case report', async () => {
-    console.log('\n' + '═'.repeat(70));
-    console.log('📊 EDGE CASE TEST SUMMARY');
-    console.log('═'.repeat(70));
+    console.log('\n' + '='.repeat(70));
+    console.log('[data] EDGE CASE TEST SUMMARY');
+    console.log('='.repeat(70));
 
-    console.log('\n✅ MARKDOWN ARTIFACTS (4 tests)');
+    console.log('\n[OK] MARKDOWN ARTIFACTS (4 tests)');
     console.log('   EC.1 - No partial markdown sequences');
     console.log('   EC.2 - Clean numbers without markdown');
     console.log('   EC.3 - Clean proper nouns');
     console.log('   EC.4 - No escape sequences');
 
-    console.log('\n✅ RESPONSE QUALITY (4 tests)');
+    console.log('\n[OK] RESPONSE QUALITY (4 tests)');
     console.log('   EC.5 - Mixed case questions');
     console.log('   EC.6 - Ambiguous questions');
     console.log('   EC.7 - Consistent voice across topics');
     console.log('   EC.8 - Consistent paragraph structure');
 
-    console.log('\n✅ STREAM BEHAVIOR (4 tests)');
+    console.log('\n[OK] STREAM BEHAVIOR (4 tests)');
     console.log('   EC.9 - Rapid successive requests');
     console.log('   EC.10 - Deterministic response quality');
     console.log('   EC.11 - Long question handling');
     console.log('   EC.12 - Timeout handling');
 
-    console.log('\n✅ TEXT CONTENT (4 tests)');
+    console.log('\n[OK] TEXT CONTENT (4 tests)');
     console.log('   EC.13 - No HTML tags');
     console.log('   EC.14 - No JSON syntax');
     console.log('   EC.15 - Special characters');
     console.log('   EC.16 - Unicode safety');
 
-    console.log('\n✅ TONE & LANGUAGE (4 tests)');
+    console.log('\n[OK] TONE & LANGUAGE (4 tests)');
     console.log('   EC.17 - Honest tone with minimal data');
     console.log('   EC.18 - Actionable observations');
     console.log('   EC.19 - No placeholder language');
     console.log('   EC.20 - Natural language (not robotic)');
 
-    console.log('\n' + '═'.repeat(70));
-    console.log('📈 TOTAL: 20 edge case tests');
-    console.log('═'.repeat(70));
-    console.log('\n✅ Edge case suite complete!');
+    console.log('\n' + '='.repeat(70));
+    console.log('[sum] TOTAL: 20 edge case tests');
+    console.log('='.repeat(70));
+    console.log('\n[OK] Edge case suite complete!');
   });
 
 });

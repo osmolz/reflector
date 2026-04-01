@@ -133,10 +133,6 @@ img {
   height: auto;
 }
 
-.emoji-icon {
-  aria-hidden: true;
-}
-
 .form-error,
 input.input-error {
   color: var(--error);

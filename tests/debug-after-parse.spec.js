@@ -4,11 +4,11 @@ const TEST_EMAIL = 'olivermolz05@gmail.com';
 const TEST_PASSWORD = 'Arsenal2004!';
 
 test('Debug: Check page state after parsing', async ({ page }) => {
-  console.log('\n🔍 Debugging page state after parse click');
+  console.log('\n[find] Debugging page state after parse click');
 
   // Capture all console
   page.on('console', msg => {
-    console.log(`📋 [${msg.type()}] ${msg.text()}`);
+    console.log(`[log] [${msg.type()}] ${msg.text()}`);
   });
 
   // Login
@@ -27,7 +27,7 @@ test('Debug: Check page state after parsing', async ({ page }) => {
   await textarea.fill('Woke at 7am. Worked 8 hours. Lunch noon. Gym at 5pm.');
 
   // Click Parse
-  console.log('\n⏳ Clicking Parse...');
+  console.log('\n... Clicking Parse...');
   const parseBtn = page.locator('button:has-text("Parse and review")');
   await parseBtn.click();
 
@@ -41,7 +41,7 @@ test('Debug: Check page state after parsing', async ({ page }) => {
     const hasError = bodyText.includes('error') || bodyText.includes('Error') || bodyText.includes('failed');
     const hasParsing = bodyText.includes('Parsing') || bodyText.includes('parsing');
 
-    console.log(`\n⏱️  After ${(i+1)*5}s:`);
+    console.log(`\n[time]  After ${(i+1)*5}s:`);
     console.log(`   Has "Review": ${hasReview}`);
     console.log(`   Has "Activity": ${hasActivity}`);
     console.log(`   Has "Error": ${hasError}`);
@@ -59,12 +59,12 @@ test('Debug: Check page state after parsing', async ({ page }) => {
     console.log(`   Buttons: ${uniqueButtons.slice(0, 6).join(', ')}`);
 
     if (hasReview) {
-      console.log('\n✅ Review found! Stopping.');
+      console.log('\n[OK] Review found! Stopping.');
       break;
     }
 
     if (hasError) {
-      console.log('\n❌ Error detected. Looking for error message...');
+      console.log('\n[FAIL] Error detected. Looking for error message...');
       const errorElements = await page.locator('[class*="error"]').allTextContents();
       errorElements.forEach(err => console.log(`   Error: ${err.substring(0, 100)}`));
       break;
@@ -72,7 +72,7 @@ test('Debug: Check page state after parsing', async ({ page }) => {
   }
 
   // Final state
-  console.log('\n📸 Final page content preview:');
+  console.log('\n[shot] Final page content preview:');
   const finalText = await page.textContent('body');
   const lines = finalText.split('\n').filter(l => l.trim().length > 0);
   lines.slice(0, 20).forEach(line => console.log(`   ${line.substring(0, 80)}`));

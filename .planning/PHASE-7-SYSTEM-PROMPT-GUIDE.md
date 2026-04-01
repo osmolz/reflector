@@ -396,7 +396,7 @@ Result: Bold line and table removed, prose remains intact.
 
 ```
 Input:  "Contact us at user@example.com"
-Output: "Contact us at user@example.com"  ✓ Preserved
+Output: "Contact us at user@example.com"  [ok] Preserved
 ```
 
 **Inline markdown:** Not removed (intentional). If Claude says "This is **important**", the asterisks remain. This is acceptable because:

@@ -6,8 +6,8 @@ const TEST_PASSWORD = 'Arsenal2004!';
 test.describe('Complete App Functionality Tests', () => {
 
   test('1. Full user flow: Text Input → Parse → Save → Timeline → Chat', async ({ page }) => {
-    console.log('\n🚀 TEST: Complete User Journey');
-    console.log('═'.repeat(70));
+    console.log('\n[run] TEST: Complete User Journey');
+    console.log('='.repeat(70));
 
     // Capture all errors
     const allErrors = [];
@@ -18,7 +18,7 @@ test.describe('Complete App Functionality Tests', () => {
     });
 
     // STEP 1: Login
-    console.log('\n📍 STEP 1: Login');
+    console.log('\n[step] STEP 1: Login');
     await page.goto('http://localhost:5173');
     await page.waitForLoadState('networkidle');
 
@@ -29,15 +29,15 @@ test.describe('Complete App Functionality Tests', () => {
     await page.waitForTimeout(2000);
 
     const loggedIn = await page.locator('button:has-text("Log & journal")').isVisible();
-    console.log(`✅ Logged in: ${loggedIn}`);
+    console.log(`[OK] Logged in: ${loggedIn}`);
 
     // STEP 2: Create activity via text input
-    console.log('\n📍 STEP 2: Create Activities via Text Input');
+    console.log('\n[step] STEP 2: Create Activities via Text Input');
     const typeBtn = page.locator('button:has-text("Type")');
     const typeBtnExists = await typeBtn.isVisible({ timeout: 2000 }).catch(() => false);
 
     if (!typeBtnExists) {
-      console.log('❌ Type button not found');
+      console.log('[FAIL] Type button not found');
       return;
     }
 
@@ -54,36 +54,36 @@ Attended a team standup from 5:30 to 6pm.
 Relaxed in the evening from 6:30pm to 8pm.`;
 
     await textarea.fill(transcript);
-    console.log(`✅ Transcript entered (${transcript.length} chars)`);
+    console.log(`[OK] Transcript entered (${transcript.length} chars)`);
 
     // Parse
     const parseBtn = page.locator('button:has-text("Parse and review")');
     await parseBtn.click();
-    console.log('⏳ Parsing activities...');
+    console.log('... Parsing activities...');
 
     const reviewTitle = page.locator('h3:has-text("Review")');
     await reviewTitle.waitFor({ timeout: 20000 });
-    console.log('✅ Activities parsed and review shown');
+    console.log('[OK] Activities parsed and review shown');
 
     // Save
     const saveBtn = page.locator('button:has-text("Save to Timeline")');
     await saveBtn.click();
-    console.log('⏳ Saving to timeline...');
+    console.log('... Saving to timeline...');
     await page.waitForTimeout(2000);
-    console.log('✅ Activities saved');
+    console.log('[OK] Activities saved');
 
     // STEP 3: View Timeline
-    console.log('\n📍 STEP 3: View Timeline');
+    console.log('\n[step] STEP 3: View Timeline');
     const timelineBtn = page.locator('button:has-text("Timeline")');
     await timelineBtn.click();
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(1000);
 
     const timelineVisible = await page.locator('[class*="timeline"], text=/morning|breakfast|coding/i').isVisible({ timeout: 3000 }).catch(() => false);
-    console.log(`✅ Timeline view accessible: ${timelineVisible}`);
+    console.log(`[OK] Timeline view accessible: ${timelineVisible}`);
 
     // STEP 4: Chat (dedicated page)
-    console.log('\n📍 STEP 4: Chat');
+    console.log('\n[step] STEP 4: Chat');
     await page.locator('nav').getByRole('button', { name: 'Chat' }).click();
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(500);
@@ -94,7 +94,7 @@ Relaxed in the evening from 6:30pm to 8pm.`;
     if (chatExists) {
       const question = 'How much time did I spend working today?';
       await chatInput.fill(question);
-      console.log(`✅ Chat question: "${question}"`);
+      console.log(`[OK] Chat question: "${question}"`);
 
       const sendBtn = page.locator('button:has-text("Send")').first();
       const hasSendBtn = await sendBtn.isVisible({ timeout: 1000 }).catch(() => false);
@@ -105,48 +105,48 @@ Relaxed in the evening from 6:30pm to 8pm.`;
         await chatInput.press('Enter');
       }
 
-      console.log('⏳ Waiting for Claude response...');
+      console.log('... Waiting for Claude response...');
       await page.waitForTimeout(6000);
 
       const pageText = await page.textContent('body');
       const hasResponse = pageText.includes('hour') || pageText.includes('work') || pageText.includes('time');
-      console.log(`✅ Chat response received: ${hasResponse}`);
+      console.log(`[OK] Chat response received: ${hasResponse}`);
     } else {
-      console.log('⚠️  Chat not accessible');
+      console.log('[WARN]  Chat not accessible');
     }
 
     // STEP 5: Journal lives on Log & journal
-    console.log('\n📍 STEP 5: Journal section');
+    console.log('\n[step] STEP 5: Journal section');
     await page.locator('nav').getByRole('button', { name: 'Log & journal' }).click();
     await page.waitForLoadState('networkidle');
     const journalHeading = page.locator('h2:has-text("Journal")');
     if (await journalHeading.isVisible({ timeout: 2000 }).catch(() => false)) {
-      console.log('✅ Journal section visible on Log & journal');
+      console.log('[OK] Journal section visible on Log & journal');
     }
 
     // STEP 6: Sign Out
-    console.log('\n📍 STEP 6: Sign Out');
+    console.log('\n[step] STEP 6: Sign Out');
     const signOutBtn = page.locator('button:has-text("Sign out")');
     if (await signOutBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
       await signOutBtn.click();
       await page.waitForTimeout(1000);
       const signedOut = await page.locator('button:has-text("Sign In")').isVisible({ timeout: 3000 }).catch(() => false);
-      console.log(`✅ Signed out: ${signedOut}`);
+      console.log(`[OK] Signed out: ${signedOut}`);
     }
 
     // Summary
-    console.log('\n' + '═'.repeat(70));
-    console.log('📊 TEST SUMMARY');
-    console.log(`✅ Console errors: ${allErrors.length}`);
+    console.log('\n' + '='.repeat(70));
+    console.log('[data] TEST SUMMARY');
+    console.log(`[OK] Console errors: ${allErrors.length}`);
     if (allErrors.length > 0) {
       allErrors.forEach((err, i) => console.log(`   ${i + 1}. ${err.substring(0, 80)}`));
     }
-    console.log('═'.repeat(70));
+    console.log('='.repeat(70));
   });
 
   test('2. Navigation between all pages', async ({ page }) => {
-    console.log('\n🧪 TEST: Navigation Between Pages');
-    console.log('═'.repeat(70));
+    console.log('\n[TEST] TEST: Navigation Between Pages');
+    console.log('='.repeat(70));
 
     // Login
     await page.goto('http://localhost:5173');
@@ -156,7 +156,7 @@ Relaxed in the evening from 6:30pm to 8pm.`;
     await page.locator('button:has-text("Sign In")').first().click();
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000);
-    console.log('✅ Logged in');
+    console.log('[OK] Logged in');
 
     const pages = ['Log & journal', 'Timeline', 'Chat'];
     const results = {};
@@ -172,22 +172,22 @@ Relaxed in the evening from 6:30pm to 8pm.`;
 
         const pageUrl = page.url();
         results[pageName] = { accessible: true, url: pageUrl };
-        console.log(`✅ ${pageName}: ${pageUrl}`);
+        console.log(`[OK] ${pageName}: ${pageUrl}`);
       } else {
         results[pageName] = { accessible: false };
-        console.log(`❌ ${pageName}: Button not found`);
+        console.log(`[FAIL] ${pageName}: Button not found`);
       }
     }
 
-    console.log('\n📊 Navigation Results:');
+    console.log('\n[data] Navigation Results:');
     Object.entries(results).forEach(([name, result]) => {
-      console.log(`   ${name}: ${result.accessible ? '✅ Accessible' : '❌ Not Found'}`);
+      console.log(`   ${name}: ${result.accessible ? '[OK] Accessible' : '[FAIL] Not Found'}`);
     });
   });
 
   test('3. Check-in form with both input modes', async ({ page }) => {
-    console.log('\n🧪 TEST: Check-in Input Modes');
-    console.log('═'.repeat(70));
+    console.log('\n[TEST] TEST: Check-in Input Modes');
+    console.log('='.repeat(70));
 
     // Login
     await page.goto('http://localhost:5173');
@@ -197,7 +197,7 @@ Relaxed in the evening from 6:30pm to 8pm.`;
     await page.locator('button:has-text("Sign In")').first().click();
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(2000);
-    console.log('✅ Logged in');
+    console.log('[OK] Logged in');
 
     // Check both buttons exist
     const speakBtn = page.locator('button:has-text("Speak")');
@@ -206,34 +206,34 @@ Relaxed in the evening from 6:30pm to 8pm.`;
     const speakExists = await speakBtn.isVisible({ timeout: 2000 }).catch(() => false);
     const typeExists = await typeBtn.isVisible({ timeout: 2000 }).catch(() => false);
 
-    console.log(`✅ Speak button: ${speakExists}`);
-    console.log(`✅ Type button: ${typeExists}`);
+    console.log(`[OK] Speak button: ${speakExists}`);
+    console.log(`[OK] Type button: ${typeExists}`);
 
     if (typeExists) {
       await typeBtn.click();
       const textarea = page.locator('textarea').first();
       const textareaVisible = await textarea.isVisible();
-      console.log(`✅ Text mode: ${textareaVisible}`);
+      console.log(`[OK] Text mode: ${textareaVisible}`);
 
       // Go back
       const backBtn = page.locator('button:has-text("← Back")').first();
       if (await backBtn.isVisible()) {
         await backBtn.click();
         const modeSelection = await speakBtn.isVisible({ timeout: 2000 }).catch(() => false);
-        console.log(`✅ Back to mode selection: ${modeSelection}`);
+        console.log(`[OK] Back to mode selection: ${modeSelection}`);
       }
     }
 
     if (speakExists) {
       await speakBtn.click();
       const micButton = page.locator('[class*="mic"], button[aria-label*="mic"]').isVisible({ timeout: 2000 }).catch(() => false);
-      console.log(`✅ Voice mode accessible: ${!!micButton}`);
+      console.log(`[OK] Voice mode accessible: ${!!micButton}`);
     }
   });
 
   test('4. Activity review and editing', async ({ page }) => {
-    console.log('\n🧪 TEST: Activity Review & Editing');
-    console.log('═'.repeat(70));
+    console.log('\n[TEST] TEST: Activity Review & Editing');
+    console.log('='.repeat(70));
 
     // Login
     await page.goto('http://localhost:5173');
@@ -256,32 +256,32 @@ Relaxed in the evening from 6:30pm to 8pm.`;
 
     const reviewTitle = page.locator('h3:has-text("Review")');
     await reviewTitle.waitFor({ timeout: 20000 });
-    console.log('✅ Review page displayed');
+    console.log('[OK] Review page displayed');
 
     // Check for edit buttons
     const editBtns = page.locator('button:has-text("Edit")');
     const editCount = await editBtns.count();
-    console.log(`✅ Edit buttons available: ${editCount}`);
+    console.log(`[OK] Edit buttons available: ${editCount}`);
 
     // Check for delete buttons
     const deleteBtns = page.locator('button:has-text("Delete")');
     const deleteCount = await deleteBtns.count();
-    console.log(`✅ Delete buttons available: ${deleteCount}`);
+    console.log(`[OK] Delete buttons available: ${deleteCount}`);
 
     // Check for save button
     const saveBtn = page.locator('button:has-text("Save to Timeline")');
     const saveAvailable = await saveBtn.isEnabled();
-    console.log(`✅ Save button available: ${saveAvailable}`);
+    console.log(`[OK] Save button available: ${saveAvailable}`);
 
     // Check for discard button
     const discardBtn = page.locator('button:has-text("Discard")');
     const discardAvailable = await discardBtn.isVisible();
-    console.log(`✅ Discard button available: ${discardAvailable}`);
+    console.log(`[OK] Discard button available: ${discardAvailable}`);
   });
 
   test('5. Responsive layout and accessibility', async ({ page }) => {
-    console.log('\n🧪 TEST: Responsive & Accessibility');
-    console.log('═'.repeat(70));
+    console.log('\n[TEST] TEST: Responsive & Accessibility');
+    console.log('='.repeat(70));
 
     // Login
     await page.goto('http://localhost:5173');
@@ -294,46 +294,46 @@ Relaxed in the evening from 6:30pm to 8pm.`;
     // Check for main semantic elements
     const main = page.locator('main');
     const mainExists = await main.isVisible({ timeout: 2000 }).catch(() => false);
-    console.log(`✅ Main element: ${mainExists}`);
+    console.log(`[OK] Main element: ${mainExists}`);
 
     const nav = page.locator('nav');
     const navExists = await nav.isVisible({ timeout: 2000 }).catch(() => false);
-    console.log(`✅ Nav element: ${navExists}`);
+    console.log(`[OK] Nav element: ${navExists}`);
 
     // Check form labels
     const labels = page.locator('label');
     const labelCount = await labels.count();
-    console.log(`✅ Form labels: ${labelCount}`);
+    console.log(`[OK] Form labels: ${labelCount}`);
 
     // Check aria-labels
     const ariaLabels = page.locator('[aria-label]');
     const ariaCount = await ariaLabels.count();
-    console.log(`✅ Elements with aria-label: ${ariaCount}`);
+    console.log(`[OK] Elements with aria-label: ${ariaCount}`);
 
     // Check buttons are keyboard accessible
     const buttons = page.locator('button');
     const buttonCount = await buttons.count();
-    console.log(`✅ Total buttons: ${buttonCount}`);
+    console.log(`[OK] Total buttons: ${buttonCount}`);
 
     // Check for images without alt text (should not exist in production)
     const imagesWithoutAlt = page.locator('img:not([alt])');
     const badImgCount = await imagesWithoutAlt.count();
-    console.log(`✅ Images without alt text: ${badImgCount}`);
+    console.log(`[OK] Images without alt text: ${badImgCount}`);
 
     // Check viewport and layout
     const viewport = page.viewportSize();
-    console.log(`✅ Viewport: ${viewport.width}x${viewport.height}`);
+    console.log(`[OK] Viewport: ${viewport.width}x${viewport.height}`);
 
     // Try scrolling and checking content is visible
     await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
     await page.waitForTimeout(300);
     const scrolledContent = await page.locator('body').isVisible();
-    console.log(`✅ Content scrollable: ${scrolledContent}`);
+    console.log(`[OK] Content scrollable: ${scrolledContent}`);
   });
 
   test('6. Error states and recovery', async ({ page }) => {
-    console.log('\n🧪 TEST: Error States & Recovery');
-    console.log('═'.repeat(70));
+    console.log('\n[TEST] TEST: Error States & Recovery');
+    console.log('='.repeat(70));
 
     const errors = [];
     page.on('console', msg => {
@@ -352,13 +352,13 @@ Relaxed in the evening from 6:30pm to 8pm.`;
     await page.waitForTimeout(2000);
 
     // Try empty transcript
-    console.log('📝 Testing empty input submission...');
+    console.log('[note] Testing empty input submission...');
     const typeBtn = page.locator('button:has-text("Type")');
     await typeBtn.click();
 
     const parseBtn = page.locator('button:has-text("Parse and review")');
     const isDisabled = await parseBtn.isDisabled();
-    console.log(`✅ Parse button disabled on empty: ${isDisabled}`);
+    console.log(`[OK] Parse button disabled on empty: ${isDisabled}`);
 
     // Try with whitespace only
     const textarea = page.locator('textarea').first();
@@ -366,21 +366,21 @@ Relaxed in the evening from 6:30pm to 8pm.`;
     await page.waitForTimeout(500);
 
     const stillDisabled = await parseBtn.isDisabled();
-    console.log(`✅ Parse button disabled on whitespace: ${stillDisabled}`);
+    console.log(`[OK] Parse button disabled on whitespace: ${stillDisabled}`);
 
     // Clear and try valid input
     await textarea.fill('Valid activity: Worked 8 hours');
     await page.waitForTimeout(500);
 
     const nowEnabled = await parseBtn.isEnabled();
-    console.log(`✅ Parse button enabled on valid input: ${nowEnabled}`);
+    console.log(`[OK] Parse button enabled on valid input: ${nowEnabled}`);
 
-    console.log(`\n📊 Console errors detected: ${errors.length}`);
+    console.log(`\n[data] Console errors detected: ${errors.length}`);
   });
 
   test('7. Data persistence across navigation', async ({ page }) => {
-    console.log('\n🧪 TEST: Data Persistence');
-    console.log('═'.repeat(70));
+    console.log('\n[TEST] TEST: Data Persistence');
+    console.log('='.repeat(70));
 
     // Login
     await page.goto('http://localhost:5173');
@@ -407,7 +407,7 @@ Relaxed in the evening from 6:30pm to 8pm.`;
 
     const saveBtn = page.locator('button:has-text("Save to Timeline")');
     await saveBtn.click();
-    console.log('✅ Activity saved');
+    console.log('[OK] Activity saved');
     await page.waitForTimeout(2000);
 
     // Navigate away
@@ -415,7 +415,7 @@ Relaxed in the evening from 6:30pm to 8pm.`;
     await logJournalBtn.click();
     await page.waitForLoadState('networkidle');
     await page.waitForTimeout(1000);
-    console.log('✅ Navigated away');
+    console.log('[OK] Navigated away');
 
     // Navigate to Timeline
     const timelineBtn = page.locator('button:has-text("Timeline")');
@@ -426,6 +426,6 @@ Relaxed in the evening from 6:30pm to 8pm.`;
     // Check if activity persisted
     const pageText = await page.textContent('body');
     const persisted = pageText.includes('activity') || pageText.includes('Unique') || pageText.includes('2');
-    console.log(`✅ Activity persisted in timeline: ${persisted}`);
+    console.log(`[OK] Activity persisted in timeline: ${persisted}`);
   });
 });

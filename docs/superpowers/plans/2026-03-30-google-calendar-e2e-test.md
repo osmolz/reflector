@@ -428,9 +428,9 @@ Document any issues found during testing here. Use this table to track bugs disc
 - Accessibility: _____ / 5 passed
 
 **Pass Criteria:**
-- ✅ **Release Ready:** All critical tests passed, all major tests passed, ≤1 minor issue
-- ⚠️ **Conditional Release:** All critical tests passed, 1-2 major issues with documented workarounds
-- ❌ **Hold:** Any critical or blocking test failed
+- [OK] **Release Ready:** All critical tests passed, all major tests passed, ≤1 minor issue
+- [WARN] **Conditional Release:** All critical tests passed, 1-2 major issues with documented workarounds
+- [FAIL] **Hold:** Any critical or blocking test failed
 
 **Release Readiness Checklist:**
 - [ ] All 13 Sync Flow tests passed

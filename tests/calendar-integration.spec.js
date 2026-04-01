@@ -77,7 +77,7 @@ async function clickAddToCalendarButton(page) {
   // PRE: Activity modal or item is open
   // ACTION: Click the "Add to Calendar" or calendar emoji button
   // EXPECTED: Returns true if button clicked, false if not visible
-  const addBtn = page.locator('button:has-text("Add to Calendar"), button:has-text("📅")').first();
+  const addBtn = page.getByRole('button', { name: /Add to (Google )?Calendar/i }).first();
   if (await addBtn.isVisible({ timeout: TIMEOUTS.NETWORK }).catch(() => false)) {
     await addBtn.click();
     await page.waitForTimeout(TIMEOUTS.SHORT);

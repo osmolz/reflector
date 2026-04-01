@@ -1,7 +1,7 @@
 # Phase 7: Chat Output Quality & Executive Coach Formatting — Planning Summary
 
 **Generated:** 2026-03-29
-**Status:** PLANNING COMPLETE ✅
+**Status:** PLANNING COMPLETE [OK]
 **Plan Location:** `.planning/PHASE-7-PLAN.md`
 
 ---
@@ -271,7 +271,7 @@ Wave 2 (Sequential after Wave 1, can run in parallel with each other):
 
 ## Acceptance Criteria
 
-✅ **All phase goals met:**
+[OK] **All phase goals met:**
 1. No markdown artifacts visible in any response (validated by 20+ tests)
 2. Streaming enabled and working (SSE format verified)
 3. Consistent executive coach tone (4 tone tests passing)
@@ -332,7 +332,7 @@ Wave 2 (Sequential after Wave 1, can run in parallel with each other):
 
 ---
 
-## Phase 7 Planning Complete ✅
+## Phase 7 Planning Complete [OK]
 
 Plan is detailed, scoped, verified, and ready for execution. All 6 tasks decomposed with clear actions, verifications, and acceptance criteria. Requirements mapped to tasks. Testing strategy comprehensive (20+ tests). No dependencies on external research or user decisions.
 

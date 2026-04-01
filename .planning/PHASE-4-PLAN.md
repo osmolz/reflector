@@ -1009,7 +1009,7 @@ Once Phase 4 is complete:
 3. Delete all time_entries; ask question → Claude says "no data"
 4. Unplug internet while waiting for response → timeout error
 5. Log out and back in as different user → see only own chat history
-6. Ask with special characters ("What's my 🔥 activity?") → Claude handles gracefully
+6. Ask with special characters ("What's my [hot] activity?") → Claude handles gracefully
 
 **Performance:**
 1. Ask 5 questions in rapid succession → rate limiting works

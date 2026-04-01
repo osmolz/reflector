@@ -1097,9 +1097,9 @@ Accessibility is part of intentional design. No compromises.
    ```
 
 2. **Color contrast verification:**
-   - Text primary (#1A1A1A) on bg primary (#F9F9F9): 13.4:1 ✓ WCAG AAA
-   - Text secondary (#4A4A4A) on bg primary: 6.8:1 ✓ WCAG AA
-   - Accent (#2B5A6B) on white: 6.2:1 ✓ WCAG AA
+   - Text primary (#1A1A1A) on bg primary (#F9F9F9): 13.4:1 [ok] WCAG AAA
+   - Text secondary (#4A4A4A) on bg primary: 6.8:1 [ok] WCAG AA
+   - Accent (#2B5A6B) on white: 6.2:1 [ok] WCAG AA
    - Error/warning colors: verify with WebAIM contrast checker
 
 3. **Semantic HTML:** Ensure proper element usage:
@@ -1154,9 +1154,9 @@ This is the final pass. Every detail counts.
 
 4. **Browser compatibility:**
    - Test in Chrome, Safari, Firefox, Edge
-   - CSS custom properties supported (all modern browsers ✓)
-   - Flexbox/Grid layout (all modern browsers ✓)
-   - Gradients, shadows, transitions (all modern ✓)
+   - CSS custom properties supported (all modern browsers [ok])
+   - Flexbox/Grid layout (all modern browsers [ok])
+   - Gradients, shadows, transitions (all modern [ok])
    - Clip old browsers (IE11 not supported)
 
 **Verify:**
@@ -1259,7 +1259,7 @@ Before moving to Phase 6 (Testing), verify:
 - [ ] Every screen feels like same app (color, type, spacing)
 - [ ] No Tailwind defaults visible
 - [ ] No AI scaffolding feel (generic, safe, boring)
-- [ ] "Serious designer" test: Yes, I'd believe this. ✓
+- [ ] "Serious designer" test: Yes, I'd believe this. [ok]
 
 ---
 
@@ -1297,17 +1297,17 @@ Before moving to Phase 6 (Testing), verify:
 
 When Phase 5 is complete:
 
-✓ **Visual Cohesion:** Every screen uses same color palette, typography, spacing. Feels like one app.
+[ok] **Visual Cohesion:** Every screen uses same color palette, typography, spacing. Feels like one app.
 
-✓ **Intentional Design:** No Tailwind defaults. Every color, font, spacing has a reason. Would survive designer review.
+[ok] **Intentional Design:** No Tailwind defaults. Every color, font, spacing has a reason. Would survive designer review.
 
-✓ **Premium Feel:** Mic button is crafted. Typography is chosen. Whitespace feels generous. Micro-interactions feel smooth.
+[ok] **Premium Feel:** Mic button is crafted. Typography is chosen. Whitespace feels generous. Micro-interactions feel smooth.
 
-✓ **Editorial Aesthetic:** Timeline feels like Financial Times, not SaaS dashboard. Serious, confident, curated.
+[ok] **Editorial Aesthetic:** Timeline feels like Financial Times, not SaaS dashboard. Serious, confident, curated.
 
-✓ **Responsive & Accessible:** Works on desktop, tablet, mobile. Keyboard accessible. Color contrast WCAG AA.
+[ok] **Responsive & Accessible:** Works on desktop, tablet, mobile. Keyboard accessible. Color contrast WCAG AA.
 
-✓ **Ready to Ship:** No visual debt. Passes the "serious designer" test. Phase 6 can focus on testing, not design fixes.
+[ok] **Ready to Ship:** No visual debt. Passes the "serious designer" test. Phase 6 can focus on testing, not design fixes.
 
 ---
 

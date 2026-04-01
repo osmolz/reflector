@@ -77,23 +77,23 @@ Phase 5: Design (Styles everything)
 
 ## What You Need Before Starting
 
-✓ **Phase 1 Complete:**
+[ok] **Phase 1 Complete:**
 - Supabase project created
 - Database schema migrated (users, check_ins, time_entries, journal_entries, chat_messages)
 - RLS policies enabled
 - React app with auth working
 
-✓ **Phase 2 Complete:**
+[ok] **Phase 2 Complete:**
 - Timeline component rendering activities from `time_entries`
 - Web Speech API hook for voice input (`useWebSpeechAPI`)
 - Activities stored in Supabase
 
-✓ **Environment Setup:**
+[ok] **Environment Setup:**
 - `.env.local` with `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`
 - `npm install` dependencies up to date
 - Dev server runs without errors
 
-✓ **Understanding:**
+[ok] **Understanding:**
 - React hooks (useState, useEffect)
 - Supabase query syntax (insert, select, update, delete)
 - How RLS policies work (per-user data isolation)
@@ -400,25 +400,25 @@ new Date(startTime).toLocaleString();
 
 ## Key Reminders
 
-🎯 **Keep it simple:** MVP first, polish later. Basic modal > fancy animated sidebar.
+[tgt] **Keep it simple:** MVP first, polish later. Basic modal > fancy animated sidebar.
 
-🎯 **Test as you go:** Build one task, test it before moving to the next. Don't build all 5 tasks then discover task 1 broke something.
+[tgt] **Test as you go:** Build one task, test it before moving to the next. Don't build all 5 tasks then discover task 1 broke something.
 
-🎯 **RLS is your security:** Don't bypass it. It ensures users can only access their own data.
+[tgt] **RLS is your security:** Don't bypass it. It ensures users can only access their own data.
 
-🎯 **Voice input is nice-to-have:** If it's broken on your browser, text input alone is enough for MVP. Add voice fallback handling.
+[tgt] **Voice input is nice-to-have:** If it's broken on your browser, text input alone is enough for MVP. Add voice fallback handling.
 
-🎯 **Gaps are auto-calculated:** You don't need to manually recalculate them. Just refetch the timeline and re-run the gap detection logic.
+[tgt] **Gaps are auto-calculated:** You don't need to manually recalculate them. Just refetch the timeline and re-run the gap detection logic.
 
-🎯 **No perfectionism:** The goal is functional, not pixel-perfect. Design polish is Phase 5.
+[tgt] **No perfectionism:** The goal is functional, not pixel-perfect. Design polish is Phase 5.
 
 ---
 
 ## You're Halfway There
 
-Phase 1 ✅ (Backend setup)
-Phase 2 ✅ (Voice + timeline)
-**Phase 3 🚀 (Editing + journal) ← YOU ARE HERE**
+Phase 1 [OK] (Backend setup)
+Phase 2 [OK] (Voice + timeline)
+**Phase 3 [run] (Editing + journal) ← YOU ARE HERE**
 Phase 4 (Chat analytics)
 Phase 5 (Design)
 Phase 6 (Test + deploy)

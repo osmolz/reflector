@@ -228,9 +228,9 @@ supabase functions deploy chat
 
 | Variable | Source | Purpose | Required |
 |----------|--------|---------|----------|
-| `VITE_SUPABASE_URL` | Supabase Dashboard → Settings → API | Supabase API endpoint | ✓ Frontend |
-| `VITE_SUPABASE_ANON_KEY` | Supabase Dashboard → Settings → API | Supabase anonymous key (safe to expose) | ✓ Frontend |
-| `ANTHROPIC_API_KEY` | Anthropic Console → API Keys | Claude API key (server-side only) | ✓ Edge Functions |
+| `VITE_SUPABASE_URL` | Supabase Dashboard → Settings → API | Supabase API endpoint | [ok] Frontend |
+| `VITE_SUPABASE_ANON_KEY` | Supabase Dashboard → Settings → API | Supabase anonymous key (safe to expose) | [ok] Frontend |
+| `ANTHROPIC_API_KEY` | Anthropic Console → API Keys | Claude API key (server-side only) | [ok] Edge Functions |
 
 **Security Notes:**
 - `VITE_*` variables are exposed to the client (safe if public keys only)

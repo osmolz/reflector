@@ -12,17 +12,17 @@ test('Check-in component renders with voice and text toggle buttons', async ({ p
   const isVisible = await checkInHeading.isVisible({ timeout: 2000 }).catch(() => false);
 
   if (isVisible) {
-    console.log('✅ Check-in component is visible');
+    console.log('[OK] Check-in component is visible');
 
     // Verify both button types exist
-    const speakBtn = page.locator('button:has-text("🎤")');
-    const typeBtn = page.locator('button:has-text("✍️")');
+    const speakBtn = page.getByRole('button', { name: 'Speak' });
+    const typeBtn = page.getByRole('button', { name: 'Type' });
 
     const speakExists = await speakBtn.isVisible({ timeout: 1000 }).catch(() => false);
     const typeExists = await typeBtn.isVisible({ timeout: 1000 }).catch(() => false);
 
-    console.log(`✅ Speak button visible: ${speakExists}`);
-    console.log(`✅ Type button visible: ${typeExists}`);
+    console.log(`[OK] Speak button visible: ${speakExists}`);
+    console.log(`[OK] Type button visible: ${typeExists}`);
 
     if (speakExists) {
       await expect(speakBtn).toBeVisible();
@@ -31,7 +31,7 @@ test('Check-in component renders with voice and text toggle buttons', async ({ p
       await expect(typeBtn).toBeVisible();
     }
   } else {
-    console.log('ℹ️  Check-in requires authentication (not visible on public page)');
+    console.log('[info]  Check-in requires authentication (not visible on public page)');
   }
 });
 
@@ -44,7 +44,7 @@ test('Text input button shows textarea with proper placeholder', async ({ page }
   const btnExists = await typeBtn.isVisible({ timeout: 2000 }).catch(() => false);
 
   if (!btnExists) {
-    console.log('ℹ️  Check-in not accessible (requires login) - skipping text input test');
+    console.log('[info]  Check-in not accessible (requires login) - skipping text input test');
     return;
   }
 
@@ -60,7 +60,7 @@ test('Text input button shows textarea with proper placeholder', async ({ page }
   const placeholder = await textarea.getAttribute('placeholder');
   expect(placeholder).toContain('Describe your activities');
 
-  console.log('✅ Text input mode shows textarea with correct placeholder');
+  console.log('[OK] Text input mode shows textarea with correct placeholder');
 
   // Verify we can type
   const testText = 'Woke up at 7am. Worked for 8 hours. Lunch at noon.';
@@ -69,7 +69,7 @@ test('Text input button shows textarea with proper placeholder', async ({ page }
   const enteredText = await textarea.inputValue();
   expect(enteredText).toBe(testText);
 
-  console.log('✅ Can type in textarea successfully');
+  console.log('[OK] Can type in textarea successfully');
 
   // Verify Parse & Continue button exists and is enabled
   const parseBtn = page.locator('button:has-text("Parse and review")');
@@ -77,7 +77,7 @@ test('Text input button shows textarea with proper placeholder', async ({ page }
   const isDisabled = await parseBtn.isDisabled();
   expect(isDisabled).toBe(false);
 
-  console.log('✅ Parse & Continue button is enabled when textarea has content');
+  console.log('[OK] Parse & Continue button is enabled when textarea has content');
 });
 
 test('Back button returns to input mode selection', async ({ page }) => {
@@ -89,7 +89,7 @@ test('Back button returns to input mode selection', async ({ page }) => {
   const btnExists = await typeBtn.isVisible({ timeout: 2000 }).catch(() => false);
 
   if (!btnExists) {
-    console.log('ℹ️  Check-in not accessible - skipping back button test');
+    console.log('[info]  Check-in not accessible - skipping back button test');
     return;
   }
 
@@ -113,7 +113,7 @@ test('Back button returns to input mode selection', async ({ page }) => {
   await expect(speakBtn).toBeVisible();
   await expect(typeBtnAgain).toBeVisible();
 
-  console.log('✅ Back button returns to input mode selection');
+  console.log('[OK] Back button returns to input mode selection');
 });
 
 test('Voice button is still accessible alongside text button', async ({ page }) => {
@@ -128,17 +128,17 @@ test('Voice button is still accessible alongside text button', async ({ page }) 
   const typeVisible = await typeBtn.isVisible({ timeout: 2000 }).catch(() => false);
 
   if (speakVisible && typeVisible) {
-    console.log('✅ Both Speak and Type buttons are visible and accessible');
+    console.log('[OK] Both Speak and Type buttons are visible and accessible');
 
     // Try clicking speak button to verify it works
     await speakBtn.click();
     await page.waitForLoadState('networkidle');
 
     // Should show mic interface or close immediately
-    console.log('✅ Speak button is clickable');
+    console.log('[OK] Speak button is clickable');
   } else if (!speakVisible && !typeVisible) {
-    console.log('ℹ️  Check-in requires authentication - skipping voice button test');
+    console.log('[info]  Check-in requires authentication - skipping voice button test');
   } else {
-    console.log(`✅ Check-in partially visible (Speak: ${speakVisible}, Type: ${typeVisible})`);
+    console.log(`[OK] Check-in partially visible (Speak: ${speakVisible}, Type: ${typeVisible})`);
   }
 });

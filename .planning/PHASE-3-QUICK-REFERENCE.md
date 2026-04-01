@@ -289,12 +289,12 @@ export function ActivityEditForm({ activity, onClose, onSave }: { activity: Acti
 1. Go to Journal page
 2. Type: "Woke up at 7am, had coffee, worked 8-12"
 3. Click "Save Entry"
-   ✓ Entry appears in history
-   ✓ Supabase has entry with created_at timestamp
+   [ok] Entry appears in history
+   [ok] Supabase has entry with created_at timestamp
 4. Refresh page (F5)
-   ✓ Entry still there (persisted)
+   [ok] Entry still there (persisted)
 5. Verify in Supabase: dashboard > journal_entries table
-   ✓ Row exists with user_id, text, created_at
+   [ok] Row exists with user_id, text, created_at
 ```
 
 ### Scenario 2: Edit Activity Duration
@@ -303,14 +303,14 @@ export function ActivityEditForm({ activity, onClose, onSave }: { activity: Acti
 1. Go to Timeline (from Phase 2)
 2. See activity: "Work" 120 minutes
 3. Click on activity
-   ✓ Modal opens with fields: name="Work", duration=120
+   [ok] Modal opens with fields: name="Work", duration=120
 4. Change duration to 90
 5. Click "Save"
-   ✓ Modal closes
-   ✓ Timeline refreshes
-   ✓ Activity now shows 90 minutes
+   [ok] Modal closes
+   [ok] Timeline refreshes
+   [ok] Activity now shows 90 minutes
 6. Verify in Supabase: time_entries table
-   ✓ duration_minutes = 90, updated_at = NOW
+   [ok] duration_minutes = 90, updated_at = NOW
 ```
 
 ### Scenario 3: Delete Activity & Gaps Recalculate
@@ -323,8 +323,8 @@ export function ActivityEditForm({ activity, onClose, onSave }: { activity: Acti
    (No gaps, activities are adjacent)
 
 2. Click on "Work" activity, delete it
-   ✓ Activity removed from timeline
-   ✓ Gaps array now contains one gap from 7:30am to 10:00am (150 min)
+   [ok] Activity removed from timeline
+   [ok] Gaps array now contains one gap from 7:30am to 10:00am (150 min)
 
 3. Timeline shows:
    - 7:00am "Breakfast" 30 min
@@ -337,17 +337,17 @@ export function ActivityEditForm({ activity, onClose, onSave }: { activity: Acti
 ```
 1. Click "Voice Input" button
 2. Browser doesn't support Web Speech API (Firefox on some OS)
-   ✓ Error message: "Voice input not supported on your browser"
-   ✓ User can still type manually
+   [ok] Error message: "Voice input not supported on your browser"
+   [ok] User can still type manually
 
 OR
 
 1. Browser supports it, user clicks "Voice Input"
 2. User speaks: "Slept for 8 hours"
 3. Web Speech API transcribes: "slept for a towers"
-   ✓ Transcript appends to text field
-   ✓ User can manually correct to "Slept for 8 hours"
-   ✓ Submit saves corrected text
+   [ok] Transcript appends to text field
+   [ok] User can manually correct to "Slept for 8 hours"
+   [ok] Submit saves corrected text
 ```
 
 ---
@@ -357,44 +357,44 @@ OR
 ### If Journal Entry Doesn't Save
 
 ```
-☐ Check user is logged in (useAuthStore shows user.id)
-☐ Check Network tab: POST to /rest/v1/journal_entries returns 201
-☐ Check Console: any Supabase errors?
-☐ Check Supabase RLS policies: journal_entries SELECT/INSERT enabled?
-☐ Verify .env.local has VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY
-☐ Try force refresh: Ctrl+Shift+R (not just F5)
+[ ] Check user is logged in (useAuthStore shows user.id)
+[ ] Check Network tab: POST to /rest/v1/journal_entries returns 201
+[ ] Check Console: any Supabase errors?
+[ ] Check Supabase RLS policies: journal_entries SELECT/INSERT enabled?
+[ ] Verify .env.local has VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY
+[ ] Try force refresh: Ctrl+Shift+R (not just F5)
 ```
 
 ### If Activity Edit Fails
 
 ```
-☐ Check user is logged in
-☐ Check activity.id is valid UUID
-☐ Check Network tab: PATCH to /rest/v1/time_entries returns 200
-☐ Check Supabase RLS: time_entries UPDATE policy enabled?
-☐ Check form validation: duration > 0, name not empty?
-☐ Try editing just one field at a time to isolate issue
+[ ] Check user is logged in
+[ ] Check activity.id is valid UUID
+[ ] Check Network tab: PATCH to /rest/v1/time_entries returns 200
+[ ] Check Supabase RLS: time_entries UPDATE policy enabled?
+[ ] Check form validation: duration > 0, name not empty?
+[ ] Try editing just one field at a time to isolate issue
 ```
 
 ### If Timeline Doesn't Refresh After Edit
 
 ```
-☐ Check setRefreshKey or similar trigger is called onSave
-☐ Check useEffect dependencies include refreshKey
-☐ Check Timeline component re-fetches activities on refresh
-☐ Try manually clicking back/forward navigation to force re-render
-☐ Check Console: any React errors or warnings?
+[ ] Check setRefreshKey or similar trigger is called onSave
+[ ] Check useEffect dependencies include refreshKey
+[ ] Check Timeline component re-fetches activities on refresh
+[ ] Try manually clicking back/forward navigation to force re-render
+[ ] Check Console: any React errors or warnings?
 ```
 
 ### If Voice Input Not Working
 
 ```
-☐ Test in Chrome (best support) first
-☐ Check browser permissions: allow microphone access?
-☐ Check Console for errors related to SpeechRecognition
-☐ Verify useWebSpeechAPI hook is imported correctly
-☐ Test with microphone working (not muted)
-☐ Check browser supports it: console.log(window.SpeechRecognition || window.webkitSpeechRecognition)
+[ ] Test in Chrome (best support) first
+[ ] Check browser permissions: allow microphone access?
+[ ] Check Console for errors related to SpeechRecognition
+[ ] Verify useWebSpeechAPI hook is imported correctly
+[ ] Test with microphone working (not muted)
+[ ] Check browser supports it: console.log(window.SpeechRecognition || window.webkitSpeechRecognition)
 ```
 
 ---
@@ -403,20 +403,20 @@ OR
 
 ### For 20+ Journal Entries
 
-- ✓ Reverse-chronological sort by created_at DESC (use DB order, not in-memory)
-- ✓ Load all entries upfront (no pagination for MVP)
-- ✓ Collapsible snippets avoid rendering full text for all entries
+- [ok] Reverse-chronological sort by created_at DESC (use DB order, not in-memory)
+- [ok] Load all entries upfront (no pagination for MVP)
+- [ok] Collapsible snippets avoid rendering full text for all entries
 
 ### For 20+ Activities per Timeline
 
-- ✓ Sort by start_time ASC in SQL query
-- ✓ Gap detection is O(n), acceptable for < 100 activities
-- ✓ Avoid re-calculating gaps on every keystroke (only on save)
+- [ok] Sort by start_time ASC in SQL query
+- [ok] Gap detection is O(n), acceptable for < 100 activities
+- [ok] Avoid re-calculating gaps on every keystroke (only on save)
 
 ### Modal Performance
 
-- ✓ Modal doesn't re-render parent (use separate state)
-- ✓ Backdrop click handler is debounced (not needed for simple onClick)
+- [ok] Modal doesn't re-render parent (use separate state)
+- [ok] Backdrop click handler is debounced (not needed for simple onClick)
 
 ---
 

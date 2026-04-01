@@ -6,29 +6,29 @@ const TEST_PASSWORD = 'Arsenal2004!';
 test.describe('Full Flow - Text Input, Parsing, and Chat', () => {
 
   test('1. Login and navigate to check-in', async ({ page }) => {
-    console.log('🔓 Starting login flow...');
+    console.log('[auth] Starting login flow...');
     await page.goto('http://localhost:5173');
     await page.waitForLoadState('networkidle');
 
     // Verify we're on login page
     const emailInput = page.locator('input[type="email"]');
     await expect(emailInput).toBeVisible();
-    console.log('✅ Login page loaded');
+    console.log('[OK] Login page loaded');
 
     // Fill email and password
     await emailInput.fill(TEST_EMAIL);
     const passwordInput = page.locator('input[type="password"]');
     await passwordInput.fill(TEST_PASSWORD);
-    console.log('✅ Credentials entered');
+    console.log('[OK] Credentials entered');
 
     // Click Sign In button
     const signInBtn = page.locator('button:has-text("Sign In")').first();
     await signInBtn.click();
-    console.log('⏳ Signing in...');
+    console.log('... Signing in...');
 
     // Wait for navigation to dashboard (max 10 seconds)
     await page.waitForURL('**/dashboard', { timeout: 10000 }).catch(() => {
-      console.log('ℹ️  URL didn\'t change but checking if logged in via content');
+      console.log('[info]  URL didn\'t change but checking if logged in via content');
     });
 
     await page.waitForLoadState('networkidle');
@@ -38,29 +38,29 @@ test.describe('Full Flow - Text Input, Parsing, and Chat', () => {
     const isVisible = await dashboardContent.first().isVisible({ timeout: 5000 }).catch(() => false);
 
     if (isVisible) {
-      console.log('✅ Login successful - dashboard visible');
+      console.log('[OK] Login successful - dashboard visible');
     } else {
-      console.log('⚠️  Dashboard not immediately visible, checking for errors...');
+      console.log('[WARN]  Dashboard not immediately visible, checking for errors...');
       const errorMsg = page.locator('[class*="error"], text=/error|failed/i');
       const hasError = await errorMsg.isVisible({ timeout: 2000 }).catch(() => false);
       if (hasError) {
         const errorText = await errorMsg.textContent();
-        console.log(`❌ Login error: ${errorText}`);
+        console.log(`[FAIL] Login error: ${errorText}`);
       }
     }
 
     // List all console messages
     page.on('console', msg => {
       if (msg.type() === 'error') {
-        console.log(`🔴 [Console Error] ${msg.text()}`);
+        console.log(`[ERR] [Console Error] ${msg.text()}`);
       } else if (msg.type() === 'warn') {
-        console.log(`🟡 [Console Warn] ${msg.text()}`);
+        console.log(`[WARN] [Console Warn] ${msg.text()}`);
       }
     });
   });
 
   test('2. Text input for check-in (parsing test)', async ({ page }) => {
-    console.log('\n📝 Starting text input check-in test...');
+    console.log('\n[note] Starting text input check-in test...');
 
     // Login first
     await page.goto('http://localhost:5173');
@@ -81,7 +81,7 @@ test.describe('Full Flow - Text Input, Parsing, and Chat', () => {
     const consoleLogs = [];
     page.on('console', msg => {
       consoleLogs.push(`[${msg.type()}] ${msg.text()}`);
-      console.log(`📋 ${msg.text()}`);
+      console.log(`[log] ${msg.text()}`);
     });
 
     // Click Check-in heading or find the check-in section
@@ -89,35 +89,35 @@ test.describe('Full Flow - Text Input, Parsing, and Chat', () => {
     let checkInFound = await checkInHeading.isVisible({ timeout: 3000 }).catch(() => false);
 
     if (!checkInFound) {
-      console.log('⚠️  Check-in section not immediately visible, scrolling...');
+      console.log('[WARN]  Check-in section not immediately visible, scrolling...');
       await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
       await page.waitForLoadState('networkidle');
       checkInFound = await checkInHeading.isVisible({ timeout: 3000 }).catch(() => false);
     }
 
     if (!checkInFound) {
-      console.log('❌ Check-in section not found on dashboard');
+      console.log('[FAIL] Check-in section not found on dashboard');
       return;
     }
 
-    console.log('✅ Check-in section found');
+    console.log('[OK] Check-in section found');
 
     // Click Type button
     const typeBtn = page.locator('button:has-text("Type")');
     const typeBtnExists = await typeBtn.isVisible({ timeout: 3000 }).catch(() => false);
 
     if (!typeBtnExists) {
-      console.log('❌ Type button not found');
+      console.log('[FAIL] Type button not found');
       return;
     }
 
     await typeBtn.click();
-    console.log('✅ Clicked Type button');
+    console.log('[OK] Clicked Type button');
 
     // Wait for textarea to appear
     const textarea = page.locator('textarea');
     await textarea.waitFor({ timeout: 3000 });
-    console.log('✅ Textarea appeared');
+    console.log('[OK] Textarea appeared');
 
     // Type test input
     const testTranscript = `
@@ -131,23 +131,23 @@ test.describe('Full Flow - Text Input, Parsing, and Chat', () => {
     `;
 
     await textarea.fill(testTranscript.trim());
-    console.log('✅ Test transcript entered');
+    console.log('[OK] Test transcript entered');
 
     // Verify text was entered
     const enteredText = await textarea.inputValue();
     expect(enteredText).toContain('Woke up at 7:00 AM');
-    console.log('✅ Text verified in textarea');
+    console.log('[OK] Text verified in textarea');
 
     // Click Parse & Continue button
     const parseBtn = page.locator('button:has-text("Parse and review")');
     const parseBtnEnabled = await parseBtn.isEnabled({ timeout: 3000 });
 
     if (!parseBtnEnabled) {
-      console.log('❌ Parse button is disabled');
+      console.log('[FAIL] Parse button is disabled');
       return;
     }
 
-    console.log('⏳ Clicking Parse & Continue (this calls Claude API)...');
+    console.log('... Clicking Parse & Continue (this calls Claude API)...');
     await parseBtn.click();
 
     // Wait for parsing to complete and review page to appear
@@ -155,36 +155,36 @@ test.describe('Full Flow - Text Input, Parsing, and Chat', () => {
     const reviewFound = await activityReview.isVisible({ timeout: 15000 }).catch(() => false);
 
     if (reviewFound) {
-      console.log('✅ Parsing successful! Review page appeared');
+      console.log('[OK] Parsing successful! Review page appeared');
 
       // Check for parsed activities
       const activities = page.locator('[class*="activity"]');
       const count = await activities.count();
-      console.log(`✅ Found ${count} parsed activities`);
+      console.log(`[OK] Found ${count} parsed activities`);
 
       // List the activities
       const activityTexts = await page.locator('text=/activity|working|breakfast|lunch|gym/i').allTextContents();
       if (activityTexts.length > 0) {
-        console.log('📋 Parsed activities:');
+        console.log('[log] Parsed activities:');
         activityTexts.forEach(text => console.log(`  - ${text.substring(0, 60)}`));
       }
     } else {
-      console.log('❌ Review page did not appear after parsing');
+      console.log('[FAIL] Review page did not appear after parsing');
 
       // Check for error message
       const errorMsg = page.locator('[class*="error"], text=/error|failed|parse/i');
       const hasError = await errorMsg.isVisible({ timeout: 2000 }).catch(() => false);
       if (hasError) {
         const errorText = await errorMsg.textContent();
-        console.log(`❌ Parsing error: ${errorText}`);
+        console.log(`[FAIL] Parsing error: ${errorText}`);
       }
     }
 
-    console.log(`📊 Console logs collected: ${consoleLogs.length} messages`);
+    console.log(`[data] Console logs collected: ${consoleLogs.length} messages`);
   });
 
   test('3. Chat functionality with typed input', async ({ page }) => {
-    console.log('\n💬 Starting chat test...');
+    console.log('\n[chat] Starting chat test...');
 
     // Login first
     await page.goto('http://localhost:5173');
@@ -202,7 +202,7 @@ test.describe('Full Flow - Text Input, Parsing, and Chat', () => {
 
     // Capture all console output
     page.on('console', msg => {
-      console.log(`📋 [${msg.type()}] ${msg.text()}`);
+      console.log(`[log] [${msg.type()}] ${msg.text()}`);
     });
 
     // Scroll down to find chat section
@@ -214,16 +214,16 @@ test.describe('Full Flow - Text Input, Parsing, and Chat', () => {
     const chatFound = await chatHeading.isVisible({ timeout: 3000 }).catch(() => false);
 
     if (!chatFound) {
-      console.log('⚠️  Chat section not found, trying text input...');
+      console.log('[WARN]  Chat section not found, trying text input...');
       const chatInput = page.locator('input[placeholder*="question"], textarea[placeholder*="ask"]');
       const inputFound = await chatInput.isVisible({ timeout: 3000 }).catch(() => false);
 
       if (!inputFound) {
-        console.log('❌ Chat input not found');
+        console.log('[FAIL] Chat input not found');
         return;
       }
     } else {
-      console.log('✅ Chat section found');
+      console.log('[OK] Chat section found');
     }
 
     // Find and focus on chat input
@@ -231,7 +231,7 @@ test.describe('Full Flow - Text Input, Parsing, and Chat', () => {
     const inputExists = await chatInput.isVisible({ timeout: 3000 }).catch(() => false);
 
     if (!inputExists) {
-      console.log('❌ Chat input field not found');
+      console.log('[FAIL] Chat input field not found');
       return;
     }
 
@@ -239,21 +239,21 @@ test.describe('Full Flow - Text Input, Parsing, and Chat', () => {
     const testQuestion = 'How much time did I spend working this week?';
     await chatInput.click();
     await chatInput.fill(testQuestion);
-    console.log(`✅ Question entered: "${testQuestion}"`);
+    console.log(`[OK] Question entered: "${testQuestion}"`);
 
     // Find and click send button
     const sendBtn = page.locator('button:has-text("Send"), button[type="submit"], button[aria-label*="send"]').first();
     const sendBtnExists = await sendBtn.isVisible({ timeout: 3000 }).catch(() => false);
 
     if (!sendBtnExists) {
-      console.log('⚠️  Send button not found, trying Enter key...');
+      console.log('[WARN]  Send button not found, trying Enter key...');
       await chatInput.press('Enter');
     } else {
-      console.log('⏳ Clicking Send button...');
+      console.log('... Clicking Send button...');
       await sendBtn.click();
     }
 
-    console.log('⏳ Waiting for Claude response...');
+    console.log('... Waiting for Claude response...');
 
     // Wait for response message to appear
     const responseMsg = page.locator('[class*="response"], [class*="message"], text=/time|spend|hour|minute/i');
@@ -261,23 +261,23 @@ test.describe('Full Flow - Text Input, Parsing, and Chat', () => {
 
     if (responseFound) {
       const response = await responseMsg.first().textContent();
-      console.log(`✅ Chat response received:`);
+      console.log(`[OK] Chat response received:`);
       console.log(`   "${response.substring(0, 100)}..."`);
     } else {
-      console.log('❌ No response received from chat');
+      console.log('[FAIL] No response received from chat');
 
       // Check for error
       const errorMsg = page.locator('[class*="error"], text=/error|failed/i');
       const hasError = await errorMsg.isVisible({ timeout: 2000 }).catch(() => false);
       if (hasError) {
         const errorText = await errorMsg.textContent();
-        console.log(`❌ Chat error: ${errorText}`);
+        console.log(`[FAIL] Chat error: ${errorText}`);
       }
     }
   });
 
   test('4. Check for console errors throughout flow', async ({ page }) => {
-    console.log('\n🔍 Monitoring console for errors...');
+    console.log('\n[find] Monitoring console for errors...');
 
     const errors = [];
     const warnings = [];
@@ -317,22 +317,22 @@ test.describe('Full Flow - Text Input, Parsing, and Chat', () => {
       await page.waitForLoadState('networkidle');
     }
 
-    console.log(`\n📊 Console Summary:`);
+    console.log(`\n[data] Console Summary:`);
     console.log(`   Errors: ${errors.length}`);
     console.log(`   Warnings: ${warnings.length}`);
 
     if (errors.length > 0) {
-      console.log('\n🔴 Errors found:');
+      console.log('\n[ERR] Errors found:');
       errors.forEach((err, i) => console.log(`   ${i + 1}. ${err}`));
     }
 
     if (warnings.length > 0) {
-      console.log('\n🟡 Warnings found:');
+      console.log('\n[WARN] Warnings found:');
       warnings.forEach((warn, i) => console.log(`   ${i + 1}. ${warn}`));
     }
 
     if (errors.length === 0) {
-      console.log('✅ No console errors detected');
+      console.log('[OK] No console errors detected');
     }
   });
 });

@@ -551,16 +551,16 @@ type SSEEvent =
 
 ## Part 7: Success Criteria
 
-✅ Fast-path queries respond in <100ms
-✅ Full agentic queries complete in 4-8s
-✅ Streaming text flows progressively (no blocks)
-✅ Thinking visible to user
-✅ Tool calls visible ("Analyzing activities...")
-✅ Messages persist (fire-and-forget pattern)
-✅ Session titles auto-set correctly
-✅ Multi-turn context loads properly
-✅ No flicker or appending behavior
-✅ Graceful error handling
+[OK] Fast-path queries respond in <100ms
+[OK] Full agentic queries complete in 4-8s
+[OK] Streaming text flows progressively (no blocks)
+[OK] Thinking visible to user
+[OK] Tool calls visible ("Analyzing activities...")
+[OK] Messages persist (fire-and-forget pattern)
+[OK] Session titles auto-set correctly
+[OK] Multi-turn context loads properly
+[OK] No flicker or appending behavior
+[OK] Graceful error handling
 
 ---
 

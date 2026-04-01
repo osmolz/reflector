@@ -390,10 +390,10 @@ vercel --prod
    - For MVP, free tier is fine; monitor usage post-launch
 
 2. **Enable RLS on all user-data tables** (already done in Phase 1):
-   - ✅ `time_entries`
-   - ✅ `journal_entries`
-   - ✅ `chat_messages`
-   - ✅ `check_ins`
+   - [OK] `time_entries`
+   - [OK] `journal_entries`
+   - [OK] `chat_messages`
+   - [OK] `check_ins`
    - Verify in Supabase dashboard → SQL Editor or Authentication → RLS section
 
 3. **Backup strategy (optional for MVP):**
@@ -796,8 +796,8 @@ Personal use only (no open-source license for MVP).
 
 By end of Phase 6:
 
-- [ ] Manual testing completed (all sections above ✓)
-- [ ] Security audit completed (RLS, secrets, CORS, auth ✓)
+- [ ] Manual testing completed (all sections above [ok])
+- [ ] Security audit completed (RLS, secrets, CORS, auth [ok])
 - [ ] All critical bugs fixed
 - [ ] Vercel deployment live (`https://<project-name>.vercel.app` live)
 - [ ] Supabase production config verified
@@ -826,13 +826,13 @@ By end of Phase 6:
 
 At end of Phase 6, you have:
 
-✅ A live, tested app at `https://<project-name>.vercel.app`
-✅ All features working: auth, voice capture, timeline, journal, chat
-✅ Secure configuration: RLS enforced, secrets hidden, CORS correct
-✅ Responsive design verified (desktop, tablet, mobile)
-✅ Edge cases and error handling tested
-✅ Documentation for future reference
-✅ Ready to share with users or submit for feedback
+[OK] A live, tested app at `https://<project-name>.vercel.app`
+[OK] All features working: auth, voice capture, timeline, journal, chat
+[OK] Secure configuration: RLS enforced, secrets hidden, CORS correct
+[OK] Responsive design verified (desktop, tablet, mobile)
+[OK] Edge cases and error handling tested
+[OK] Documentation for future reference
+[OK] Ready to share with users or submit for feedback
 
-**Ship it! 🚀**
+**Ship it! [run]**
 

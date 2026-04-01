@@ -28,11 +28,11 @@
 
 ## Critical Non-Negotiables
 
-🎯 **Design:** Restrained aesthetic (off-white/white, dark charcoal text, one accent color). Editorial timeline. Premium mic button. Serious designer test: if shown to someone who doesn't know it's AI-built, would they believe a senior designer made it? **If no, tear it down and start over.**
+[tgt] **Design:** Restrained aesthetic (off-white/white, dark charcoal text, one accent color). Editorial timeline. Premium mic button. Serious designer test: if shown to someone who doesn't know it's AI-built, would they believe a senior designer made it? **If no, tear it down and start over.**
 
-🎯 **Scope:** 1–2 weeks is tight. Design > features. No multi-user, no dashboards, no heavy analytics. Chat-driven queries only. Stick to REQUIREMENTS.md; backlog anything else.
+[tgt] **Scope:** 1–2 weeks is tight. Design > features. No multi-user, no dashboards, no heavy analytics. Chat-driven queries only. Stick to REQUIREMENTS.md; backlog anything else.
 
-🎯 **Parsing:** Assuming clear, deliberate speech input. Test Claude API parsing early (Phase 2, Day 2) with real transcripts.
+[tgt] **Parsing:** Assuming clear, deliberate speech input. Test Claude API parsing early (Phase 2, Day 2) with real transcripts.
 
 ## Known Risks
 

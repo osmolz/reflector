@@ -23,14 +23,14 @@ const results = {
 
 async function test(name, fn) {
   try {
-    console.log(`\n📋 Testing: ${name}...`);
+    console.log(`\n[log] Testing: ${name}...`);
     await fn();
     results.passed.push(name);
-    console.log(`✅ PASSED: ${name}`);
+    console.log(`[OK] PASSED: ${name}`);
   } catch (error) {
     results.failed.push(name);
     results.errors.push(`${name}: ${error.message}`);
-    console.error(`❌ FAILED: ${name}`);
+    console.error(`[FAIL] FAILED: ${name}`);
     console.error(`   Error: ${error.message}`);
   }
 }
@@ -166,20 +166,20 @@ async function runTests() {
   console.log('\n' + '='.repeat(60));
   console.log('TEST SUMMARY');
   console.log('='.repeat(60));
-  console.log(`\n✅ PASSED: ${results.passed.length} tests`);
+  console.log(`\n[OK] PASSED: ${results.passed.length} tests`);
   results.passed.forEach(test => console.log(`   - ${test}`));
 
   if (results.failed.length > 0) {
-    console.log(`\n❌ FAILED: ${results.failed.length} tests`);
+    console.log(`\n[FAIL] FAILED: ${results.failed.length} tests`);
     results.failed.forEach(test => console.log(`   - ${test}`));
   }
 
   const total = results.passed.length + results.failed.length;
   const percentage = ((results.passed.length / total) * 100).toFixed(1);
-  console.log(`\n📊 Success Rate: ${percentage}%`);
+  console.log(`\n[data] Success Rate: ${percentage}%`);
 
   if (results.errors.length > 0) {
-    console.log(`\n📋 Error Details:`);
+    console.log(`\n[log] Error Details:`);
     results.errors.forEach(error => console.log(`   - ${error}`));
   }
 
@@ -195,6 +195,6 @@ runTests()
     process.exit(exitCode);
   })
   .catch(error => {
-    console.error('\n💥 CRITICAL ERROR:', error);
+    console.error('\n[ERR] CRITICAL ERROR:', error);
     process.exit(1);
   });

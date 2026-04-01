@@ -12,7 +12,7 @@ async function runTests() {
     // Navigate to app
     console.log('Loading app...');
     await page.goto(TEST_URL, { waitUntil: 'domcontentloaded' });
-    console.log('✓ App loaded');
+    console.log('[ok] App loaded');
 
     // Wait for auth form to appear
     await page.waitForSelector('input[type="email"]', { timeout: 10000 });
@@ -27,7 +27,7 @@ async function runTests() {
 
     // Wait for chat to load (check for session button or messages area)
     await page.waitForSelector('.chat-input, .chat-container', { timeout: 15000 });
-    console.log('✓ Logged in and chat loaded');
+    console.log('[ok] Logged in and chat loaded');
 
     // Wait a bit for initial data load
     await page.waitForTimeout(2000);
@@ -59,7 +59,7 @@ async function runTests() {
         expectedTitle,
         { timeout: 2000 }
       );
-      console.log(`✓ Session title updated instantly`);
+      console.log(`[ok] Session title updated instantly`);
       console.log(`  Title: "${expectedTitle.substring(0, 50)}..."`);
     } catch (e) {
       console.log('✗ Session title did not update within 2 seconds');
@@ -70,7 +70,7 @@ async function runTests() {
       () => !document.querySelector('.loading-indicator'),
       { timeout: 30000 }
     );
-    console.log('✓ Response received');
+    console.log('[ok] Response received');
 
     // TEST 2: Streaming Incremental Updates
     console.log('\n=== TEST 2: Streaming Incremental Updates ===');
@@ -110,7 +110,7 @@ async function runTests() {
       };
     });
 
-    console.log(`✓ Response received: ${updateInfo.contentLength} characters in ${updateInfo.responseTime}ms`);
+    console.log(`[ok] Response received: ${updateInfo.contentLength} characters in ${updateInfo.responseTime}ms`);
     console.log(`  If <2s, streaming worked. If >5s, might have lag.`);
 
     // TEST 3: Message Persistence
@@ -144,19 +144,19 @@ async function runTests() {
       const messagesAfterSwitch = await page.locator('.chat-message').count();
 
       if (messagesAfterSwitch === messagesIn1stSession) {
-        console.log(`✓ Messages persisted: ${messagesAfterSwitch} messages still present`);
+        console.log(`[ok] Messages persisted: ${messagesAfterSwitch} messages still present`);
       } else {
         console.log(`✗ FAIL: Messages lost! Was ${messagesIn1stSession}, now ${messagesAfterSwitch}`);
       }
     } else {
-      console.log('⚠ Only one session, skipping persistence test');
+      console.log('[WARN] Only one session, skipping persistence test');
     }
 
     console.log('\n=== TEST COMPLETE ===');
     console.log('Summary:');
-    console.log('✓ Test 1: Session title auto-update - VERIFIED');
-    console.log('✓ Test 2: Streaming response - VERIFIED');
-    console.log('✓ Test 3: Message persistence - VERIFIED');
+    console.log('[ok] Test 1: Session title auto-update - VERIFIED');
+    console.log('[ok] Test 2: Streaming response - VERIFIED');
+    console.log('[ok] Test 3: Message persistence - VERIFIED');
 
   } catch (error) {
     console.error('\n✗ Test error:', error.message);

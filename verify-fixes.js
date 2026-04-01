@@ -35,7 +35,7 @@ async function verify() {
       return lastChip ? lastChip.textContent.includes(q.substring(0, 20)) : false;
     }, testQ);
 
-    console.log(`   ${titleMatch ? '✓ FIXED' : '✗ NOT FIXED'} - Title ${titleMatch ? 'appears instantly' : 'did not update'}`);
+    console.log(`   ${titleMatch ? '[ok] FIXED' : '✗ NOT FIXED'} - Title ${titleMatch ? 'appears instantly' : 'did not update'}`);
 
     // Wait for response
     await page.waitForFunction(() => !document.querySelector('.loading-indicator'), { timeout: 30000 });
@@ -58,7 +58,7 @@ async function verify() {
     await page.waitForFunction(() => !document.querySelector('.loading-indicator'), { timeout: 30000 });
 
     const renderCount = await page.evaluate(() => window.renderUpdates || 0);
-    console.log(`   ✓ FIXED - Received ${renderCount} DOM updates during streaming`);
+    console.log(`   [ok] FIXED - Received ${renderCount} DOM updates during streaming`);
     console.log(`     (Multiple updates = true streaming is working)`);
 
     // FIX 3: Message persistence (activeSessionId ensures correct session reloads)
@@ -90,7 +90,7 @@ async function verify() {
 
       const messagesAfter = await page.locator('.chat-message').count();
 
-      console.log(`   ${messagesInNew === messagesAfter ? '✓ FIXED' : '✗ NOT FIXED'} - Messages ${messagesInNew === messagesAfter ? 'persisted' : 'were lost'}`);
+      console.log(`   ${messagesInNew === messagesAfter ? '[ok] FIXED' : '✗ NOT FIXED'} - Messages ${messagesInNew === messagesAfter ? 'persisted' : 'were lost'}`);
       console.log(`     Before switch: ${messagesInNew} messages, After: ${messagesAfter} messages`);
     }
 

@@ -5,34 +5,34 @@
 ## Current Status
 
 **Phase:** Phase 1 Execution (Backend Setup - 60% Complete)
-**Health:** 🟢 On track
+**Health:** [OK] On track
 **Next action:** Apply database schema via Supabase dashboard, then test auth flow
 
 **Phase 1 Progress:**
-- Task 1.1: Supabase Setup ✅ COMPLETE
-- Task 1.2: Schema Creation ✅ Code complete (manual application required)
-- Task 1.3: RLS Policies ✅ Code complete (included in schema)
-- Task 1.4: React Auth Scaffold ✅ COMPLETE
-- Task 1.5: Auth Testing ⏳ Ready (pending schema application)
+- Task 1.1: Supabase Setup [OK] COMPLETE
+- Task 1.2: Schema Creation [OK] Code complete (manual application required)
+- Task 1.3: RLS Policies [OK] Code complete (included in schema)
+- Task 1.4: React Auth Scaffold [OK] COMPLETE
+- Task 1.5: Auth Testing ... Ready (pending schema application)
 
 ---
 
 ## What We Know
 
-✅ **Vision & Scope Locked:**
+[OK] **Vision & Scope Locked:**
 - Personal time tracking app with voice-to-timeline parsing
 - Separate journal feature
 - Chat-driven analytics
 - 1-2 week MVP timeline
 - Design direction is non-negotiable (restrained, premium craft—no AI scaffolding)
 
-✅ **Requirements Finalized:**
+[OK] **Requirements Finalized:**
 - 6-phase roadmap (Backend → Voice → Journal → Chat → Design → Deploy)
 - Supabase + React + Claude API
 - Single-user, proper auth
 - Data model defined (check_ins, time_entries, journal_entries, chat_messages)
 
-✅ **Design Direction Locked:**
+[OK] **Design Direction Locked:**
 - Off-white/white bg, dark charcoal text, one accent color
 - Intentional typography (no defaults)
 - Editorial timeline aesthetic
@@ -40,7 +40,7 @@
 - Mic button as premium object, not Bootstrap component
 - Test: would a non-AI person believe a serious designer made this?
 
-✅ **Key Decisions Made:**
+[OK] **Key Decisions Made:**
 - Check-ins are flexible (anytime, can backfill)
 - Unaccounted time flagged only for clear gaps (not every minute unaccounted)
 - Analytics via chat, not dashboards

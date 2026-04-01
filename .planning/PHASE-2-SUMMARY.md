@@ -1,7 +1,7 @@
 # Phase 2 Plan — Summary & Quick Reference
 
 **File:** `.planning/PHASE-2-PLAN.md` (1,799 lines)
-**Status:** ✅ Complete and committed
+**Status:** [OK] Complete and committed
 **Date:** 2026-03-28
 
 ---
@@ -22,17 +22,17 @@
 
 ### Code Examples Provided
 
-- ✅ Complete `MicButton.tsx` component (Web Speech API integration)
-- ✅ Complete `ActivityReview.tsx` component (inline editing UI)
-- ✅ Complete `Timeline.tsx` component (chronological display + gap detection)
-- ✅ Complete `anthropic.ts` client (Claude parsing with error handling)
-- ✅ Complete `supabase-operations.ts` (save & fetch functions)
-- ✅ Updated `App.tsx` and `VoiceCheckIn.tsx` wiring
+- [OK] Complete `MicButton.tsx` component (Web Speech API integration)
+- [OK] Complete `ActivityReview.tsx` component (inline editing UI)
+- [OK] Complete `Timeline.tsx` component (chronological display + gap detection)
+- [OK] Complete `anthropic.ts` client (Claude parsing with error handling)
+- [OK] Complete `supabase-operations.ts` (save & fetch functions)
+- [OK] Updated `App.tsx` and `VoiceCheckIn.tsx` wiring
 
 ### Critical Implementation Details
 
 1. **Web Speech API**
-   - Browser compatibility: Chrome ✅, Safari ✅, Edge ✅, Firefox ❌
+   - Browser compatibility: Chrome [OK], Safari [OK], Edge [OK], Firefox [FAIL]
    - Error handling: Browser not supported → clear fallback message
    - Recording stops on user action OR after 60 seconds (timeout)
 

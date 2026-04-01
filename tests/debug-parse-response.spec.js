@@ -4,7 +4,7 @@ const TEST_EMAIL = 'olivermolz05@gmail.com';
 const TEST_PASSWORD = 'Arsenal2004!';
 
 test('Debug: Capture parse API response', async ({ page }) => {
-  console.log('\n📡 Capturing Parse API Response');
+  console.log('\n[net] Capturing Parse API Response');
 
   const requests = [];
   const responses = [];
@@ -16,14 +16,14 @@ test('Debug: Capture parse API response', async ({ page }) => {
         url: req.url(),
         time: new Date().toISOString(),
       });
-      console.log(`📤 Request: ${req.method()} ${req.url()}`);
+      console.log(`[out] Request: ${req.method()} ${req.url()}`);
     }
   });
 
   page.on('response', async res => {
     if (res.url().includes('/parse')) {
       const status = res.status();
-      console.log(`📥 Response: ${status}`);
+      console.log(`[in] Response: ${status}`);
 
       try {
         const body = await res.json();
@@ -51,16 +51,16 @@ test('Debug: Capture parse API response', async ({ page }) => {
   await textarea.fill('Woke at 7am. Worked 8 hours. Lunch noon. Gym at 5pm.');
 
   // Click Parse
-  console.log('\n⏳ Clicking Parse...');
+  console.log('\n... Clicking Parse...');
   const parseBtn = page.locator('button:has-text("Parse and review")');
   await parseBtn.click();
 
   // Wait for response
-  console.log('\n⏳ Waiting for response...');
+  console.log('\n... Waiting for response...');
   await page.waitForTimeout(20000);
 
   // Report
-  console.log(`\n📊 Summary:`);
+  console.log(`\n[data] Summary:`);
   console.log(`   Requests sent: ${requests.length}`);
   console.log(`   Responses received: ${responses.length}`);
 
@@ -80,6 +80,6 @@ test('Debug: Capture parse API response', async ({ page }) => {
       }
     });
   } else {
-    console.log('\n❌ No response received from parse API!');
+    console.log('\n[FAIL] No response received from parse API!');
   }
 });

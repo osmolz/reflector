@@ -23,7 +23,7 @@ test.describe('Reflector E2E UAT - Complete Feature Testing', () => {
       expect(emailInput).toBeTruthy();
       expect(passwordInput).toBeTruthy();
 
-      console.log('✓ Auth form renders with Sign In and Sign Up tabs');
+      console.log('[ok] Auth form renders with Sign In and Sign Up tabs');
     });
 
     test('AT-2: User can attempt sign up (may fail due to rate limit)', async ({ page }) => {
@@ -49,7 +49,7 @@ test.describe('Reflector E2E UAT - Complete Feature Testing', () => {
       const hasError = bodyText.includes('error') || bodyText.includes('Error');
       const hasSuccess = bodyText.includes('success') || bodyText.includes('logged');
 
-      console.log(`✓ Sign up attempt completed (Error: ${hasError}, Success: ${hasSuccess})`);
+      console.log(`[ok] Sign up attempt completed (Error: ${hasError}, Success: ${hasSuccess})`);
     });
 
     test('AT-3: App structure has proper semantic HTML', async ({ page }) => {
@@ -60,7 +60,7 @@ test.describe('Reflector E2E UAT - Complete Feature Testing', () => {
       const hasForm = await page.locator('form').count() > 0;
       const hasInputs = await page.locator('input').count() > 0;
 
-      console.log(`✓ App has proper form structure (Form: ${hasForm}, Inputs: ${hasInputs})`);
+      console.log(`[ok] App has proper form structure (Form: ${hasForm}, Inputs: ${hasInputs})`);
     });
   });
 
@@ -75,9 +75,9 @@ test.describe('Reflector E2E UAT - Complete Feature Testing', () => {
       const isDashboardVisible = await logJournalBtn.isVisible().catch(() => false);
 
       if (isDashboardVisible) {
-        console.log('✓ Log & journal button is visible (user is logged in)');
+        console.log('[ok] Log & journal button is visible (user is logged in)');
       } else {
-        console.log('ⓘ Log & journal button not visible (user not logged in - expected for first visit)');
+        console.log('[i] Log & journal button not visible (user not logged in - expected for first visit)');
       }
     });
 
@@ -88,13 +88,13 @@ test.describe('Reflector E2E UAT - Complete Feature Testing', () => {
       const voiceText = await page.locator('text=Log time').isVisible().catch(() => false);
 
       if (voiceText) {
-        console.log('✓ Log time section is visible');
+        console.log('[ok] Log time section is visible');
 
         // Look for record button or mic button
         const buttons = await page.locator('button').count();
         console.log(`  Found ${buttons} interactive buttons`);
       } else {
-        console.log('ⓘ Log time not visible (user may not be logged in)');
+        console.log('[i] Log time not visible (user may not be logged in)');
       }
     });
 
@@ -107,9 +107,9 @@ test.describe('Reflector E2E UAT - Complete Feature Testing', () => {
         await chatNav.click();
         const input = page.locator('input[name="message"]');
         const ok = await input.isVisible().catch(() => false);
-        console.log(ok ? '✓ Chat page shows message input' : 'ⓘ Chat input not visible');
+        console.log(ok ? '[ok] Chat page shows message input' : '[i] Chat input not visible');
       } else {
-        console.log('ⓘ Chat nav not visible (user may not be logged in)');
+        console.log('[i] Chat nav not visible (user may not be logged in)');
       }
     });
   });
@@ -126,9 +126,9 @@ test.describe('Reflector E2E UAT - Complete Feature Testing', () => {
         await timelineBtn.click();
         await page.waitForLoadState('networkidle');
 
-        console.log('✓ Timeline navigation works');
+        console.log('[ok] Timeline navigation works');
       } else {
-        console.log('ⓘ Timeline button not visible (user may not be logged in)');
+        console.log('[i] Timeline button not visible (user may not be logged in)');
       }
     });
 
@@ -146,9 +146,9 @@ test.describe('Reflector E2E UAT - Complete Feature Testing', () => {
         const bodyText = await page.locator('body').innerText();
         const hasJournalContent = bodyText.includes('Journal') && bodyText.includes('Save Entry');
 
-        console.log(`✓ Journal area reachable (Save Entry visible: ${hasJournalContent})`);
+        console.log(`[ok] Journal area reachable (Save Entry visible: ${hasJournalContent})`);
       } else {
-        console.log('ⓘ Log & journal not visible (user may not be logged in)');
+        console.log('[i] Log & journal not visible (user may not be logged in)');
       }
     });
   });
@@ -175,9 +175,9 @@ test.describe('Reflector E2E UAT - Complete Feature Testing', () => {
       );
 
       if (criticalErrors.length === 0) {
-        console.log('✓ No critical console errors');
+        console.log('[ok] No critical console errors');
       } else {
-        console.log(`⚠ Found ${criticalErrors.length} console errors:`, criticalErrors);
+        console.log(`[WARN] Found ${criticalErrors.length} console errors:`, criticalErrors);
       }
     });
 
@@ -187,7 +187,7 @@ test.describe('Reflector E2E UAT - Complete Feature Testing', () => {
       await page.waitForLoadState('networkidle');
       const loadTime = Date.now() - startTime;
 
-      console.log(`✓ Page loaded in ${loadTime}ms`);
+      console.log(`[ok] Page loaded in ${loadTime}ms`);
 
       expect(loadTime).toBeLessThan(10000); // Should load within 10 seconds
     });
@@ -199,7 +199,7 @@ test.describe('Reflector E2E UAT - Complete Feature Testing', () => {
       const buttons = await page.locator('button').count();
       const clickableCount = await page.locator('button[type="button"], button[type="submit"]').count();
 
-      console.log(`✓ Found ${buttons} buttons (${clickableCount} clickable)`);
+      console.log(`[ok] Found ${buttons} buttons (${clickableCount} clickable)`);
 
       expect(buttons).toBeGreaterThan(0);
     });
@@ -211,7 +211,7 @@ test.describe('Reflector E2E UAT - Complete Feature Testing', () => {
       const title = await page.title();
 
       expect(title).toContain('Reflector');
-      console.log(`✓ Page title is "${title}"`);
+      console.log(`[ok] Page title is "${title}"`);
     });
 
     test('IT-2: Page has proper meta tags', async ({ page }) => {
@@ -220,7 +220,7 @@ test.describe('Reflector E2E UAT - Complete Feature Testing', () => {
       const viewport = await page.locator('meta[name="viewport"]').isVisible();
       const description = await page.locator('meta[name="description"]').isVisible();
 
-      console.log(`✓ Meta tags present (Viewport: ${viewport}, Description: ${description})`);
+      console.log(`[ok] Meta tags present (Viewport: ${viewport}, Description: ${description})`);
     });
 
     test('IT-3: Supabase connection is configured', async ({ page }) => {
@@ -231,7 +231,7 @@ test.describe('Reflector E2E UAT - Complete Feature Testing', () => {
       const hasAuth = await page.locator('input[type="email"], button').count() > 0;
 
       expect(hasAuth).toBeTruthy();
-      console.log('✓ Supabase connection is configured and functional');
+      console.log('[ok] Supabase connection is configured and functional');
     });
   });
 
@@ -250,9 +250,9 @@ test.describe('Reflector E2E UAT - Complete Feature Testing', () => {
         // Check if redirected back to auth form
         const emailInput = await page.locator('input[type="email"]').isVisible();
 
-        console.log(`✓ Sign out works (Redirected to auth: ${emailInput})`);
+        console.log(`[ok] Sign out works (Redirected to auth: ${emailInput})`);
       } else {
-        console.log('ⓘ Sign out button not visible (user not logged in)');
+        console.log('[i] Sign out button not visible (user not logged in)');
       }
     });
   });

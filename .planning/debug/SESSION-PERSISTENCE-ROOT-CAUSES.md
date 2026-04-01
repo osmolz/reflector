@@ -25,9 +25,9 @@ Both issues stem from fire-and-forget async operations that don't properly synch
 4. Client reloads session list and displays new title
 
 ### What Actually Happens
-1. ✓ User sends message
-2. ✓ Edge Function receives message + sessionId
-3. ✓ Edge Function tries to set title BUT...
+1. [ok] User sends message
+2. [ok] Edge Function receives message + sessionId
+3. [ok] Edge Function tries to set title BUT...
    - Title update is fire-and-forget (not awaited)
    - May succeed or fail silently
    - Streaming response is returned immediately
@@ -72,15 +72,15 @@ supabase
 5. Messages display
 
 ### What Actually Happens
-1. ✓ User sends message
-2. ✓ User message is saved (with session_id) - awaited at line 180
-3. ✓ Claude response is streamed successfully
+1. [ok] User sends message
+2. [ok] User message is saved (with session_id) - awaited at line 180
+3. [ok] Claude response is streamed successfully
 4. ✗ Assistant message save is fire-and-forget (not awaited)
    - Happens in streaming response handler (lines 301-315)
    - Stream completes and response is returned
    - But message insert may still be pending or fail
-5. ✓ User switches sessions (messageState is cleared)
-6. ✓ User switches back to session A
+5. [ok] User switches sessions (messageState is cleared)
+6. [ok] User switches back to session A
 7. ✗ Query returns 0 messages because:
    - Assistant message never saved (timing race)
    - OR assistant message saved without session_id

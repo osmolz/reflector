@@ -181,7 +181,7 @@ function truncateTitle(text, maxChars = 50) {
 // In Edge Function or Client:
 const title = truncateTitle(question, 50);
 // "What's my most productive time?" → stored as-is
-// "🎬 What's the meaning of life?" → "🎬 What's the meaning of life?" (safe)
+// "[film] What's the meaning of life?" → "[film] What's the meaning of life?" (safe)
 ```
 
 **Why:** PostgreSQL with `utf8mb4` collation stores emojis correctly, but truncation must be byte-aware. Naive `substring(text, 1, 50)` can split a 4-byte emoji, causing corruption. TextEncoder handles this.
@@ -345,9 +345,9 @@ if (!sessionId) {
 
 ### Pitfall 2: Naive Message Truncation Breaks Emoji Session Titles
 
-**What goes wrong:** You store first message as session title using `substring(question, 1, 50)`. Title "🎬 What's my ideal day?" displays fine. But user renames session to "🤔 Reflecting", and the title becomes "🤔 Re" (broken emoji).
+**What goes wrong:** You store first message as session title using `substring(question, 1, 50)`. Title "[film] What's my ideal day?" displays fine. But user renames session to "[think] Reflecting", and the title becomes "[think] Re" (broken emoji).
 
-**Why it happens:** `substring()` counts characters, not bytes. The emoji 🤔 is 4 bytes (UTF-8), so `substring(text, 1, 50)` might grab bytes 0-48, cutting the emoji in half. Downstream: rendering fails or crashes.
+**Why it happens:** `substring()` counts characters, not bytes. The emoji [think] is 4 bytes (UTF-8), so `substring(text, 1, 50)` might grab bytes 0-48, cutting the emoji in half. Downstream: rendering fails or crashes.
 
 **How to avoid:** Use TextEncoder for byte-aware truncation (see Pattern 3 above).
 
@@ -823,12 +823,12 @@ No new tools to install or services to configure.
 
 | Behavior | Test Type | Command | File Exists? |
 |----------|-----------|---------|-------------|
-| New session creates server-side UUID | Unit | `jest tests/chat-store.test.js` | ❌ Wave 0 |
-| Multi-turn chat maintains context | E2E | `playwright test chat-context.spec.js` | ❌ Wave 0 |
-| Session title truncates emoji safely | Unit | `jest tests/utils.test.js -t "truncateTitle"` | ❌ Wave 0 |
-| SSE reconnects after network drop | E2E | `playwright test chat-resilience.spec.js` | ❌ Wave 0 |
-| Message ordering preserved on rapid sends | Integration | `jest tests/db.test.js -t "ordering"` | ❌ Wave 0 |
-| Session isolation (user can't see others' chats) | E2E | `playwright test auth.spec.js` | ✅ Exists (Phase 1) |
+| New session creates server-side UUID | Unit | `jest tests/chat-store.test.js` | [FAIL] Wave 0 |
+| Multi-turn chat maintains context | E2E | `playwright test chat-context.spec.js` | [FAIL] Wave 0 |
+| Session title truncates emoji safely | Unit | `jest tests/utils.test.js -t "truncateTitle"` | [FAIL] Wave 0 |
+| SSE reconnects after network drop | E2E | `playwright test chat-resilience.spec.js` | [FAIL] Wave 0 |
+| Message ordering preserved on rapid sends | Integration | `jest tests/db.test.js -t "ordering"` | [FAIL] Wave 0 |
+| Session isolation (user can't see others' chats) | E2E | `playwright test auth.spec.js` | [OK] Exists (Phase 1) |
 
 ### Sampling Rate
 

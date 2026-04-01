@@ -168,7 +168,7 @@ export function MicButton({ onTranscriptReady }: MicButtonProps) {
           borderRadius: '4px',
         }}
       >
-        {isRecording ? '🔴 Recording...' : '🎤 Start Recording'}
+        {isRecording ? '[ERR] Recording...' : '[mic] Start Recording'}
       </button>
       {error && <p style={{ color: 'red', marginTop: '8px' }}>{error}</p>}
     </div>
@@ -1293,7 +1293,7 @@ export function Timeline() {
                       color: '#c0392b',
                     }}
                   >
-                    ⚠️ <strong>Gap: {formatDuration(gaps[index].minutes)}</strong> unaccounted
+                    [WARN] <strong>Gap: {formatDuration(gaps[index].minutes)}</strong> unaccounted
                   </div>
                 )}
               </div>
@@ -1479,7 +1479,7 @@ export const PHASE2_TEST_CHECKLIST = {
    - [ ] Verify today's activities displayed
    - [ ] Verify activities in chronological order
    - [ ] Verify total time shown at top (e.g., "3 hours 45 minutes")
-   - [ ] If gaps exist, verify flagged with red border and "⚠️ Gap: X minutes"
+   - [ ] If gaps exist, verify flagged with red border and "[WARN] Gap: X minutes"
    - [ ] Change date picker to yesterday
    - [ ] Verify empty state message if no activities (or shows previous day's activities if any)
    - [ ] Change back to today
@@ -1537,27 +1537,27 @@ export const PHASE2_TEST_CHECKLIST = {
 | 4 | Long input | 5 activities | 80% | One duration estimated off by 5 min |
 | 5 | Explicit times | 3 activities | 100% | Parsed times correctly |
 
-**Overall Accuracy: 85%** ✅ (Target: 80%+)
+**Overall Accuracy: 85%** [OK] (Target: 80%+)
 
 ### Browser Compatibility
 
 | Browser | Record | Parse | Display | Notes |
 |---------|--------|-------|---------|-------|
-| Chrome | ✅ | ✅ | ✅ | Fully working |
-| Safari | ✅ | ✅ | ✅ | Fully working |
-| Edge | ✅ | ✅ | ✅ | Fully working |
-| Firefox | ❌ | N/A | N/A | Web Speech API not supported; error shown |
+| Chrome | [OK] | [OK] | [OK] | Fully working |
+| Safari | [OK] | [OK] | [OK] | Fully working |
+| Edge | [OK] | [OK] | [OK] | Fully working |
+| Firefox | [FAIL] | N/A | N/A | Web Speech API not supported; error shown |
 
 ### End-to-End Flow
 
-- ✅ Record 30 seconds
-- ✅ Parse completes in 12 seconds
-- ✅ Review activities
-- ✅ Edit 1 activity
-- ✅ Save to Supabase
-- ✅ See in timeline
-- ✅ Create 2nd check-in
-- ✅ Logout/login; data persists
+- [OK] Record 30 seconds
+- [OK] Parse completes in 12 seconds
+- [OK] Review activities
+- [OK] Edit 1 activity
+- [OK] Save to Supabase
+- [OK] See in timeline
+- [OK] Create 2nd check-in
+- [OK] Logout/login; data persists
 
 **Total time: ~2 minutes**
 
@@ -1569,7 +1569,7 @@ export const PHASE2_TEST_CHECKLIST = {
 
 ### Recommendation
 
-✅ **Phase 2 is complete and meets all success criteria.**
+[OK] **Phase 2 is complete and meets all success criteria.**
 
 Next: Proceed to Phase 3 (Journal & Activity Editing)
 ```
@@ -1794,6 +1794,6 @@ WHERE user_id != auth.uid();
 
 ---
 
-**Phase 2 Plan Complete** ✅
+**Phase 2 Plan Complete** [OK]
 
 This plan is executable and comprehensive. Each task has clear acceptance criteria, implementation code, and verification steps. Estimated 8.5 hours of effort, with explicit risks and mitigations.

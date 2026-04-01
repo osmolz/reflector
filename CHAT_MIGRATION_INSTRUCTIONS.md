@@ -58,24 +58,24 @@ The app should now:
 ## What Changed
 
 ### Backend (Edge Function - `supabase/functions/chat/index.ts`)
-- ✅ **True streaming** — chunks forward immediately instead of buffering all of them first
-- ✅ **Session support** — accepts `sessionId` in request body
-- ✅ **Context loading** — loads last 20 messages from session before calling Claude
-- ✅ **Auto-titling** — sets session title to first 60 chars of first message (UTF-8 safe)
-- ✅ **Dual persistence** — saves user message before Claude, assistant message after (fire-and-forget)
-- ✅ **Backward compatible** — old Q&A pairs (no session) still work
+- [OK] **True streaming** — chunks forward immediately instead of buffering all of them first
+- [OK] **Session support** — accepts `sessionId` in request body
+- [OK] **Context loading** — loads last 20 messages from session before calling Claude
+- [OK] **Auto-titling** — sets session title to first 60 chars of first message (UTF-8 safe)
+- [OK] **Dual persistence** — saves user message before Claude, assistant message after (fire-and-forget)
+- [OK] **Backward compatible** — old Q&A pairs (no session) still work
 
 ### Frontend (React - `src/components/Chat.jsx`)
-- ✅ **Session management** — loads sessions on mount, creates new sessions, switches between them
-- ✅ **Message model** — unified format: `{ id, role, content, created_at }` works with both old and new messages
-- ✅ **Session switcher UI** — horizontal tabs at top showing session titles
-- ✅ **Streaming display** — properly handles real-time text updates from Edge Function
+- [OK] **Session management** — loads sessions on mount, creates new sessions, switches between them
+- [OK] **Message model** — unified format: `{ id, role, content, created_at }` works with both old and new messages
+- [OK] **Session switcher UI** — horizontal tabs at top showing session titles
+- [OK] **Streaming display** — properly handles real-time text updates from Edge Function
 
 ### Database (`supabase/migrations/20260329_001000_add_chat_sessions.sql`)
-- ✅ **chat_sessions table** — stores session metadata (title, created_at)
-- ✅ **chat_messages extended** — adds `session_id`, `role`, `content` columns (keeps legacy `question`/`response` for backward compat)
-- ✅ **RLS enabled** — users can only access their own sessions/messages
-- ✅ **Proper indexing** — efficient queries for session lists and message history
+- [OK] **chat_sessions table** — stores session metadata (title, created_at)
+- [OK] **chat_messages extended** — adds `session_id`, `role`, `content` columns (keeps legacy `question`/`response` for backward compat)
+- [OK] **RLS enabled** — users can only access their own sessions/messages
+- [OK] **Proper indexing** — efficient queries for session lists and message history
 
 ## Testing Checklist
 

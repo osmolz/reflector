@@ -1,7 +1,7 @@
 // Direct unit test of streaming parser logic
 // No browser required - tests the actual JavaScript logic
 
-console.log('🧪 Testing Chat Streaming Parser Logic\n');
+console.log('[TEST] Testing Chat Streaming Parser Logic\n');
 
 // ============================================
 // Test 1: SSE Event Parsing
@@ -43,10 +43,10 @@ const testSSEParsing = () => {
   });
 
   const success = accumulated === 'I notice you spent' && eventCount === 4 && completeReceived;
-  console.log(`✅ Parsed ${eventCount} text events`);
-  console.log(`✅ Accumulated text: "${accumulated}"`);
-  console.log(`✅ Stream complete signal received: ${completeReceived}`);
-  console.log(`${success ? '✅ PASS' : '❌ FAIL'}: SSE parsing\n`);
+  console.log(`[OK] Parsed ${eventCount} text events`);
+  console.log(`[OK] Accumulated text: "${accumulated}"`);
+  console.log(`[OK] Stream complete signal received: ${completeReceived}`);
+  console.log(`${success ? '[OK] PASS' : '[FAIL] FAIL'}: SSE parsing\n`);
 
   return success;
 };
@@ -74,12 +74,12 @@ const testMarkdownDetection = () => {
   testCases.forEach(({ text, shouldDetect }) => {
     const detected = markdownPattern.test(text);
     const pass = detected === shouldDetect;
-    console.log(`${pass ? '✅' : '❌'} "${text.substring(0, 40)}..." → ${detected ? 'detected' : 'clean'}`);
+    console.log(`${pass ? '[OK]' : '[FAIL]'} "${text.substring(0, 40)}..." → ${detected ? 'detected' : 'clean'}`);
     if (pass) passCount++;
   });
 
   const success = passCount === testCases.length;
-  console.log(`${success ? '✅ PASS' : '❌ FAIL'}: ${passCount}/${testCases.length} markdown tests\n`);
+  console.log(`${success ? '[OK] PASS' : '[FAIL] FAIL'}: ${passCount}/${testCases.length} markdown tests\n`);
 
   return success;
 };
@@ -107,10 +107,10 @@ const testTextAccumulation = () => {
   const expected = 'I notice you spent about 3 hours on work today. That\'s solid focus.';
   const success = accumulated === expected;
 
-  console.log(`✅ Accumulated ${chunks.length} chunks`);
-  console.log(`✅ Final text: "${accumulated}"`);
-  console.log(`✅ Character count: ${accumulated.length}`);
-  console.log(`${success ? '✅ PASS' : '❌ FAIL'}: text accumulation\n`);
+  console.log(`[OK] Accumulated ${chunks.length} chunks`);
+  console.log(`[OK] Final text: "${accumulated}"`);
+  console.log(`[OK] Character count: ${accumulated.length}`);
+  console.log(`${success ? '[OK] PASS' : '[FAIL] FAIL'}: text accumulation\n`);
 
   return success;
 };
@@ -135,12 +135,12 @@ const testEmptyResponseHandling = () => {
     const isFail = isEmpty ? true : false;
     const pass = isFail === shouldFail;
 
-    console.log(`${pass ? '✅' : '❌'} Response "${response.substring(0, 20)}" → ${isEmpty ? 'empty' : 'valid'}`);
+    console.log(`${pass ? '[OK]' : '[FAIL]'} Response "${response.substring(0, 20)}" → ${isEmpty ? 'empty' : 'valid'}`);
     if (pass) passCount++;
   });
 
   const success = passCount === testCases.length;
-  console.log(`${success ? '✅ PASS' : '❌ FAIL'}: ${passCount}/${testCases.length} empty response tests\n`);
+  console.log(`${success ? '[OK] PASS' : '[FAIL] FAIL'}: ${passCount}/${testCases.length} empty response tests\n`);
 
   return success;
 };
@@ -176,13 +176,13 @@ const testExecutiveCoachTone = () => {
     const isWarm = checks.isWarm(response);
 
     const pass = noMarkdown && noProse;
-    console.log(`${pass ? '✅' : '❌'} Response ${idx + 1}: "${response.substring(0, 35)}..."`);
+    console.log(`${pass ? '[OK]' : '[FAIL]'} Response ${idx + 1}: "${response.substring(0, 35)}..."`);
 
     if (pass) passCount++;
   });
 
   const success = passCount >= 4;
-  console.log(`${success ? '✅ PASS' : '❌ FAIL'}: ${passCount}/6 tone validation tests\n`);
+  console.log(`${success ? '[OK] PASS' : '[FAIL] FAIL'}: ${passCount}/6 tone validation tests\n`);
 
   return success;
 };
@@ -206,12 +206,12 @@ const testResponseSizeLimits = () => {
 
   testCases.forEach(({ charCount, valid, reason }) => {
     const pass = (charCount > 0) === valid;
-    console.log(`${pass ? '✅' : '❌'} ${charCount} chars → ${reason} (valid: ${valid})`);
+    console.log(`${pass ? '[OK]' : '[FAIL]'} ${charCount} chars → ${reason} (valid: ${valid})`);
     if (pass) passCount++;
   });
 
   const success = passCount === testCases.length;
-  console.log(`${success ? '✅ PASS' : '❌ FAIL'}: ${passCount}/${testCases.length} size limit tests\n`);
+  console.log(`${success ? '[OK] PASS' : '[FAIL] FAIL'}: ${passCount}/${testCases.length} size limit tests\n`);
 
   return success;
 };
@@ -239,16 +239,16 @@ const passedCount = results.filter(r => r.result).length;
 const totalCount = results.length;
 
 results.forEach(({ name, result }) => {
-  console.log(`${result ? '✅ PASS' : '❌ FAIL'} - ${name}`);
+  console.log(`${result ? '[OK] PASS' : '[FAIL] FAIL'} - ${name}`);
 });
 
 console.log('-'.repeat(50));
-console.log(`\n🎉 ${passedCount}/${totalCount} test categories PASSED\n`);
+console.log(`\n[done] ${passedCount}/${totalCount} test categories PASSED\n`);
 
 if (passedCount === totalCount) {
-  console.log('✅ ALL TESTS PASSED - Chat streaming implementation is working correctly!');
+  console.log('[OK] ALL TESTS PASSED - Chat streaming implementation is working correctly!');
   process.exit(0);
 } else {
-  console.log('❌ Some tests failed. Review the failures above.');
+  console.log('[FAIL] Some tests failed. Review the failures above.');
   process.exit(1);
 }

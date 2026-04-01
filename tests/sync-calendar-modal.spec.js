@@ -17,25 +17,25 @@ test.describe('SyncCalendarModal Component Tests', () => {
   };
 
   test('1. Component exports and is importable', () => {
-    console.log('\n✅ TEST: Component module structure');
+    console.log('\n[OK] TEST: Component module structure');
     console.log('   SyncCalendarModal is a valid React component');
   });
 
   test('2. Component handles isOpen prop correctly', () => {
-    console.log('\n✅ TEST: isOpen prop behavior');
+    console.log('\n[OK] TEST: isOpen prop behavior');
     console.log('   When isOpen=false, modal returns null');
     console.log('   When isOpen=true, modal renders with backdrop and dialog');
   });
 
   test('3. Preset options state management', () => {
-    console.log('\n✅ TEST: Preset selection and state');
+    console.log('\n[OK] TEST: Preset selection and state');
     console.log('   Today preset initializes default dates');
     console.log('   Week preset calculates current week range');
     console.log('   Custom preset allows manual date input');
   });
 
   test('4. Date formatting utilities work correctly', () => {
-    console.log('\n✅ TEST: Date conversion functions');
+    console.log('\n[OK] TEST: Date conversion functions');
 
     // Test date to ISO string conversion
     const testDate = new Date('2026-03-30');
@@ -45,7 +45,7 @@ test.describe('SyncCalendarModal Component Tests', () => {
   });
 
   test('5. API payload structure is correct', () => {
-    console.log('\n✅ TEST: API request payload');
+    console.log('\n[OK] TEST: API request payload');
 
     const startDate = '2026-03-30';
     const endDate = '2026-04-06';
@@ -63,14 +63,14 @@ test.describe('SyncCalendarModal Component Tests', () => {
   });
 
   test('6. Error states are handled', () => {
-    console.log('\n✅ TEST: Error handling');
+    console.log('\n[OK] TEST: Error handling');
     console.log('   Network errors display error message');
     console.log('   Empty date fields show validation error');
     console.log('   Invalid date range (start > end) shows error');
   });
 
   test('7. Success response handling', () => {
-    console.log('\n✅ TEST: Success response');
+    console.log('\n[OK] TEST: Success response');
 
     const response = mockSyncResponse;
     expect(response.success).toBe(true);
@@ -80,28 +80,28 @@ test.describe('SyncCalendarModal Component Tests', () => {
   });
 
   test('8. Loading state prevents duplicate submissions', () => {
-    console.log('\n✅ TEST: Loading state');
+    console.log('\n[OK] TEST: Loading state');
     console.log('   Sync button disabled during loading');
     console.log('   Cancel button disabled during loading');
     console.log('   Form inputs disabled during loading');
   });
 
   test('9. Modal closes after successful sync', () => {
-    console.log('\n✅ TEST: Modal lifecycle');
+    console.log('\n[OK] TEST: Modal lifecycle');
     console.log('   Success message shows for 1500ms');
     console.log('   Modal closes automatically after sync');
     console.log('   onSyncComplete callback is triggered');
   });
 
   test('10. Cancel button dismisses modal', () => {
-    console.log('\n✅ TEST: Cancel action');
+    console.log('\n[OK] TEST: Cancel action');
     console.log('   Cancel button calls onClose callback');
     console.log('   Modal backdrop click calls onClose');
     console.log('   No API call made on cancel');
   });
 
   test('11. Date range validation logic', () => {
-    console.log('\n✅ TEST: Date validation');
+    console.log('\n[OK] TEST: Date validation');
 
     const testCases = [
       { start: '2026-03-30', end: '2026-04-06', valid: true },
@@ -119,7 +119,7 @@ test.describe('SyncCalendarModal Component Tests', () => {
   });
 
   test('12. Accessibility attributes present', () => {
-    console.log('\n✅ TEST: WCAG compliance');
+    console.log('\n[OK] TEST: WCAG compliance');
     console.log('   Modal has role="dialog"');
     console.log('   Modal has aria-labelledby pointing to title');
     console.log('   Modal has aria-describedby pointing to description');
@@ -130,7 +130,7 @@ test.describe('SyncCalendarModal Component Tests', () => {
   });
 
   test('13. Responsive design CSS classes present', () => {
-    console.log('\n✅ TEST: Responsive styling');
+    console.log('\n[OK] TEST: Responsive styling');
     console.log('   Modal uses CSS variables for spacing');
     console.log('   Preset options stack vertically');
     console.log('   Date inputs adapt to screen size');
@@ -138,7 +138,7 @@ test.describe('SyncCalendarModal Component Tests', () => {
   });
 
   test('14. Date presets calculate correctly', () => {
-    console.log('\n✅ TEST: Preset date calculations');
+    console.log('\n[OK] TEST: Preset date calculations');
 
     const today = new Date();
     const todayStart = new Date(today);
@@ -159,7 +159,7 @@ test.describe('SyncCalendarModal Component Tests', () => {
   });
 
   test('15. Component integration requirements', () => {
-    console.log('\n✅ TEST: Integration checklist');
+    console.log('\n[OK] TEST: Integration checklist');
     console.log('   [ ] Import SyncCalendarModal from components');
     console.log('   [ ] Add state to manage isOpen flag');
     console.log('   [ ] Import getDateRangeForPreset from calendarUtils');

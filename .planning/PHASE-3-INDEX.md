@@ -392,9 +392,9 @@ If still blocked, check Supabase dashboard → Authentication → Policies.
 ## You Are Here
 
 ```
-Phase 1: Backend Setup ✅
-Phase 2: Voice & Timeline ✅
-Phase 3: Journal & Editing 🚀 ← YOU ARE HERE
+Phase 1: Backend Setup [OK]
+Phase 2: Voice & Timeline [OK]
+Phase 3: Journal & Editing [run] ← YOU ARE HERE
 Phase 4: Chat Analytics
 Phase 5: Design & Polish
 Phase 6: Test & Deploy

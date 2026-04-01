@@ -156,7 +156,7 @@ After tests complete, the output includes a detailed performance report:
 Average TTFT: 234.56ms           ← How fast first character appears
 Min TTFT: 189.23ms              ← Fastest response start
 Max TTFT: 312.45ms              ← Slowest response start
-✓ All tests < 1000ms            ← Streaming goal verification
+[ok] All tests < 1000ms            ← Streaming goal verification
 ```
 
 ### Detailed Results by Question
@@ -330,10 +330,10 @@ cat test-results.json | jq '.'
 
 After successful test execution:
 
-1. ✓ Verify TTFT < 1000ms
-2. ✓ Confirm no markdown artifacts
-3. ✓ Review detailed performance metrics
-4. ✓ Document results in performance baseline file
+1. [ok] Verify TTFT < 1000ms
+2. [ok] Confirm no markdown artifacts
+3. [ok] Review detailed performance metrics
+4. [ok] Document results in performance baseline file
 5. → Deploy to production
 6. → Monitor Edge Function logs
 7. → Collect user feedback
@@ -407,10 +407,10 @@ jobs:
 
 The chat performance test suite provides:
 
-✓ **Comprehensive streaming measurement** — TTFT, total time, character count
-✓ **Real-world testing** — Actual API calls to Edge Function
-✓ **Detailed reporting** — Performance metrics and improvement analysis
-✓ **Edge case coverage** — Recent data, empty data, complex queries
-✓ **Optimization baseline** — Establishes metrics for future reference
+[ok] **Comprehensive streaming measurement** — TTFT, total time, character count
+[ok] **Real-world testing** — Actual API calls to Edge Function
+[ok] **Detailed reporting** — Performance metrics and improvement analysis
+[ok] **Edge case coverage** — Recent data, empty data, complex queries
+[ok] **Optimization baseline** — Establishes metrics for future reference
 
 **Success Criteria:** TTFT < 1s (streaming advantage), All tests pass, No markdown artifacts.

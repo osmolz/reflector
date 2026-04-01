@@ -1183,12 +1183,12 @@ git commit -m "feat(chat): add SSE stream parser helper"
 ---
 
 **End of DAY 1 Summary:**
-- ✅ Auth & JWT validation (getClaims)
-- ✅ Intent classification (regex patterns)
-- ✅ 4 core tools implemented (activity, daily log, breakdown, memory)
-- ✅ Fast-path execution working
-- ✅ Session management in React
-- ✅ Simple sync responses for fast-path
+- [OK] Auth & JWT validation (getClaims)
+- [OK] Intent classification (regex patterns)
+- [OK] 4 core tools implemented (activity, daily log, breakdown, memory)
+- [OK] Fast-path execution working
+- [OK] Session management in React
+- [OK] Simple sync responses for fast-path
 
 **Tests needed in DAY 2:** Full streaming tests
 
@@ -1656,14 +1656,14 @@ git commit -m "test: verify agentic loop and streaming end-to-end"
 ---
 
 **End of DAY 2 Summary:**
-- ✅ Full Claude agentic loop with extended thinking
-- ✅ Tool execution in loop (max 5 hops)
-- ✅ Real-time SSE streaming to client
-- ✅ In-place message updates (no flicker)
-- ✅ Thinking and tool calls visible
-- ✅ Message persistence working
-- ✅ Session title auto-set
-- ✅ End-to-end testing passing
+- [OK] Full Claude agentic loop with extended thinking
+- [OK] Tool execution in loop (max 5 hops)
+- [OK] Real-time SSE streaming to client
+- [OK] In-place message updates (no flicker)
+- [OK] Thinking and tool calls visible
+- [OK] Message persistence working
+- [OK] Session title auto-set
+- [OK] End-to-end testing passing
 
 ---
 
@@ -2061,16 +2061,16 @@ git commit -m "docs: add chat rebuild architecture summary"
 
 **Context:** Go through all success criteria from spec.
 
-- [ ] **Fast-path queries respond <100ms** ✅
-- [ ] **Full agentic queries complete in 4-8s** ✅
-- [ ] **Streaming text flows progressively** ✅
-- [ ] **Thinking visible to user** ✅
-- [ ] **Tool calls visible** ✅
-- [ ] **Messages persist** ✅
-- [ ] **Session titles auto-set** ✅
-- [ ] **Multi-turn context loads** ✅
-- [ ] **No message flicker** ✅
-- [ ] **Graceful error handling** ✅
+- [ ] **Fast-path queries respond <100ms** [OK]
+- [ ] **Full agentic queries complete in 4-8s** [OK]
+- [ ] **Streaming text flows progressively** [OK]
+- [ ] **Thinking visible to user** [OK]
+- [ ] **Tool calls visible** [OK]
+- [ ] **Messages persist** [OK]
+- [ ] **Session titles auto-set** [OK]
+- [ ] **Multi-turn context loads** [OK]
+- [ ] **No message flicker** [OK]
+- [ ] **Graceful error handling** [OK]
 
 All criteria met!
 
@@ -2083,13 +2083,13 @@ git commit -m "build: chat rebuild complete - all success criteria verified"
 ---
 
 **End of DAY 3:**
-- ✅ Error handling (timeouts, tool failures, no data)
-- ✅ User error feedback (clear messages)
-- ✅ Web search stub (for future)
-- ✅ End-to-end integration testing
-- ✅ Performance profiling (within budget)
-- ✅ Documentation
-- ✅ All 10 success criteria verified
+- [OK] Error handling (timeouts, tool failures, no data)
+- [OK] User error feedback (clear messages)
+- [OK] Web search stub (for future)
+- [OK] End-to-end integration testing
+- [OK] Performance profiling (within budget)
+- [OK] Documentation
+- [OK] All 10 success criteria verified
 
 ---
 
@@ -2098,14 +2098,14 @@ git commit -m "build: chat rebuild complete - all success criteria verified"
 **Plan complete and saved to `.planning/CHAT-REBUILD-PLAN.md`.**
 
 The plan has:
-- ✅ No placeholders (every step has complete code)
-- ✅ 19 bite-sized tasks (2-5 min each)
-- ✅ Frequent commits (one per task)
-- ✅ TDD pattern (though for streaming, more integration-focused)
-- ✅ File structure documented
-- ✅ All code included (copy-paste ready)
-- ✅ Test scenarios specified
-- ✅ Success criteria verified
+- [OK] No placeholders (every step has complete code)
+- [OK] 19 bite-sized tasks (2-5 min each)
+- [OK] Frequent commits (one per task)
+- [OK] TDD pattern (though for streaming, more integration-focused)
+- [OK] File structure documented
+- [OK] All code included (copy-paste ready)
+- [OK] Test scenarios specified
+- [OK] Success criteria verified
 
 **Two execution options:**
 

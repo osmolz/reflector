@@ -309,7 +309,7 @@ VALUES ('123e4567...', 'User text', NOW());
 --    with check (auth.uid() = user_id);
 -- 3. Does payload satisfy check?
 --    auth.uid() = '123e4567...'? YES → proceed
--- 4. Row inserted ✓
+-- 4. Row inserted [ok]
 ```
 
 ### Select Journal Entries (JournalHistory)
@@ -329,7 +329,7 @@ ORDER BY created_at DESC;
 -- 3. For each row returned:
 --    Does auth.uid() = row.user_id? YES → include
 --                                    NO → exclude (row filtered out)
--- 4. Results shown ✓
+-- 4. Results shown [ok]
 ```
 
 ### Update Activity (ActivityEditForm)
@@ -349,7 +349,7 @@ WHERE id = 'abc123...';
 -- 3. Does row exist AND does user own it?
 --    SELECT user_id FROM time_entries WHERE id = 'abc123...';
 --    auth.uid() = row.user_id? YES → proceed, NO → 403 Forbidden
--- 4. Update executed ✓
+-- 4. Update executed [ok]
 ```
 
 ### Delete Activity (ActivityEditForm)
@@ -367,7 +367,7 @@ WHERE id = 'abc123...';
 -- 3. Does row exist AND does user own it?
 --    Same check as UPDATE
 --    auth.uid() = row.user_id? YES → proceed, NO → 403 Forbidden
--- 4. Delete executed ✓
+-- 4. Delete executed [ok]
 ```
 
 ---

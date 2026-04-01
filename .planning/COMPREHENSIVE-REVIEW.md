@@ -11,12 +11,12 @@
 
 | Metric | Status | Notes |
 |--------|--------|-------|
-| **Scope Alignment** | ✅ SOLID | All phases tie to MVP requirements. Design-first philosophy is consistently applied. |
-| **Effort Estimation** | ⚠️ OPTIMISTIC | Total 28-36h assumes no iteration; real timeline likely 35-42h with debugging/refinement. |
-| **Dependency Chain** | ✅ CORRECT | Phase 1 → 2 → 3,4 → 5 → 6. No circular deps. Proper blocking relationships. |
-| **Risk Awareness** | ✅ GOOD | Project identifies key risks (parsing accuracy, design timeline, Web Speech API reliability). |
-| **Critical Gaps** | 🔴 YES | API key management, error handling patterns, edge cases in parsing validation. See details below. |
-| **Design Direction** | ✅ LOCKED | Phase 5 is comprehensive. Design system spec is strong. Ready to execute. |
+| **Scope Alignment** | [OK] SOLID | All phases tie to MVP requirements. Design-first philosophy is consistently applied. |
+| **Effort Estimation** | [WARN] OPTIMISTIC | Total 28-36h assumes no iteration; real timeline likely 35-42h with debugging/refinement. |
+| **Dependency Chain** | [OK] CORRECT | Phase 1 → 2 → 3,4 → 5 → 6. No circular deps. Proper blocking relationships. |
+| **Risk Awareness** | [OK] GOOD | Project identifies key risks (parsing accuracy, design timeline, Web Speech API reliability). |
+| **Critical Gaps** | [ERR] YES | API key management, error handling patterns, edge cases in parsing validation. See details below. |
+| **Design Direction** | [OK] LOCKED | Phase 5 is comprehensive. Design system spec is strong. Ready to execute. |
 
 **Recommendation:** All phases can proceed to execution with careful attention to the 3 HIGH-severity concerns outlined below.
 
@@ -26,16 +26,16 @@
 
 ---
 
-### Phase 1: Backend Setup ✅ Well-Planned
+### Phase 1: Backend Setup [OK] Well-Planned
 
 **Phase Goal:** Supabase project initialized, auth working, data schema defined and migrated.
 
 #### Strengths
-- ✅ **Clear, sequential task breakdown** — 5 discrete tasks with explicit acceptance criteria
-- ✅ **Detailed implementation steps** — Copy-paste SQL, bash commands, UI navigation all provided
-- ✅ **Schema is normalized and well-designed** — Foreign keys, indexes, timestamps, UUIDs correct
-- ✅ **RLS policies explicitly planned** — User data isolation is security-critical and gets proper treatment
-- ✅ **Time estimate realistic** — 3-4h is achievable for experienced developer, 4-6h for first-time Supabase user
+- [OK] **Clear, sequential task breakdown** — 5 discrete tasks with explicit acceptance criteria
+- [OK] **Detailed implementation steps** — Copy-paste SQL, bash commands, UI navigation all provided
+- [OK] **Schema is normalized and well-designed** — Foreign keys, indexes, timestamps, UUIDs correct
+- [OK] **RLS policies explicitly planned** — User data isolation is security-critical and gets proper treatment
+- [OK] **Time estimate realistic** — 3-4h is achievable for experienced developer, 4-6h for first-time Supabase user
 
 #### Concerns
 - **[MEDIUM]** No mention of environment variable management for production vs. dev. `.env.local` stores anon key (safe), but service role key should never be committed. Plan should explicitly warn about this.
@@ -57,17 +57,17 @@
 
 ---
 
-### Phase 2: Voice Capture & Parsing 🟡 Strong Plan, Critical Execution Risk
+### Phase 2: Voice Capture & Parsing [WARN] Strong Plan, Critical Execution Risk
 
 **Phase Goal:** User can speak a check-in and see it parsed into activities on a timeline.
 
 #### Strengths
-- ✅ **Voice capture is well-architected** — Web Speech API integration is clean, error handling present
-- ✅ **Claude parsing is stateless and sensible** — Good assumption that input is clear/deliberate; avoids fuzzy matching complexity
-- ✅ **Review screen concept is solid** — User can edit before saving. Reduces data quality issues.
-- ✅ **Timeline & gap detection logic is correct** — 15-minute threshold is reasonable; gap math is explicitly defined
-- ✅ **Task 2.1 (mic button) code is solid** — Proper state management, browser compatibility check, error handling
-- ✅ **Detailed parsing prompt strategy** (from PHASE-2-PLAN extended) — Clear expectation about duration parsing, start time inference
+- [OK] **Voice capture is well-architected** — Web Speech API integration is clean, error handling present
+- [OK] **Claude parsing is stateless and sensible** — Good assumption that input is clear/deliberate; avoids fuzzy matching complexity
+- [OK] **Review screen concept is solid** — User can edit before saving. Reduces data quality issues.
+- [OK] **Timeline & gap detection logic is correct** — 15-minute threshold is reasonable; gap math is explicitly defined
+- [OK] **Task 2.1 (mic button) code is solid** — Proper state management, browser compatibility check, error handling
+- [OK] **Detailed parsing prompt strategy** (from PHASE-2-PLAN extended) — Clear expectation about duration parsing, start time inference
 
 #### Concerns
 - **[HIGH]** **Parsing accuracy is untested assumption** — Plan says "80%+ accuracy on clear input" as success criterion, but no testing strategy provided. Phase 2 should include:
@@ -107,16 +107,16 @@
 
 ---
 
-### Phase 3: Journal & Activity Editing 🟢 Solid, Minor Issues
+### Phase 3: Journal & Activity Editing [OK] Solid, Minor Issues
 
 **Phase Goal:** User can write/voice journal entries and edit parsed activities.
 
 #### Strengths
-- ✅ **Journal form is straightforward** — Text input + voice option reuses Web Speech API hook. No complexity.
-- ✅ **Journal history is simple** — Reverse-chronological list. No search/filter, which keeps scope tight.
-- ✅ **Activity editing UI is clear** — Click to edit, save changes, delete, recalculate gaps
-- ✅ **Reuses existing patterns** — Uses Supabase client, Zustand store, Web Speech hook from Phase 2
-- ✅ **Effort estimate is realistic** — 4-5 hours is appropriate for form + list components
+- [OK] **Journal form is straightforward** — Text input + voice option reuses Web Speech API hook. No complexity.
+- [OK] **Journal history is simple** — Reverse-chronological list. No search/filter, which keeps scope tight.
+- [OK] **Activity editing UI is clear** — Click to edit, save changes, delete, recalculate gaps
+- [OK] **Reuses existing patterns** — Uses Supabase client, Zustand store, Web Speech hook from Phase 2
+- [OK] **Effort estimate is realistic** — 4-5 hours is appropriate for form + list components
 
 #### Concerns
 - **[MEDIUM]** **Editing form doesn't exist in plan** — Task 3.2 is "Activity editing UI", but the actual edit form component is not spec'd. What fields are editable? How does validation work? Can user set duration to 0? Can they set start time to past/future?
@@ -138,15 +138,15 @@
 
 ---
 
-### Phase 4: Chat Analytics 🟡 Important Phase, Needs Clarification
+### Phase 4: Chat Analytics [WARN] Important Phase, Needs Clarification
 
 **Phase Goal:** User can ask questions about their time data and get answers from Claude.
 
 #### Strengths
-- ✅ **Stateless chat approach is correct** — No multi-turn conversation for MVP. Each query gets full data context. Simpler, more reliable.
-- ✅ **Architecture is sound** — Frontend chat UI (Task 4.1) + backend API route (Task 4.2) + Supabase persistence. Proper separation.
-- ✅ **Effort estimate is reasonable** — 4-5 hours for UI + API endpoint
-- ✅ **Security-conscious** — Plan explicitly notes API key should be in backend, not client-side
+- [OK] **Stateless chat approach is correct** — No multi-turn conversation for MVP. Each query gets full data context. Simpler, more reliable.
+- [OK] **Architecture is sound** — Frontend chat UI (Task 4.1) + backend API route (Task 4.2) + Supabase persistence. Proper separation.
+- [OK] **Effort estimate is reasonable** — 4-5 hours for UI + API endpoint
+- [OK] **Security-conscious** — Plan explicitly notes API key should be in backend, not client-side
 
 #### Concerns
 - **[HIGH]** **Backend implementation strategy is unclear** — Plan mentions three possible architectures:
@@ -217,18 +217,18 @@
 
 ---
 
-### Phase 5: Design & Polish 🟢 Excellent, Ready to Execute
+### Phase 5: Design & Polish [OK] Excellent, Ready to Execute
 
 **Phase Goal:** UI matches design direction (restrained, editorial, intentional). App is visually cohesive and ready to ship.
 
 #### Strengths
-- ✅ **Design system is comprehensive and locked** — Color palette, typography, spacing, border rules all specified
-- ✅ **Philosophy is clear and defensible** — "Restraint as core aesthetic" is well-articulated. Test ("serious designer" check) is enforceable.
-- ✅ **Font pairing is thoughtful** — Crimson Text (serif) + Sohne (sans) is editorial and premium. Good choice.
-- ✅ **Spacing system is systematic** — Base-8 unit (4px, 8px, 16px, etc.) makes composition predictable
-- ✅ **Task breakdown is realistic** — Global CSS → Components → Polish. Sequential and manageable.
-- ✅ **No Tailwind scaffolding** — Custom CSS enforces intentional design, prevents default look
-- ✅ **Effort estimate is honest** — 8-10 hours is appropriate for design decisions (not just implementation)
+- [OK] **Design system is comprehensive and locked** — Color palette, typography, spacing, border rules all specified
+- [OK] **Philosophy is clear and defensible** — "Restraint as core aesthetic" is well-articulated. Test ("serious designer" check) is enforceable.
+- [OK] **Font pairing is thoughtful** — Crimson Text (serif) + Sohne (sans) is editorial and premium. Good choice.
+- [OK] **Spacing system is systematic** — Base-8 unit (4px, 8px, 16px, etc.) makes composition predictable
+- [OK] **Task breakdown is realistic** — Global CSS → Components → Polish. Sequential and manageable.
+- [OK] **No Tailwind scaffolding** — Custom CSS enforces intentional design, prevents default look
+- [OK] **Effort estimate is honest** — 8-10 hours is appropriate for design decisions (not just implementation)
 
 #### Concerns
 - **[MEDIUM]** **Mic button is a focal point, but design is deferred** — Plan mentions "Mic button: styled to feel premium and custom" in overview, but Task 2 (Components) only has placeholder. Mic button should have:
@@ -286,17 +286,17 @@
 
 ---
 
-### Phase 6: Testing & Deploy 🟢 Thorough, Well-Structured
+### Phase 6: Testing & Deploy [OK] Thorough, Well-Structured
 
 **Phase Goal:** App is tested, secure, and live on Vercel.
 
 #### Strengths
-- ✅ **Testing checklist is comprehensive** — 10 categories (auth, voice, parsing, timeline, gaps, editing, journal, chat, persistence, UI), ~70 test cases
-- ✅ **Security audit section is specific** — RLS policies, CORS, secrets, dependencies covered
-- ✅ **Responsive design testing is explicit** — Desktop, tablet, mobile breakpoints defined
-- ✅ **Edge cases are considered** — Empty data, long transcripts, rapid check-ins, network failures, browser compatibility
-- ✅ **Deployment steps are clear** — Vercel frontend, Supabase backend, README documentation
-- ✅ **Effort estimate is reasonable** — 3-4 hours for testing + deployment
+- [OK] **Testing checklist is comprehensive** — 10 categories (auth, voice, parsing, timeline, gaps, editing, journal, chat, persistence, UI), ~70 test cases
+- [OK] **Security audit section is specific** — RLS policies, CORS, secrets, dependencies covered
+- [OK] **Responsive design testing is explicit** — Desktop, tablet, mobile breakpoints defined
+- [OK] **Edge cases are considered** — Empty data, long transcripts, rapid check-ins, network failures, browser compatibility
+- [OK] **Deployment steps are clear** — Vercel frontend, Supabase backend, README documentation
+- [OK] **Effort estimate is reasonable** — 3-4 hours for testing + deployment
 
 #### Concerns
 - **[MEDIUM]** **Automated testing is explicitly skipped** — Plan says "Automated tests (nice-to-have, skip for MVP)". For a 1-2 week timeline, this makes sense. But Phase 6 should document which tests are critical to manual verify (vs nice-to-have):
@@ -350,19 +350,19 @@
 ## Cross-Phase Integration Review
 
 ### Data Flow
-- ✅ **Correctly designed:** Phase 1 schema → Phase 2 populates time_entries → Phase 3 edits time_entries → Phase 4 queries time_entries → Phase 5 visualizes → Phase 6 verifies
-- ⚠️ **Minor issue:** Chat (Phase 4) queries time_entries; if Phase 2 parsing is inaccurate, chat answers will be inaccurate. No explicit dependency on Phase 2 testing before Phase 4.
+- [OK] **Correctly designed:** Phase 1 schema → Phase 2 populates time_entries → Phase 3 edits time_entries → Phase 4 queries time_entries → Phase 5 visualizes → Phase 6 verifies
+- [WARN] **Minor issue:** Chat (Phase 4) queries time_entries; if Phase 2 parsing is inaccurate, chat answers will be inaccurate. No explicit dependency on Phase 2 testing before Phase 4.
 
 ### Auth & Security
-- ✅ **RLS is comprehensive:** All tables have per-user isolation
-- ⚠️ **API key management:** Phase 2, 4 need clarity on backend vs client-side calls. Recommend all Claude API calls go through Supabase Edge Functions for security.
+- [OK] **RLS is comprehensive:** All tables have per-user isolation
+- [WARN] **API key management:** Phase 2, 4 need clarity on backend vs client-side calls. Recommend all Claude API calls go through Supabase Edge Functions for security.
 
 ### Design Threading
-- ✅ **Phase 5 ties to earlier phases:** Design system spec includes components from Phases 2-4 (mic button, timeline, chat, journal)
-- ⚠️ **Execution risk:** Phase 5 starts "after Phase 2" but depends on all earlier phases for full context. Recommend: start Phase 5 planning after Phase 3 executes (not Phase 2).
+- [OK] **Phase 5 ties to earlier phases:** Design system spec includes components from Phases 2-4 (mic button, timeline, chat, journal)
+- [WARN] **Execution risk:** Phase 5 starts "after Phase 2" but depends on all earlier phases for full context. Recommend: start Phase 5 planning after Phase 3 executes (not Phase 2).
 
 ### Error Handling Patterns
-- ⚠️ **Inconsistent across phases:** Phase 1 has no error handling (it's config). Phase 2 has try/catch. Phase 4 has try/catch. Phase 6 tests error scenarios but doesn't define patterns.
+- [WARN] **Inconsistent across phases:** Phase 1 has no error handling (it's config). Phase 2 has try/catch. Phase 4 has try/catch. Phase 6 tests error scenarios but doesn't define patterns.
   - **Recommendation:** Create shared error handling utility (e.g., `src/utils/errors.ts`) that all phases use. Define error messages, user feedback, logging.
 
 ---
@@ -400,12 +400,12 @@
 
 ## Summary of Concerns by Severity
 
-### 🔴 HIGH (Must Address Before Execution)
+### [ERR] HIGH (Must Address Before Execution)
 1. **Phase 2 — Parsing accuracy untested** → Add real-world testing before Phase 2 execution
 2. **Phase 2 — API key exposure** → Move Claude parsing to Supabase Edge Function (secure backend call)
 3. **Phase 4 — Backend architecture unclear** → Confirm Supabase Edge Functions, document API spec
 
-### 🟡 MEDIUM (Recommended Fixes)
+### [WARN] MEDIUM (Recommended Fixes)
 1. **Phase 1 — RLS policies SQL incomplete** → Complete Task 1.3 with full policy SQL
 2. **Phase 2 — Web Speech API fallback not planned** → Add text input fallback for unsupported browsers
 3. **Phase 2 — Gap detection algorithm not specified** → Document edge cases (overlaps, overnight, zero duration)
@@ -415,7 +415,7 @@
 7. **Phase 6 — Deployment strategy assumes Next.js** → Clarify Vite + Vercel deployment steps
 8. **Phase 6 — Security audit incomplete** → Complete checklist with all items
 
-### 🟢 LOW (Nice-to-Have)
+### [OK] LOW (Nice-to-Have)
 1. Phase 1 — Document Supabase local development
 2. Phase 2 — Provide parsing test transcripts
 3. Phase 3 — Clarify category dropdown behavior

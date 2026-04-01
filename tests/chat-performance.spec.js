@@ -180,14 +180,14 @@ test.describe('Chat Performance Integration Tests', () => {
 
   test.beforeAll(() => {
     token = getTestToken();
-    console.log('\n✓ Chat Performance Test Suite Starting');
+    console.log('\n[ok] Chat Performance Test Suite Starting');
     console.log(`  API Base: ${API_BASE_URL}`);
     console.log(`  Edge Function: ${EDGE_FUNCTION_URL}`);
   });
 
   testQuestions.forEach((question) => {
     test(`[STREAMING] ${question.name}`, async () => {
-      console.log(`\n📊 Testing: ${question.name}`);
+      console.log(`\n[data] Testing: ${question.name}`);
 
       const metrics = new PerformanceMetrics(`${question.name} (Streaming)`);
       metrics.start();
@@ -239,9 +239,9 @@ test.describe('Chat Performance Integration Tests', () => {
 
   test('Performance Report Generation', async () => {
     console.log('\n');
-    console.log('╔════════════════════════════════════════════════════════════╗');
+    console.log('╔============================================================╗');
     console.log('║        CHAT STREAMING PERFORMANCE REPORT - 2026-03-29       ║');
-    console.log('╚════════════════════════════════════════════════════════════╝');
+    console.log('╚============================================================╝');
 
     if (allMetrics.length === 0) {
       console.log('No metrics collected');
@@ -256,29 +256,29 @@ test.describe('Chat Performance Integration Tests', () => {
     const minTTFT = Math.min(...allMetrics.map(m => m.ttft));
     const maxTTFT = Math.max(...allMetrics.map(m => m.ttft));
 
-    console.log('\n📈 STREAMING PERFORMANCE SUMMARY');
+    console.log('\n[sum] STREAMING PERFORMANCE SUMMARY');
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     console.log(`Total Tests Run: ${allMetrics.length}`);
     console.log(`Total Characters Streamed: ${totalCharacters}`);
     console.log(`Average Response Characters: ${avgCharacters.toFixed(0)}`);
     console.log('');
 
-    console.log('⚡ TIME-TO-FIRST-TOKEN (TTFT) - Streaming Advantage');
+    console.log('[fast] TIME-TO-FIRST-TOKEN (TTFT) - Streaming Advantage');
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     console.log(`Average TTFT: ${avgTTFT.toFixed(2)}ms`);
     console.log(`Min TTFT: ${minTTFT.toFixed(2)}ms`);
     console.log(`Max TTFT: ${maxTTFT.toFixed(2)}ms`);
-    console.log(`✓ All tests < 1000ms (${avgTTFT < 1000 ? 'PASS' : 'FAIL'})`);
+    console.log(`[ok] All tests < 1000ms (${avgTTFT < 1000 ? 'PASS' : 'FAIL'})`);
     console.log('');
 
-    console.log('⏱️  TOTAL RESPONSE TIME');
+    console.log('[time]  TOTAL RESPONSE TIME');
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     console.log(`Average Total Time: ${avgTotalTime.toFixed(2)}ms`);
     console.log(`Min Total Time: ${Math.min(...allMetrics.map(m => m.totalTime)).toFixed(2)}ms`);
     console.log(`Max Total Time: ${Math.max(...allMetrics.map(m => m.totalTime)).toFixed(2)}ms`);
     console.log('');
 
-    console.log('📊 DETAILED RESULTS BY QUESTION');
+    console.log('[data] DETAILED RESULTS BY QUESTION');
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     allMetrics.forEach((metric, idx) => {
       console.log(`\n${idx + 1}. ${metric.question} [${metric.category}]`);
@@ -287,7 +287,7 @@ test.describe('Chat Performance Integration Tests', () => {
     });
 
     console.log('\n');
-    console.log('🎯 PERFORMANCE IMPROVEMENT VS NON-STREAMING');
+    console.log('[tgt] PERFORMANCE IMPROVEMENT VS NON-STREAMING');
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     console.log('Baseline (Non-streaming): 3000-5000ms to show full response');
     console.log(`Streaming Implementation: ${avgTTFT.toFixed(2)}ms to first token (5x-10x faster)\n`);
@@ -296,13 +296,13 @@ test.describe('Chat Performance Integration Tests', () => {
     console.log(`Improvement: ${improvementPercent}% faster perceived latency`);
     console.log(`User Impact: Text appears on screen in ${avgTTFT.toFixed(0)}ms instead of 3-5s\n`);
 
-    console.log('✅ TEST RESULTS');
+    console.log('[OK] TEST RESULTS');
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-    console.log(`✓ All streaming responses successful (${allMetrics.length}/${allMetrics.length})`);
-    console.log('✓ TTFT consistently < 1s (streaming enabled)');
-    console.log('✓ Responses delivered incrementally (no blocking)');
-    console.log('✓ No markdown artifacts in responses');
-    console.log('✓ Performance baseline established for future optimization\n');
+    console.log(`[ok] All streaming responses successful (${allMetrics.length}/${allMetrics.length})`);
+    console.log('[ok] TTFT consistently < 1s (streaming enabled)');
+    console.log('[ok] Responses delivered incrementally (no blocking)');
+    console.log('[ok] No markdown artifacts in responses');
+    console.log('[ok] Performance baseline established for future optimization\n');
 
     // Verification assertions
     expect(avgTTFT).toBeLessThan(1000); // All average TTFT < 1s
@@ -337,7 +337,7 @@ test.describe('Streaming vs Non-Streaming Comparison (Optional)', () => {
       await consumeSSEStream(streamResponse, streamingMetrics);
     }
 
-    console.log('\n🔄 STREAMING VS NON-STREAMING COMPARISON');
+    console.log('\n[sync] STREAMING VS NON-STREAMING COMPARISON');
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     console.log(`\nStreaming TTFT: ${streamingMetrics.getTimeToFirstToken()?.toFixed(2)}ms`);
     console.log(`Streaming Total: ${streamingMetrics.getTotalTime()?.toFixed(2)}ms`);
@@ -375,7 +375,7 @@ test.describe('Chat Performance - Edge Cases', () => {
 
     if (response.headers.get('content-type')?.includes('text/event-stream')) {
       await consumeSSEStream(response, metrics);
-      console.log(`\n📌 Recent Activity Test Results:`);
+      console.log(`\n[pin] Recent Activity Test Results:`);
       console.log(metrics.toString());
     }
   }, { timeout: TEST_TIMEOUT });
@@ -402,7 +402,7 @@ test.describe('Chat Performance - Edge Cases', () => {
     if (response.headers.get('content-type')?.includes('text/event-stream')) {
       await consumeSSEStream(response, metrics);
       expect(metrics.totalCharacters).toBeGreaterThan(0);
-      console.log(`\n⚠️  Empty Data Test Results:`);
+      console.log(`\n[WARN]  Empty Data Test Results:`);
       console.log(metrics.toString());
     }
   }, { timeout: TEST_TIMEOUT });
