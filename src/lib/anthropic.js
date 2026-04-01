@@ -23,7 +23,7 @@ export async function parseTranscript(transcript, authToken) {
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
+      const errorData = await response.json().catch(() => ({}));
       throw new Error(errorData.error || `HTTP ${response.status}`);
     }
 
@@ -37,8 +37,14 @@ export async function parseTranscript(transcript, authToken) {
       throw new Error('Authentication failed. Please log in again.');
     } else if (message.includes('timeout')) {
       throw new Error('Request timed out. Please check your internet connection.');
-    } else if (message.includes('did not return valid JSON')) {
-      throw new Error('Could not parse your speech. Please try speaking more clearly.');
+    } else if (
+      message.includes('PARSE_OUTPUT_INVALID') ||
+      message.includes('Could not turn that transcript') ||
+      message.includes('did not return valid JSON')
+    ) {
+      throw new Error(
+        'Could not turn that transcript into activities. Try editing the text in Type mode or a shorter check-in.'
+      );
     } else {
       throw new Error(`Parsing failed: ${message}`);
     }

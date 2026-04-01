@@ -15,7 +15,6 @@
   background-color: var(--btn-primary-bg);
   border: none;
   color: var(--btn-primary-fg);
-  font-size: 1.35rem;
   cursor: pointer;
   transition: background-color 0.15s ease, transform 0.12s ease;
   padding: 0;
@@ -42,6 +41,15 @@
 .mic-button:focus-visible {
   outline: 2px solid var(--accent-color);
   outline-offset: 3px;
+}
+
+.mic-button-icon {
+  display: block;
+  flex-shrink: 0;
+}
+
+.mic-button.recording .mic-button-icon {
+  color: var(--btn-primary-fg);
 }
 
 .mic-button-container {
@@ -93,7 +101,6 @@
   .mic-button {
     width: 52px;
     height: 52px;
-    font-size: 1.2rem;
   }
 
   .mic-button-container {

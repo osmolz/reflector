@@ -1,13 +1,59 @@
 import { useState, useRef } from 'react';
 import './MicButton.css';
 
+function MicIcon() {
+  return (
+    <svg
+      className="mic-button-icon"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <path
+        d="M12 14a3 3 0 003-3V5a3 3 0 10-6 0v6a3 3 0 003 3z"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M19 10v1a7 7 0 01-14 0v-1M12 18v3M8 22h8"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function StopIcon() {
+  return (
+    <svg
+      className="mic-button-icon"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+    >
+      <rect x="6" y="6" width="12" height="12" rx="1" fill="currentColor" />
+    </svg>
+  );
+}
+
 export function MicButton({ onTranscriptReady }) {
   const [isRecording, setIsRecording] = useState(false);
   const [error, setError] = useState(null);
   const recognitionRef = useRef(null);
+  const transcriptRef = useRef('');
+  const activeRef = useRef(false);
+  const stopRequestedRef = useRef(false);
 
   const startRecording = () => {
-    // Check browser support
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
       setError('Web Speech API not supported in this browser. Use Chrome, Safari, or Edge.');
@@ -15,12 +61,15 @@ export function MicButton({ onTranscriptReady }) {
     }
 
     try {
+      transcriptRef.current = '';
+      activeRef.current = true;
+      stopRequestedRef.current = false;
+      setError(null);
+
       const recognition = new SpeechRecognition();
       recognition.lang = 'en-US';
       recognition.continuous = true;
       recognition.interimResults = false;
-
-      let transcript = '';
 
       recognition.onstart = () => {
         setIsRecording(true);
@@ -29,33 +78,78 @@ export function MicButton({ onTranscriptReady }) {
 
       recognition.onresult = (event) => {
         for (let i = event.resultIndex; i < event.results.length; i++) {
-          transcript += event.results[i][0].transcript + ' ';
+          transcriptRef.current += event.results[i][0].transcript + ' ';
         }
       };
 
       recognition.onerror = (event) => {
-        const errorMessage = event.error || 'Unknown error';
-        setError(`Recording error: ${errorMessage}. Please try again.`);
+        const code = event.error || 'Unknown error';
+        if (code === 'aborted' && stopRequestedRef.current) {
+          return;
+        }
+        if (code === 'no-speech' && activeRef.current && !stopRequestedRef.current) {
+          setTimeout(() => {
+            if (activeRef.current && !stopRequestedRef.current && recognitionRef.current) {
+              try {
+                recognitionRef.current.start();
+              } catch {
+                /* InvalidStateError: already started */
+              }
+            }
+          }, 0);
+          return;
+        }
+        setError(`Recording error: ${code}. Please try again.`);
+        activeRef.current = false;
+        stopRequestedRef.current = false;
         setIsRecording(false);
+        recognitionRef.current = null;
       };
 
       recognition.onend = () => {
+        if (activeRef.current && !stopRequestedRef.current) {
+          setTimeout(() => {
+            if (activeRef.current && !stopRequestedRef.current && recognitionRef.current) {
+              try {
+                recognitionRef.current.start();
+              } catch {
+                /* InvalidStateError */
+              }
+            }
+          }, 0);
+          return;
+        }
+
+        const shouldSubmit = stopRequestedRef.current;
+        activeRef.current = false;
+        stopRequestedRef.current = false;
         setIsRecording(false);
-        if (transcript.trim()) {
-          onTranscriptReady(transcript.trim());
+        recognitionRef.current = null;
+        if (shouldSubmit) {
+          const text = transcriptRef.current.trim();
+          if (text) {
+            onTranscriptReady(text);
+          }
         }
       };
 
-      recognition.start();
       recognitionRef.current = recognition;
+      recognition.start();
     } catch (err) {
       setError(`Failed to start recording: ${err.message}`);
+      activeRef.current = false;
+      recognitionRef.current = null;
     }
   };
 
   const stopRecording = () => {
+    stopRequestedRef.current = true;
     if (recognitionRef.current) {
-      recognitionRef.current.stop();
+      try {
+        recognitionRef.current.stop();
+      } catch {
+        /* ignore */
+      }
     }
   };
 
@@ -78,10 +172,10 @@ export function MicButton({ onTranscriptReady }) {
           aria-pressed={isRecording}
           title={isRecording ? 'Click to stop recording' : 'Click to start recording'}
         >
-          {isRecording ? '🔴' : '🎤'}
+          {isRecording ? <StopIcon /> : <MicIcon />}
         </button>
         <div className={`mic-status ${isRecording ? 'recording' : ''}`}>
-          {isRecording ? 'Recording...' : 'Ready to record'}
+          {isRecording ? 'Recording…' : 'Ready to record'}
         </div>
       </div>
       {error && <div className="mic-error">{error}</div>}

@@ -20,36 +20,183 @@ interface Activity {
   notes?: string;
 }
 
-const PARSE_PROMPT = `You are a helpful assistant that parses stream-of-consciousness speech about daily activities into a structured time-based log.
+const PARSE_PROMPT = `You parse stream-of-consciousness transcripts into a chronological daily activity log.
 
-Given a transcript of someone describing their day, extract:
-1. Each distinct activity mentioned
-2. The estimated duration of each activity in minutes
-3. The inferred start time (based on context clues like "I woke up at 7" or "then I...")
-4. The activity category if clear (e.g., work, personal, exercise, food, etc.)
+The transcript may be one long run-on sentence, poorly punctuated, or noisy speech-to-text (wrong words, missing capitals). Still extract every distinct activity you can infer, in order.
 
-Return ONLY a valid JSON array. Do not include any text before or after the JSON.
-Use this format exactly:
-[
-  {
-    "activity": "activity name",
-    "duration_minutes": <number>,
-    "start_time_inferred": "HH:MM AM/PM",
-    "category": "category name (optional)",
-    "notes": "any ambiguities or uncertainties (optional)"
+For each activity:
+- activity: short label
+- duration_minutes: a number (minutes); estimate if needed
+- start_time_inferred: like "7:45 AM" from explicit times or reasonable inference from sequence
+- category: optional (work, food, exercise, personal, etc.)
+- notes: optional, for ambiguity or ASR uncertainty
+
+You MUST call the tool submit_parsed_activities with the full list. Do not reply with plain text or markdown—only the tool call.`;
+
+const SUBMIT_ACTIVITIES_TOOL = {
+  name: 'submit_parsed_activities',
+  description:
+    'Submit all inferred activities from the transcript in chronological order. Every duration_minutes value must be a JSON number.',
+  input_schema: {
+    type: 'object',
+    properties: {
+      activities: {
+        type: 'array',
+        description: 'Activities from first to last in the transcript',
+        items: {
+          type: 'object',
+          properties: {
+            activity: { type: 'string', description: 'Short activity name' },
+            duration_minutes: { type: 'number', description: 'Duration in minutes' },
+            start_time_inferred: {
+              type: 'string',
+              description: 'e.g. "7:45 AM" — best inference from context',
+            },
+            category: { type: 'string', description: 'Optional category' },
+            notes: { type: 'string', description: 'Optional uncertainty notes' },
+          },
+          required: ['activity', 'duration_minutes', 'start_time_inferred'],
+        },
+      },
+    },
+    required: ['activities'],
+  },
+};
+
+function stripMarkdownCodeFences(text: string): string {
+  const trimmed = text.trim();
+  const fullFence = trimmed.match(/^```(?:json)?\s*([\s\S]*?)```$/im);
+  if (fullFence) return fullFence[1].trim();
+  const anyFence = trimmed.match(/```(?:json)?\s*([\s\S]*?)```/);
+  if (anyFence) return anyFence[1].trim();
+  return trimmed;
+}
+
+/** First top-level JSON array with bracket-aware matching (avoids greedy-regex mistakes). */
+function extractBalancedArray(jsonish: string): string | null {
+  const start = jsonish.indexOf('[');
+  if (start === -1) return null;
+  let depth = 0;
+  let inString = false;
+  let escape = false;
+  for (let i = start; i < jsonish.length; i++) {
+    const c = jsonish[i];
+    if (escape) {
+      escape = false;
+      continue;
+    }
+    if (c === '\\' && inString) {
+      escape = true;
+      continue;
+    }
+    if (c === '"') {
+      inString = !inString;
+      continue;
+    }
+    if (inString) continue;
+    if (c === '[') depth++;
+    else if (c === ']') {
+      depth--;
+      if (depth === 0) return jsonish.slice(start, i + 1);
+    }
   }
-]
+  return null;
+}
 
-Rules:
-- If a time is mentioned explicitly (e.g., "at 7:30"), use that.
-- If only relative times are given (e.g., "then I..."), infer from context.
-- If duration is not explicit but implied, estimate reasonably.
-- If an activity is ambiguous or split, create separate entries.
-- Preserve the chronological order from the transcript.
-- Always return valid JSON, even if uncertain. Use "notes" field to flag uncertainty.`;
+function coerceDurationMinutes(value: unknown): number | null {
+  if (typeof value === 'number' && Number.isFinite(value) && value >= 0) {
+    return Math.round(value);
+  }
+  if (typeof value === 'string') {
+    const n = Number(String(value).replace(/,/g, '').trim());
+    if (Number.isFinite(n) && n >= 0) return Math.round(n);
+  }
+  return null;
+}
+
+function isNonEmptyString(v: unknown): v is string {
+  return typeof v === 'string' && v.trim().length > 0;
+}
+
+function normalizeActivities(raw: unknown[]): Activity[] {
+  const out: Activity[] = [];
+  for (const row of raw) {
+    if (!row || typeof row !== 'object') continue;
+    const o = row as Record<string, unknown>;
+    if (!isNonEmptyString(o.activity)) continue;
+    const dm = coerceDurationMinutes(o.duration_minutes);
+    if (dm === null) continue;
+    const startTime =
+      typeof o.start_time_inferred === 'string' && o.start_time_inferred.trim()
+        ? o.start_time_inferred.trim()
+        : '12:00 PM';
+    const activity: Activity = {
+      activity: o.activity.trim(),
+      duration_minutes: dm,
+      start_time_inferred: startTime,
+    };
+    if (typeof o.category === 'string' && o.category.trim()) {
+      activity.category = o.category.trim();
+    }
+    if (typeof o.notes === 'string' && o.notes.trim()) {
+      activity.notes = o.notes.trim();
+    }
+    out.push(activity);
+  }
+  if (out.length === 0) {
+    throw new Error('PARSE_OUTPUT_INVALID: No valid activities after normalization.');
+  }
+  return out;
+}
+
+function parseActivitiesFromText(responseText: string): Activity[] {
+  const cleaned = stripMarkdownCodeFences(responseText);
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(cleaned);
+  } catch {
+    const slice = extractBalancedArray(cleaned);
+    if (!slice) {
+      throw new Error('PARSE_OUTPUT_INVALID: Claude did not return valid JSON.');
+    }
+    try {
+      parsed = JSON.parse(slice);
+    } catch {
+      throw new Error('PARSE_OUTPUT_INVALID: Claude did not return valid JSON.');
+    }
+  }
+  if (Array.isArray(parsed)) {
+    return normalizeActivities(parsed);
+  }
+  if (parsed && typeof parsed === 'object' && Array.isArray((parsed as { activities?: unknown[] }).activities)) {
+    return normalizeActivities((parsed as { activities: unknown[] }).activities);
+  }
+  throw new Error('PARSE_OUTPUT_INVALID: Expected an array of activities.');
+}
+
+type MessageContentBlock = { type: string; name?: string; input?: unknown; text?: string };
+
+function extractActivitiesFromMessage(message: { content: MessageContentBlock[] }): Activity[] {
+  const blocks = message.content;
+  for (const block of blocks) {
+    if (block.type === 'tool_use' && block.name === 'submit_parsed_activities' && block.input != null) {
+      const input = block.input as { activities?: unknown[] };
+      if (Array.isArray(input.activities)) {
+        return normalizeActivities(input.activities);
+      }
+    }
+  }
+  const text = blocks
+    .filter((b) => b.type === 'text')
+    .map((b) => b.text ?? '')
+    .join('');
+  if (text.trim()) {
+    return parseActivitiesFromText(text);
+  }
+  throw new Error('PARSE_OUTPUT_INVALID: No tool output or text from model.');
+}
 
 Deno.serve(async (req) => {
-  // Handle CORS preflight
   if (req.method === 'OPTIONS') {
     return new Response('ok', {
       status: 200,
@@ -61,7 +208,6 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Parse request body
     const { transcript } = (await req.json()) as ParseRequest;
 
     if (!transcript || typeof transcript !== 'string' || transcript.trim().length === 0) {
@@ -71,7 +217,6 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Get authenticated user from Authorization header
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
       return new Response(
@@ -80,10 +225,8 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Extract Bearer token
     const token = authHeader.replace('Bearer ', '');
 
-    // Decode JWT to get user_id (without validating signature for now)
     let userId: string;
     try {
       const parts = token.split('.');
@@ -91,7 +234,7 @@ Deno.serve(async (req) => {
         throw new Error('Invalid token format');
       }
       const decoded = JSON.parse(atob(parts[1]));
-      userId = decoded.sub; // 'sub' claim contains the user_id in Supabase JWT
+      userId = decoded.sub;
       if (!userId) {
         throw new Error('No user_id in token');
       }
@@ -103,13 +246,11 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Create Supabase client with service role for database operations
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') || '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || ''
     );
 
-    // Call Claude API for parsing
     const apiKey = Deno.env.get('ANTHROPIC_API_KEY');
     if (!apiKey) {
       return new Response(
@@ -124,7 +265,9 @@ Deno.serve(async (req) => {
 
     const message = await anthropic.messages.create({
       model: 'claude-opus-4-6',
-      max_tokens: 1024,
+      max_tokens: 8192,
+      tools: [SUBMIT_ACTIVITIES_TOOL] as any,
+      tool_choice: { type: 'tool', name: 'submit_parsed_activities' },
       messages: [
         {
           role: 'user',
@@ -133,46 +276,17 @@ Deno.serve(async (req) => {
       ],
     });
 
-    // Extract the text response
-    const responseText = message.content
-      .filter((block: any) => block.type === 'text')
-      .map((block: any) => block.text)
-      .join('');
-
-    // Parse JSON from response
-    let parsed: Activity[];
-    try {
-      parsed = JSON.parse(responseText);
-    } catch (e) {
-      // Try to extract JSON from response (in case Claude adds extra text)
-      const jsonMatch = responseText.match(/\[[\s\S]*\]/);
-      if (!jsonMatch) {
-        throw new Error('Claude did not return valid JSON.');
-      }
-      parsed = JSON.parse(jsonMatch[0]);
-    }
-
-    // Validate structure
-    if (!Array.isArray(parsed)) {
-      throw new Error('Expected an array of activities.');
-    }
-
-    for (const activity of parsed) {
-      if (!activity.activity || typeof activity.duration_minutes !== 'number') {
-        throw new Error('Invalid activity structure: missing required fields.');
-      }
-    }
+    const activities = extractActivitiesFromMessage(message);
 
     return new Response(
       JSON.stringify({
-        activities: parsed,
+        activities,
       }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error: any) {
     console.error('[Parse API] Error:', error);
 
-    // Handle Claude API errors specifically
     if (error.status === 429) {
       return new Response(
         JSON.stringify({
@@ -191,10 +305,25 @@ Deno.serve(async (req) => {
       );
     }
 
-    if (error.message && error.message.includes('Claude did not return valid JSON')) {
+    const msg = error.message || '';
+
+    if (msg.includes('PARSE_OUTPUT_INVALID')) {
       return new Response(
         JSON.stringify({
-          error: 'Claude parsing failed. Please try speaking more clearly.',
+          error:
+            'Could not turn that transcript into activities. Try editing the text in Type mode or a shorter check-in.',
+          error_code: 'PARSE_OUTPUT_INVALID',
+        }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (msg.includes('Claude did not return valid JSON')) {
+      return new Response(
+        JSON.stringify({
+          error:
+            'Could not turn that transcript into activities. Try editing the text in Type mode or a shorter check-in.',
+          error_code: 'PARSE_OUTPUT_INVALID',
         }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );

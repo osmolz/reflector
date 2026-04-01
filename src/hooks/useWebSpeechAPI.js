@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 const SpeechRecognition =
   (typeof window !== 'undefined' && (window.SpeechRecognition || window.webkitSpeechRecognition)) || null;
@@ -7,6 +7,10 @@ export function useWebSpeechAPI() {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState('');
   const [isSupported] = useState(() => SpeechRecognition !== null);
+  const activeRef = useRef(false);
+  const stopRequestedRef = useRef(false);
+  const recognitionRef = useRef(null);
+
   const [recognition] = useState(() => {
     if (!SpeechRecognition) return null;
     const instance = new SpeechRecognition();
@@ -24,11 +28,41 @@ export function useWebSpeechAPI() {
     };
 
     recognition.onend = () => {
+      if (activeRef.current && !stopRequestedRef.current) {
+        setTimeout(() => {
+          if (activeRef.current && !stopRequestedRef.current && recognitionRef.current) {
+            try {
+              recognitionRef.current.start();
+            } catch {
+              /* InvalidStateError */
+            }
+          }
+        }, 0);
+        return;
+      }
       setIsListening(false);
     };
 
     recognition.onerror = (event) => {
+      const code = event.error || 'unknown';
+      if (code === 'aborted' && stopRequestedRef.current) {
+        return;
+      }
+      if (code === 'no-speech' && activeRef.current && !stopRequestedRef.current) {
+        setTimeout(() => {
+          if (activeRef.current && !stopRequestedRef.current && recognitionRef.current) {
+            try {
+              recognitionRef.current.start();
+            } catch {
+              /* InvalidStateError */
+            }
+          }
+        }, 0);
+        return;
+      }
       console.error('Speech recognition error:', event.error);
+      activeRef.current = false;
+      stopRequestedRef.current = false;
       setIsListening(false);
     };
 
@@ -49,10 +83,19 @@ export function useWebSpeechAPI() {
       }
     };
 
+    recognitionRef.current = recognition;
+
     return () => {
+      activeRef.current = false;
+      stopRequestedRef.current = false;
       if (recognition) {
-        recognition.abort();
+        try {
+          recognition.abort();
+        } catch {
+          /* ignore */
+        }
       }
+      recognitionRef.current = null;
     };
   }, [recognition]);
 
@@ -62,6 +105,8 @@ export function useWebSpeechAPI() {
       return;
     }
     try {
+      activeRef.current = true;
+      stopRequestedRef.current = false;
       setTranscript('');
       recognition.start();
     } catch (error) {
@@ -71,6 +116,7 @@ export function useWebSpeechAPI() {
 
   const stopListening = () => {
     if (!recognition) return;
+    stopRequestedRef.current = true;
     try {
       recognition.stop();
     } catch (error) {
