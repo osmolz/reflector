@@ -294,6 +294,23 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
       setMessages([])
       setHistoryLoading(true)
       try {
+        // #region agent log
+        fetch('http://127.0.0.1:7272/ingest/9a054363-0560-4f2a-a7fd-71d649a23059', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '0547ca' },
+          body: JSON.stringify({
+            sessionId: '0547ca',
+            location: 'Chat.jsx:loadMessages',
+            message: 'chat_messages select start',
+            data: {
+              hypothesisId: 'H-A',
+              selectColumns: 'id, role, content, created_at, thinking_summary',
+              hasSession: Boolean(sessionId),
+            },
+            timestamp: Date.now(),
+          }),
+        }).catch(() => {})
+        // #endregion
         const { data, error: fetchError } = await supabase
           .from('chat_messages')
           .select('id, role, content, created_at, thinking_summary')
@@ -301,7 +318,43 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
           .eq('session_id', sessionId)
           .order('created_at', { ascending: true })
 
-        if (fetchError) throw fetchError
+        if (fetchError) {
+          // #region agent log
+          fetch('http://127.0.0.1:7272/ingest/9a054363-0560-4f2a-a7fd-71d649a23059', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '0547ca' },
+            body: JSON.stringify({
+              sessionId: '0547ca',
+              location: 'Chat.jsx:loadMessages',
+              message: 'chat_messages select error',
+              data: {
+                hypothesisId: 'H-A',
+                code: fetchError.code,
+                message: fetchError.message,
+              },
+              timestamp: Date.now(),
+            }),
+          }).catch(() => {})
+          // #endregion
+          throw fetchError
+        }
+
+        // #region agent log
+        fetch('http://127.0.0.1:7272/ingest/9a054363-0560-4f2a-a7fd-71d649a23059', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': '0547ca' },
+          body: JSON.stringify({
+            sessionId: '0547ca',
+            location: 'Chat.jsx:loadMessages',
+            message: 'chat_messages select ok',
+            data: {
+              hypothesisId: 'H-B',
+              rowCount: (data || []).length,
+            },
+            timestamp: Date.now(),
+          }),
+        }).catch(() => {})
+        // #endregion
 
         setMessages(
           (data || []).map((msg) => ({
