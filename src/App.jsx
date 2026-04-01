@@ -3,6 +3,7 @@ import { Auth } from './components/Auth'
 import { Timeline } from './components/Timeline'
 import { LogJournal } from './pages/LogJournal'
 import Chat from './components/Chat'
+import { AppHeader } from './components/AppHeader'
 import { clearActiveChatSession } from './lib/chatSessionStorage'
 import { useAuthStore } from './store/authStore'
 import { useState } from 'react'
@@ -48,55 +49,13 @@ function App() {
           </div>
         ) : (
           <div className="app-shell">
-            <header className="header" role="banner">
-              <div className="header-brand">
-                <span className="header-title">Reflector</span>
-              </div>
-
-              <nav aria-label="Main navigation">
-                <ul className="header-nav" role="list">
-                  <li className="header-nav-item">
-                    <button
-                      type="button"
-                      className={`header-nav-link${currentView === VIEWS.logJournal ? ' active' : ''}`}
-                      onClick={() => setCurrentView(VIEWS.logJournal)}
-                      aria-current={currentView === VIEWS.logJournal ? 'page' : undefined}
-                    >
-                      Log
-                    </button>
-                  </li>
-                  <li className="header-nav-item">
-                    <button
-                      type="button"
-                      className={`header-nav-link${currentView === VIEWS.timeline ? ' active' : ''}`}
-                      onClick={() => setCurrentView(VIEWS.timeline)}
-                      aria-current={currentView === VIEWS.timeline ? 'page' : undefined}
-                    >
-                      Timeline
-                    </button>
-                  </li>
-                  <li className="header-nav-item">
-                    <button
-                      type="button"
-                      className={`header-nav-link${currentView === VIEWS.chat ? ' active' : ''}`}
-                      onClick={() => setCurrentView(VIEWS.chat)}
-                      aria-current={currentView === VIEWS.chat ? 'page' : undefined}
-                    >
-                      Chat
-                    </button>
-                  </li>
-                </ul>
-              </nav>
-
-              <div className="header-actions">
-                <span className="header-user-email" title={user.email}>
-                  {user.email}
-                </span>
-                <button type="button" className="header-sign-out" onClick={handleSignOut}>
-                  Sign out
-                </button>
-              </div>
-            </header>
+            <AppHeader
+              views={VIEWS}
+              currentView={currentView}
+              onViewChange={setCurrentView}
+              user={user}
+              onSignOut={handleSignOut}
+            />
 
             <main
               className={`main-container${currentView === VIEWS.timeline ? ' main-container--wide' : ''}`}

@@ -3,6 +3,7 @@ import { useAuthStore } from '../store/authStore'
 import { supabase } from '../lib/supabase'
 import { useChatPersistence } from '../hooks/useChatPersistence'
 import { readActiveChatSessionId, writeActiveChatSessionId } from '../lib/chatSessionStorage'
+import { AppHeader } from './AppHeader'
 import './Chat.css'
 
 const SIDEBAR_LS_KEY = 'chat-sidebar-open'
@@ -109,24 +110,6 @@ function IconClose() {
         stroke="currentColor"
         strokeWidth="2"
         strokeLinecap="round"
-      />
-    </svg>
-  )
-}
-
-function IconGear() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M12 15a3 3 0 100-6 3 3 0 000 6z"
-        stroke="currentColor"
-        strokeWidth="2"
-      />
-      <path
-        d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82 1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinejoin="round"
       />
     </svg>
   )
@@ -640,52 +623,13 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
       <h1 className="sr-only">Chat</h1>
       <main className="chat-main" role="main">
         <div className="chat-layout">
-          {/* Row 1 — primary nav */}
-          <header className="chat-nav-band">
-            <div className="chat-nav-inner">
-              <nav className="chat-nav-links" aria-label="Primary navigation">
-                <button
-                  type="button"
-                  className={`chat-nav-link${currentView === views.chat ? ' chat-nav-link--active' : ''}`}
-                  onClick={() => onViewChange(views.chat)}
-                  aria-current={currentView === views.chat ? 'page' : undefined}
-                >
-                  Chat
-                </button>
-                <button
-                  type="button"
-                  className={`chat-nav-link${currentView === views.logJournal ? ' chat-nav-link--active' : ''}`}
-                  onClick={() => onViewChange(views.logJournal)}
-                  aria-current={currentView === views.logJournal ? 'page' : undefined}
-                >
-                  Log
-                </button>
-                <button
-                  type="button"
-                  className={`chat-nav-link${currentView === views.timeline ? ' chat-nav-link--active' : ''}`}
-                  onClick={() => onViewChange(views.timeline)}
-                  aria-current={currentView === views.timeline ? 'page' : undefined}
-                >
-                  Timeline
-                </button>
-              </nav>
-              <div className="chat-nav-right">
-                <span className="chat-nav-email" title={user.email}>
-                  {user.email}
-                </span>
-                <details className="chat-nav-account">
-                  <summary className="chat-nav-icon-btn" aria-label="Account menu">
-                    <IconGear />
-                  </summary>
-                  <div className="chat-nav-account-panel">
-                    <button type="button" className="chat-nav-account-action" onClick={() => onSignOut?.()}>
-                      Sign out
-                    </button>
-                  </div>
-                </details>
-              </div>
-            </div>
-          </header>
+          <AppHeader
+            views={views}
+            currentView={currentView}
+            onViewChange={onViewChange}
+            user={user}
+            onSignOut={onSignOut}
+          />
 
           {/* Row 2 — rail + optional panels + main */}
           <div className="chat-row2">
