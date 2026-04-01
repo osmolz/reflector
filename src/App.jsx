@@ -3,6 +3,7 @@ import { Auth } from './components/Auth'
 import { Timeline } from './components/Timeline'
 import { LogJournal } from './pages/LogJournal'
 import Chat from './components/Chat'
+import { clearActiveChatSession } from './lib/chatSessionStorage'
 import { useAuthStore } from './store/authStore'
 import { useState } from 'react'
 import './components/Layout.css'
@@ -24,8 +25,13 @@ function App() {
   };
 
   const handleSignOut = async () => {
-    await signOut();
-  };
+    try {
+      if (user?.id) clearActiveChatSession(user.id)
+    } catch {
+      /* ignore */
+    }
+    await signOut()
+  }
 
   return (
     <AuthProvider>

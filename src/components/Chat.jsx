@@ -2,9 +2,17 @@ import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react'
 import { useAuthStore } from '../store/authStore'
 import { supabase } from '../lib/supabase'
 import { useChatPersistence } from '../hooks/useChatPersistence'
+import { readActiveChatSessionId, writeActiveChatSessionId } from '../lib/chatSessionStorage'
 import './Chat.css'
 
 const SIDEBAR_LS_KEY = 'chat-sidebar-open'
+const CHAT_MODEL_LS_KEY = 'chat-model'
+
+/** Balanced = current default (Opus); Fast = Haiku. IDs must match edge whitelist. */
+const CHAT_MODEL_BY_TIER = {
+  balanced: 'claude-opus-4-6',
+  fast: 'claude-haiku-4-5-20251001',
+}
 
 const CHAT_STARTER_PROMPTS = [
   'Walk me through my day—what I planned versus what actually happened.',
@@ -143,9 +151,31 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
   const [loading, setLoading] = useState(false)
   const [historyLoading, setHistoryLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [modelTier, setModelTier] = useState('balanced')
+  const [modelMenuOpen, setModelMenuOpen] = useState(false)
   const chatHistoryRef = useRef(null)
   const isStreamingRef = useRef(false)
   const searchFieldRef = useRef(null)
+  const modelSelectRef = useRef(null)
+
+  const applyNewSession = useCallback((data) => {
+    setSessions((prev) => [data, ...prev])
+    setSessionId(data.id)
+    setMessages([])
+    setError(null)
+    if (user?.id) writeActiveChatSessionId(user.id, data.id)
+  }, [user?.id])
+
+  const insertChatSessionRow = useCallback(async () => {
+    if (!user?.id) throw new Error('Not signed in')
+    const { data, error: createError } = await supabase
+      .from('chat_sessions')
+      .insert({ user_id: user.id, created_at: new Date().toISOString() })
+      .select()
+      .single()
+    if (createError) throw createError
+    return data
+  }, [user?.id])
 
   useEffect(() => {
     try {
@@ -171,6 +201,45 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
   }, [sidebarOpen, layoutReady])
 
   useEffect(() => {
+    try {
+      const raw = localStorage.getItem(CHAT_MODEL_LS_KEY)
+      if (raw === 'fast' || raw === 'balanced') {
+        setModelTier(raw)
+      }
+    } catch {
+      /* ignore */
+    }
+  }, [])
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(CHAT_MODEL_LS_KEY, modelTier)
+    } catch {
+      /* ignore */
+    }
+  }, [modelTier])
+
+  useEffect(() => {
+    if (!modelMenuOpen) return
+    const onPointerDown = (e) => {
+      if (modelSelectRef.current && !modelSelectRef.current.contains(e.target)) {
+        setModelMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', onPointerDown)
+    return () => document.removeEventListener('mousedown', onPointerDown)
+  }, [modelMenuOpen])
+
+  useEffect(() => {
+    if (!modelMenuOpen) return
+    const onKey = (e) => {
+      if (e.key === 'Escape') setModelMenuOpen(false)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [modelMenuOpen])
+
+  useEffect(() => {
     const t = setTimeout(() => setDebouncedSearch(searchInput.trim()), 300)
     return () => clearTimeout(t)
   }, [searchInput])
@@ -182,6 +251,8 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
   }, [searchOpen])
 
   useEffect(() => {
+    let cancelled = false
+
     const loadSessions = async () => {
       if (!user) {
         setSessionLoading(false)
@@ -197,24 +268,36 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
           .limit(40)
 
         if (fetchError) throw fetchError
+        if (cancelled) return
 
-        setSessions(data || [])
-        if (data && data.length > 0) {
-          setSessionId((prev) => {
-            if (prev && data.some((s) => s.id === prev)) return prev
-            return data[0].id
-          })
+        const list = data || []
+        setSessions(list)
+
+        const stored = readActiveChatSessionId(user.id)
+        const storedValid = stored && list.some((s) => s.id === stored)
+
+        if (storedValid) {
+          if (!cancelled) setSessionId(stored)
+        } else {
+          const row = await insertChatSessionRow()
+          if (cancelled) return
+          applyNewSession(row)
         }
       } catch (err) {
-        console.error('[chat] Failed to load sessions:', err)
-        setError('Failed to load sessions')
+        if (!cancelled) {
+          console.error('[chat] Failed to load sessions:', err)
+          setError('Failed to load sessions')
+        }
       } finally {
-        setSessionLoading(false)
+        if (!cancelled) setSessionLoading(false)
       }
     }
 
     loadSessions()
-  }, [user?.id])
+    return () => {
+      cancelled = true
+    }
+  }, [user?.id, insertChatSessionRow, applyNewSession])
 
   useEffect(() => {
     const loadMessages = async () => {
@@ -290,18 +373,8 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
     if (!user || creatingSession) return
     setCreatingSession(true)
     try {
-      const { data, error: createError } = await supabase
-        .from('chat_sessions')
-        .insert({ user_id: user.id, created_at: new Date().toISOString() })
-        .select()
-        .single()
-
-      if (createError) throw createError
-
-      setSessions((prev) => [data, ...prev])
-      setSessionId(data.id)
-      setMessages([])
-      setError(null)
+      const data = await insertChatSessionRow()
+      applyNewSession(data)
       if (window.matchMedia('(max-width: 767px)').matches) {
         setSidebarOpen(false)
       }
@@ -316,6 +389,7 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
   const switchSession = (sid) => {
     setSessionId(sid)
     setError(null)
+    if (user?.id) writeActiveChatSessionId(user.id, sid)
     if (window.matchMedia('(max-width: 767px)').matches) {
       setSidebarOpen(false)
       setSearchOpen(false)
@@ -393,6 +467,7 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
         body: JSON.stringify({
           message: userMessage.content,
           sessionId,
+          model: CHAT_MODEL_BY_TIER[modelTier] ?? CHAT_MODEL_BY_TIER.balanced,
         }),
       })
 
@@ -826,9 +901,51 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
                         rows={1}
                         autoComplete="off"
                       />
-                      <span className="chat-model-pill" aria-hidden="true">
-                        Coach
-                      </span>
+                      <div className="chat-model-select" ref={modelSelectRef}>
+                        <button
+                          type="button"
+                          className="chat-model-pill chat-model-pill--trigger"
+                          aria-haspopup="listbox"
+                          aria-expanded={modelMenuOpen}
+                          aria-label={`Response speed: ${modelTier === 'fast' ? 'Fast' : 'Balanced'}`}
+                          disabled={loading || historyLoading || creatingSession || !sessionId}
+                          onClick={() => setModelMenuOpen((open) => !open)}
+                        >
+                          {modelTier === 'fast' ? 'Fast' : 'Balanced'}
+                        </button>
+                        {modelMenuOpen ? (
+                          <div
+                            className="chat-model-dropdown"
+                            role="listbox"
+                            aria-label="Choose response speed"
+                          >
+                            <button
+                              type="button"
+                              className={`chat-model-option${modelTier === 'balanced' ? ' chat-model-option--selected' : ''}`}
+                              role="option"
+                              aria-selected={modelTier === 'balanced'}
+                              onClick={() => {
+                                setModelTier('balanced')
+                                setModelMenuOpen(false)
+                              }}
+                            >
+                              Balanced (Opus 4.6)
+                            </button>
+                            <button
+                              type="button"
+                              className={`chat-model-option${modelTier === 'fast' ? ' chat-model-option--selected' : ''}`}
+                              role="option"
+                              aria-selected={modelTier === 'fast'}
+                              onClick={() => {
+                                setModelTier('fast')
+                                setModelMenuOpen(false)
+                              }}
+                            >
+                              Fast (Haiku 4.5)
+                            </button>
+                          </div>
+                        ) : null}
+                      </div>
                       <button
                         type="submit"
                         className="chat-composer-send chat-send-button"

@@ -792,6 +792,11 @@
   background-color: var(--bg-primary);
 }
 
+.chat-composer-box:focus-within {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
 .chat-composer-input {
   flex: 1;
   min-width: 0;
@@ -815,6 +820,12 @@
   color: var(--text-tertiary);
 }
 
+.chat-model-select {
+  position: relative;
+  flex-shrink: 0;
+  align-self: center;
+}
+
 .chat-model-pill {
   flex-shrink: 0;
   align-self: center;
@@ -828,6 +839,74 @@
   border: 1px solid var(--border-light);
   border-radius: 999px;
   background: var(--bg-secondary);
+}
+
+.chat-model-pill--trigger {
+  margin: 0;
+  font: inherit;
+  cursor: pointer;
+  transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.chat-model-pill--trigger:hover:not(:disabled) {
+  color: var(--text-secondary);
+  border-color: var(--border-medium);
+}
+
+.chat-model-pill--trigger:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.chat-model-pill--trigger:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+.chat-model-dropdown {
+  position: absolute;
+  right: 0;
+  bottom: 100%;
+  margin-bottom: var(--space-sm);
+  min-width: 12rem;
+  z-index: 50;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-medium);
+  border-radius: 4px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  padding: var(--space-xs) 0;
+}
+
+.chat-model-option {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: left;
+  padding: var(--space-sm) var(--space-md);
+  border: none;
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  line-height: 1.35;
+  font-weight: 500;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background-color 0.12s ease, color 0.12s ease;
+}
+
+.chat-model-option:hover,
+.chat-model-option:focus-visible {
+  background-color: var(--bg-secondary);
+  outline: none;
+}
+
+.chat-model-option + .chat-model-option {
+  border-top: 1px solid var(--border-light);
+}
+
+.chat-model-option--selected {
+  color: var(--accent-color);
+  background-color: var(--bg-secondary);
 }
 
 .chat-composer-send {

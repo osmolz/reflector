@@ -15,6 +15,19 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
+/** Default = prior behavior (Balanced / Opus). Client may request Fast (Haiku). */
+const DEFAULT_CHAT_MODEL = 'claude-opus-4-6'
+const ALLOWED_CHAT_MODELS = new Set<string>(['claude-opus-4-6', 'claude-haiku-4-5-20251001'])
+/** Extended thinking is not supported on Haiku; omit `thinking` for those models. */
+const EXTENDED_THINKING_MODELS = new Set<string>(['claude-opus-4-6'])
+
+function resolveChatModel(requested: unknown): string {
+  if (typeof requested === 'string' && ALLOWED_CHAT_MODELS.has(requested)) {
+    return requested
+  }
+  return DEFAULT_CHAT_MODEL
+}
+
 Deno.serve(async (req) => {
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
@@ -69,10 +82,14 @@ Deno.serve(async (req) => {
     const userId = user.id
 
     // [2] Parse request body
-    const { message, sessionId: providedSessionId } = (await req.json()) as {
+    const { message, sessionId: providedSessionId, model: requestedModel } = (await req.json()) as {
       message: string
       sessionId?: string
+      model?: string
     }
+
+    const resolvedChatModel = resolveChatModel(requestedModel)
+    const useExtendedThinking = EXTENDED_THINKING_MODELS.has(resolvedChatModel)
 
     if (!message || typeof message !== 'string') {
       return new Response(JSON.stringify({ error: 'Message required' }), {
@@ -157,14 +174,17 @@ Deno.serve(async (req) => {
                   emit({ type: 'status', status: 'thinking' })
 
                   // Call Claude with streaming
-                  const stream = await anthropic.messages.stream({
-                    model: 'claude-opus-4-6',
+                  const streamParams: Record<string, unknown> = {
+                    model: resolvedChatModel,
                     max_tokens: 4096,
                     system: systemPrompt,
                     tools: TOOL_DEFINITIONS as any,
                     messages: currentMessages as any,
-                    thinking: { type: 'enabled', budget_tokens: 2048 },
-                  })
+                  }
+                  if (useExtendedThinking) {
+                    streamParams.thinking = { type: 'enabled', budget_tokens: 2048 }
+                  }
+                  const stream = await anthropic.messages.stream(streamParams as any)
 
                   // Attach listeners BEFORE awaiting
                   stream.on('thinking', (delta: string) => {

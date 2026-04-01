@@ -1,0 +1,84 @@
+/* Log route — editorial tabs (nav-aligned), no decorative chrome */
+
+.log-journal-shell {
+  padding: 0;
+}
+
+.log-journal-tablist {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-sm);
+  list-style: none;
+}
+
+.log-journal-tab-item {
+  position: relative;
+  display: flex;
+}
+
+.log-journal-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-sm) var(--space-md);
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  border-radius: 0;
+  line-height: 1.2;
+  transition: color 0.15s ease;
+}
+
+.log-journal-tab:hover {
+  color: var(--text-primary);
+}
+
+.log-journal-tab[aria-selected='true'] {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.log-journal-tab[aria-selected='true']::after {
+  content: '';
+  position: absolute;
+  left: var(--space-md);
+  right: var(--space-md);
+  bottom: 0;
+  height: 2px;
+  background-color: var(--accent-color);
+}
+
+.log-journal-tab-hint {
+  font-size: 0.9375rem;
+  font-weight: 400;
+  color: var(--text-tertiary);
+  line-height: 1.5;
+  max-width: 36em;
+  margin: 0 0 var(--space-xl);
+}
+
+.log-journal-tabpanel.section {
+  margin-bottom: 0;
+}
+
+.log-journal-tabpanel.section:not([hidden]) {
+  margin-bottom: clamp(var(--space-2xl), 5vw, var(--space-3xl));
+}
+
+@media (max-width: 640px) {
+  .log-journal-tab {
+    font-size: 0.875rem;
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  .log-journal-tab-hint {
+    margin-bottom: var(--space-lg);
+  }
+}
