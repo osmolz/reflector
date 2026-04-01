@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../store/authStore';
+import './Journal.css';
 
 export function JournalHistory({ refreshKey }) {
   const user = useAuthStore((state) => state.user);
@@ -36,24 +37,16 @@ export function JournalHistory({ refreshKey }) {
   };
 
   if (!user) {
-    return <div style={{ padding: '1rem', color: '#666' }}>Please log in to view journal entries</div>;
+    return <div className="journal-loading">Please log in to view journal entries.</div>;
   }
 
   if (loading) {
-    return <div style={{ padding: '1rem', color: '#666' }}>Loading journal...</div>;
+    return <div className="journal-loading">Loading journal...</div>;
   }
 
   if (error) {
     return (
-      <div
-        style={{
-          padding: '1rem',
-          color: '#d00',
-          background: '#ffe6e6',
-          borderRadius: '4px',
-          marginTop: '1rem',
-        }}
-      >
+      <div className="journal-error" role="alert">
         Error: {error}
       </div>
     );
@@ -61,30 +54,21 @@ export function JournalHistory({ refreshKey }) {
 
   if (entries.length === 0) {
     return (
-      <div style={{ padding: '1rem', color: '#666', fontStyle: 'italic' }}>
-        No entries yet.
+      <div className="journal-empty">
+        <p className="journal-empty-message">No entries yet.</p>
       </div>
     );
   }
 
   return (
-    <div>
+    <div className="journal-history">
       <h3 className="journal-history-heading">Previous entries</h3>
-      <div style={{ marginTop: '1rem' }}>
+      <div className="journal-history-list">
         {entries.map((entry) => (
-          <div
-            key={entry.id}
-            style={{
-              border: '1px solid #ddd',
-              padding: '1rem',
-              marginBottom: '1rem',
-              borderRadius: '4px',
-              background: '#fafafa',
-            }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <div>
-                <strong style={{ display: 'block', marginBottom: '0.25rem' }}>
+          <article key={entry.id} className="journal-entry">
+            <div className="journal-entry-header">
+              <div className="journal-entry-meta">
+                <strong className="journal-entry-title">
                   {new Date(entry.created_at).toLocaleDateString(undefined, {
                     weekday: 'short',
                     year: 'numeric',
@@ -92,7 +76,7 @@ export function JournalHistory({ refreshKey }) {
                     day: 'numeric',
                   })}
                 </strong>
-                <span style={{ fontSize: '0.85rem', color: '#666' }}>
+                <span className="journal-entry-date">
                   {new Date(entry.created_at).toLocaleTimeString(undefined, {
                     hour: '2-digit',
                     minute: '2-digit',
@@ -103,46 +87,21 @@ export function JournalHistory({ refreshKey }) {
                 type="button"
                 aria-expanded={expandedId === entry.id}
                 onClick={() => setExpandedId(expandedId === entry.id ? null : entry.id)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  color: '#0066cc',
-                  fontSize: '0.9rem',
-                  fontWeight: 'bold',
-                  padding: '0.25rem 0.5rem',
-                }}
+                className="journal-entry-toggle"
               >
                 {expandedId === entry.id ? 'Show less' : 'Show full note'}
               </button>
             </div>
             {expandedId === entry.id ? (
-              <p
-                style={{
-                  marginTop: '0.75rem',
-                  whiteSpace: 'pre-wrap',
-                  wordBreak: 'break-word',
-                  lineHeight: '1.5',
-                }}
-              >
+              <p className="journal-entry-body journal-entry-body-expanded">
                 {entry.text}
               </p>
             ) : (
-              <p
-                style={{
-                  marginTop: '0.5rem',
-                  color: '#666',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  display: '-webkit-box',
-                  WebkitLineClamp: 2,
-                  WebkitBoxOrient: 'vertical',
-                }}
-              >
+              <p className="journal-entry-body journal-entry-body-clamped">
                 {entry.text}
               </p>
             )}
-          </div>
+          </article>
         ))}
       </div>
     </div>

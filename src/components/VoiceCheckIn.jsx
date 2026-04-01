@@ -12,9 +12,8 @@ export function VoiceCheckIn({ onActivitiesSaved }) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [stage, setStage] = useState('recording'); // 'recording', 'review', 'saved'
-  const [inputMode, setInputMode] = useState(null); // null, 'voice', 'text'
 
-  const handleTranscriptReady = async (text) => {
+  const handleParseTranscript = async (text) => {
     setTranscript(text);
     setError(null);
     setIsLoading(true);
@@ -34,6 +33,14 @@ export function VoiceCheckIn({ onActivitiesSaved }) {
       setError(err.message || 'Failed to parse transcript.');
       setIsLoading(false);
     }
+  };
+
+  const handleVoiceDraftReady = (text) => {
+    setError(null);
+    setTranscript((prev) => {
+      const combined = `${prev} ${text}`.trim();
+      return combined;
+    });
   };
 
   const handleSaveActivities = async (activities) => {
@@ -136,7 +143,6 @@ export function VoiceCheckIn({ onActivitiesSaved }) {
     setParsedActivities([]);
     setError(null);
     setStage('recording');
-    setInputMode(null);
     setIsLoading(false);
   };
 
@@ -157,65 +163,28 @@ export function VoiceCheckIn({ onActivitiesSaved }) {
     <div className="voice-check-in">
       {stage === 'recording' && (
         <>
-          {!inputMode && (
-            <div className="voice-check-in-mode-select">
-              <button type="button" className="btn btn-secondary btn-small" onClick={() => setInputMode('voice')}>
-                Speak
-              </button>
-              <button type="button" className="btn btn-secondary btn-small" onClick={() => setInputMode('text')}>
-                Type
-              </button>
-            </div>
-          )}
-
-          {inputMode === 'voice' && (
-            <>
-              <button type="button" className="btn btn-secondary voice-check-in-back" onClick={() => setInputMode(null)} aria-label="Back to choose speak or type">Back</button>
-              <MicButton onTranscriptReady={handleTranscriptReady} />
-            </>
-          )}
-
-          {inputMode === 'text' && (
-            <>
-              <button type="button" className="btn btn-secondary voice-check-in-back" onClick={() => setInputMode(null)} aria-label="Back to choose speak or type">Back</button>
-              <div className="form-group">
-                <label htmlFor="voice-check-in-transcript">Activities and times (for the parser)</label>
-                <textarea
-                  id="voice-check-in-transcript"
-                  value={transcript}
-                  onChange={(e) => setTranscript(e.target.value)}
-                  placeholder="Example: 9am–12pm deep work, lunch 12–1, meetings 2–4…"
-                  className="voice-check-in-textarea"
-                />
-              </div>
-              <button
-                type="button"
-                className="btn btn-primary"
-                onClick={() => handleTranscriptReady(transcript)}
-                disabled={isLoading || !transcript.trim()}
-              >
-                {isLoading ? 'Parsing...' : 'Parse and review'}
-              </button>
-            </>
-          )}
-
-          {transcript && inputMode === 'voice' && (
-            <div className="voice-check-in-transcript">
-              <label className="voice-check-in-transcript-label" htmlFor="voice-check-in-transcript-edit">
-                Edit transcript before parsing
-              </label>
+          <div className="voice-check-in-input">
+            <div className="form-group">
+              <label htmlFor="voice-check-in-transcript">Activities and times</label>
+              <p className="voice-check-in-helper">
+                Type directly, or record and then review before saving.
+              </p>
               <textarea
-                id="voice-check-in-transcript-edit"
+                id="voice-check-in-transcript"
                 value={transcript}
                 onChange={(e) => setTranscript(e.target.value)}
+                placeholder="Example: 9am–12pm deep work, lunch 12–1, meetings 2–4."
                 className="voice-check-in-textarea"
               />
+            </div>
+
+            <div className="voice-check-in-actions">
+              <MicButton onTranscriptReady={handleVoiceDraftReady} />
               <button
                 type="button"
                 className="btn btn-primary"
-                onClick={() => handleTranscriptReady(transcript)}
-                disabled={isLoading}
-                style={{ marginTop: 'var(--space-md)' }}
+                onClick={() => handleParseTranscript(transcript)}
+                disabled={isLoading || !transcript.trim()}
               >
                 {isLoading ? 'Parsing...' : 'Parse and review'}
               </button>
