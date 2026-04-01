@@ -6,6 +6,7 @@ export function stripMarkdownStreamDelta(delta: string): string {
 /**
  * Line-level cleanup on full assistant text before persistence (Phase 7-style guard).
  * Also strips remaining ** and simple *italic* spans.
+ * Blank lines between paragraphs are preserved: split/join keeps empty lines between non-empty lines.
  */
 export function stripMarkdownArtifacts(text: string): string {
   const lines = text.split('\n')

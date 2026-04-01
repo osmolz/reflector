@@ -19,6 +19,30 @@ function formatSessionMeta(createdAt) {
   return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
 }
 
+/** Split coach plain text on blank lines for readable paragraphs in the UI. */
+function assistantParagraphs(content) {
+  if (content == null || !String(content).trim()) return []
+  return String(content)
+    .split(/\n\n+/)
+    .map((p) => p.trim())
+    .filter(Boolean)
+}
+
+function AssistantMessageProse({ content, isStreaming }) {
+  const paras = assistantParagraphs(content)
+  if (paras.length === 0) {
+    return isStreaming ? <span className="chat-stream-cursor" aria-hidden="true" /> : null
+  }
+  return paras.map((para, idx) => (
+    <p key={idx}>
+      {para}
+      {isStreaming && idx === paras.length - 1 ? (
+        <span className="chat-stream-cursor" aria-hidden="true" />
+      ) : null}
+    </p>
+  ))
+}
+
 function IconPlus() {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -699,8 +723,7 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
                       {msg.role === 'assistant' ? (
                         <div className={`chat-bubble chat-bubble--assistant claude-message`}>
                           <div className="chat-message-body chat-prose">
-                            {msg.content}
-                            {msg.isStreaming && <span className="chat-stream-cursor" aria-hidden="true" />}
+                            <AssistantMessageProse content={msg.content} isStreaming={msg.isStreaming} />
                           </div>
                         </div>
                       ) : (

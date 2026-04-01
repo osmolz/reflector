@@ -599,6 +599,14 @@
   text-decoration: underline;
 }
 
+.chat-prose p {
+  margin: 0;
+}
+
+.chat-prose p + p {
+  margin-top: var(--space-md);
+}
+
 .chat-bubble--user.user-message {
   max-width: min(85%, var(--chat-reading-max));
   border-radius: 1rem;
