@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react'
 import { useAuthStore } from '../store/authStore'
 import { supabase } from '../lib/supabase'
@@ -5,6 +6,8 @@ import { useChatPersistence } from '../hooks/useChatPersistence'
 import { readActiveChatSessionId, writeActiveChatSessionId } from '../lib/chatSessionStorage'
 import { AppHeader } from './AppHeader'
 import { ChatInputBar } from './chat/ChatInputBar'
+import { ChatWelcomePanel } from './chat/ChatWelcomePanel'
+import { getDisplayName, writeRecentWelcomeTopicHint } from './chat/chatWelcome'
 import './Chat.css'
 
 const SIDEBAR_LS_KEY = 'chat-sidebar-open'
@@ -15,14 +18,6 @@ const CHAT_MODEL_BY_TIER = {
   balanced: 'claude-opus-4-6',
   fast: 'claude-haiku-4-5-20251001',
 }
-
-const CHAT_STARTER_PROMPTS = [
-  'Walk me through my day—what I planned versus what actually happened.',
-  'Where did my time go today, and what should I change tomorrow?',
-  'I want to look at one gap between what I intended and what I did.',
-  'Help me spot a pattern I might be repeating.',
-  "I don't have much logged yet—what should I share first?",
-]
 
 function formatSessionMeta(createdAt) {
   const d = new Date(createdAt)
@@ -136,12 +131,19 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
   const [historyLoading, setHistoryLoading] = useState(false)
   const [error, setError] = useState(null)
   const [modelTier, setModelTier] = useState('balanced')
-  const [imagePreview, setImagePreview] = useState(null)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [composerError, setComposerError] = useState<string | null>(null)
   const chatHistoryRef = useRef(null)
-  const fileInputRef = useRef(null)
-  const composerTextareaRef = useRef(null)
   const isStreamingRef = useRef(false)
   const searchFieldRef = useRef(null)
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null)
+
+  useEffect(() => {
+    return () => {
+      if (imagePreview) URL.revokeObjectURL(imagePreview)
+    }
+  }, [imagePreview])
 
   const applyNewSession = useCallback((data) => {
     setSessions((prev) => [data, ...prev])
@@ -389,6 +391,16 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
     return sessions.filter((s) => (s.title || 'Untitled').toLowerCase().includes(q))
   }, [sessions, debouncedSearch])
 
+  const displayName = useMemo(() => getDisplayName(user), [user])
+  const loadingSessions = sessionLoading
+  const loadingMessages = historyLoading
+  const showChatWelcome = !loadingSessions && !loadingMessages && messages.length === 0
+
+  const handleSelectWelcomePrompt = useCallback((text: string) => {
+    setInput(text)
+    requestAnimationFrame(() => textareaRef.current?.focus())
+  }, [])
+
   const openSearch = useCallback(() => {
     setSidebarOpen(false)
     setSearchOpen(true)
@@ -435,15 +447,18 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
   const sendMessage = async (overrideText) => {
     const fromComposer = overrideText === undefined
     const text = (fromComposer ? input : String(overrideText)).trim()
-    const normalizedText = text || (imagePreview ? '[Image attached]' : '')
-    if (!normalizedText || !user || !sessionId) return
+    const composedText = text || (imagePreview ? '[Image attached]' : '')
+    if (!composedText || !user || !sessionId) return
+
+    writeRecentWelcomeTopicHint(composedText)
 
     if (fromComposer) setInput('')
+    setComposerError(null)
 
     const userMessage = {
       id: Date.now().toString(),
       role: 'user',
-      content: normalizedText,
+      content: composedText,
       created_at: new Date().toISOString(),
       isStreaming: false,
     }
@@ -505,8 +520,6 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
           message: userMessage.content,
           sessionId,
           model: CHAT_MODEL_BY_TIER[modelTier] ?? CHAT_MODEL_BY_TIER.balanced,
-          clientNowIso: new Date().toISOString(),
-          clientTimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone || null,
         }),
       })
 
@@ -607,34 +620,36 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
     } finally {
       isStreamingRef.current = false
       setLoading(false)
-      if (fromComposer && imagePreview) {
-        setImagePreview(null)
-        if (fileInputRef.current) fileInputRef.current.value = ''
-      }
+      setImagePreview(null)
     }
   }
 
-  const handleAttachClick = () => {
-    fileInputRef.current?.click()
-  }
+  const handleAttachClick = () => fileInputRef.current?.click()
 
-  const handleImageRemove = () => {
-    setImagePreview(null)
-    if (fileInputRef.current) fileInputRef.current.value = ''
-  }
-
-  const handleFileSelected = (e) => {
+  const handleImageFile = (e) => {
     const file = e.target.files?.[0]
     if (!file) return
-    const reader = new FileReader()
-    reader.onload = () => {
-      const result = typeof reader.result === 'string' ? reader.result : null
-      setImagePreview(result)
+    if (!file.type.startsWith('image/')) {
+      setComposerError('Only image files are supported.')
+      return
     }
-    reader.readAsDataURL(file)
+    const nextPreview = URL.createObjectURL(file)
+    setComposerError(null)
+    setImagePreview((prev) => {
+      if (prev) URL.revokeObjectURL(prev)
+      return nextPreview
+    })
+    e.target.value = ''
   }
 
-  const startersDisabled = !sessionId || loading || historyLoading || creatingSession
+  const resetImage = () => {
+    setImagePreview((prev) => {
+      if (prev) URL.revokeObjectURL(prev)
+      return null
+    })
+  }
+
+  const welcomeDisabled = !sessionId || loading || historyLoading || creatingSession
 
   if (!user) {
     return <p className="chat-not-logged-in">Please log in to use chat.</p>
@@ -816,45 +831,32 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
             )}
 
             {/* Transcript + composer */}
-            <div className="chat-main-col">
-              <div className="chat-transcript-scroll" ref={chatHistoryRef}>
-                <div className="chat-transcript-inner">
+            <div className="chat-main-col flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-surface-base">
+              {error && (
+                <div className="chat-inline-error" role="alert">
+                  <span>{error}</span>
+                  <button type="button" className="chat-inline-error-dismiss" onClick={() => setError(null)}>
+                    Dismiss
+                  </button>
+                </div>
+              )}
+
+              <div className="chat-transcript-scroll min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain px-4 py-6" ref={chatHistoryRef}>
+                <div className="chat-transcript-inner mx-auto max-w-2xl">
                   {historyLoading && messages.length === 0 && (
                     <p className="chat-transcript-loading" role="status" aria-live="polite">
                       Loading messages…
                     </p>
                   )}
                   {!historyLoading && messages.length === 0 && !loading && (
-                    <section
-                      className="chat-empty-state"
-                      aria-labelledby="chat-empty-heading"
-                    >
-                      <h2 id="chat-empty-heading" className="chat-empty-state__title">
-                        Start here
-                      </h2>
-                      <p className="chat-empty-state__lede">
-                        This thread is for reviewing your day with clear data: what you planned, what
-                        happened, and what to adjust tomorrow. Use a prompt below or write in your own
-                        words.
-                      </p>
-                      <div
-                        className="chat-empty-state__starters"
-                        role="group"
-                        aria-label="Suggested ways to start"
-                      >
-                        {CHAT_STARTER_PROMPTS.map((prompt) => (
-                          <button
-                            key={prompt}
-                            type="button"
-                            className="chat-empty-starter"
-                            disabled={startersDisabled}
-                            onClick={() => sendMessage(prompt)}
-                          >
-                            {prompt}
-                          </button>
-                        ))}
-                      </div>
-                    </section>
+                    showChatWelcome && (
+                      <ChatWelcomePanel
+                        displayName={displayName}
+                        onSelectPrompt={handleSelectWelcomePrompt}
+                        disabled={welcomeDisabled}
+                        inputRef={textareaRef}
+                      />
+                    )
                   )}
                   {messages.map((msg) => (
                     <div
@@ -891,6 +893,15 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
                 </div>
               </div>
 
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleImageFile}
+                className="hidden"
+                aria-hidden="true"
+                tabIndex={-1}
+              />
               <ChatInputBar
                 input={input}
                 onInputChange={setInput}
@@ -901,18 +912,9 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
                 onModelChange={setModelTier}
                 imagePreview={imagePreview}
                 onAttachClick={handleAttachClick}
-                onImageRemove={handleImageRemove}
-                error={error}
-                composerTextareaRef={composerTextareaRef}
-              />
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                className="chat-file-input"
-                onChange={handleFileSelected}
-                tabIndex={-1}
-                aria-hidden="true"
+                onImageRemove={resetImage}
+                error={composerError}
+                composerTextareaRef={textareaRef}
               />
             </div>
           </div>

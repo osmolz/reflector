@@ -1,6 +1,6 @@
 'use client'
 
-import type { ChangeEvent, KeyboardEvent, MutableRefObject } from 'react'
+import type { MutableRefObject } from 'react'
 import { useCallback, useRef, useState } from 'react'
 
 interface ChatInputBarProps {
@@ -20,7 +20,7 @@ interface ChatInputBarProps {
 
 function AttachmentIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M21.44 11.05l-8.49 8.49a6 6 0 01-8.49-8.49l8.49-8.48a4 4 0 115.66 5.65l-8.48 8.49a2 2 0 11-2.83-2.83l7.78-7.78" />
     </svg>
   )
@@ -28,7 +28,7 @@ function AttachmentIcon() {
 
 function SendIcon() {
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <line x1="12" y1="19" x2="12" y2="5" />
       <polyline points="5 12 12 5 19 12" />
     </svg>
@@ -60,14 +60,14 @@ export function ChatInputBar({
     [composerTextareaRef],
   )
 
-  const handleInputChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     onInputChange(e.target.value)
     const el = e.target
     el.style.height = 'auto'
-    el.style.height = `${Math.min(el.scrollHeight, 150)}px`
+    el.style.height = Math.min(el.scrollHeight, 150) + 'px'
   }
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
       onSendMessage(input)
@@ -77,24 +77,23 @@ export function ChatInputBar({
   const modelLabel = currentModel === 'balanced' ? 'Balanced' : 'Fast'
 
   return (
-    <div className="chat-composer-wrap">
-      <div className="chat-composer-inner">
-        <div className="chat-composer-box">
-          {imagePreview ? (
-            <div className="chat-image-preview-row">
-              <img src={imagePreview} alt="Attachment preview" className="chat-image-preview" />
-              <button type="button" onClick={onImageRemove} disabled={disabled} className="chat-image-preview-remove">
+    <div className="w-full shrink-0 border-t border-border-subtle bg-surface-base px-4 pb-5 pt-3">
+      <div className="mx-auto max-w-2xl">
+        <div className="rounded-2xl bg-accent-muted px-4 py-3 text-text-primary focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2 focus-within:ring-offset-surface-base">
+          {imagePreview && (
+            <div className="mb-2 flex items-center gap-2">
+              <img src={imagePreview} alt="Attachment preview" className="h-12 w-12 rounded-lg border border-border-subtle object-cover" />
+              <button onClick={onImageRemove} disabled={disabled} className="text-xs text-text-secondary hover:text-status-error transition-colors">
                 Remove
               </button>
             </div>
-          ) : null}
+          )}
 
-          <div className="chat-composer-row">
+          <div className="flex items-end gap-2">
             <button
-              type="button"
               onClick={onAttachClick}
               disabled={disabled}
-              className="chat-composer-icon-button"
+              className="p-2 text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors rounded disabled:opacity-30 disabled:cursor-not-allowed shrink-0"
               aria-label="Attach image"
               title="Attach image"
             >
@@ -109,58 +108,51 @@ export function ChatInputBar({
               disabled={disabled}
               placeholder={placeholder}
               rows={1}
-              className="chat-composer-input"
+              className="flex-1 bg-transparent text-sm text-text-primary placeholder:text-text-primary/60 resize-none focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed leading-relaxed font-serif"
               style={{ minHeight: '24px', maxHeight: '150px', overflowY: 'auto' }}
             />
 
-            <div className="chat-model-select">
+            <div className="relative">
               <button
-                type="button"
                 onClick={() => setDropdownOpen(!dropdownOpen)}
                 disabled={disabled}
-                className="chat-model-pill chat-model-pill--trigger"
-                aria-haspopup="listbox"
-                aria-expanded={dropdownOpen}
-                aria-label={`Response speed: ${modelLabel}`}
+                className="px-3 py-1 text-label text-text-secondary bg-surface-hover hover:text-text-primary transition-colors rounded-full disabled:opacity-30 disabled:cursor-not-allowed shrink-0"
               >
                 {modelLabel}
               </button>
 
-              {dropdownOpen ? (
-                <div className="chat-model-dropdown" role="listbox" aria-label="Choose response speed">
+              {dropdownOpen && (
+                <div className="absolute bottom-full right-0 mb-2 bg-background border border-border rounded shadow-lg w-48 z-50">
                   <button
-                    type="button"
                     onClick={() => {
                       onModelChange('balanced')
                       setDropdownOpen(false)
                     }}
-                    className={`chat-model-option${currentModel === 'balanced' ? ' chat-model-option--selected' : ''}`}
-                    role="option"
-                    aria-selected={currentModel === 'balanced'}
+                    className={`w-full text-left px-4 py-2 text-sm transition-colors ${
+                      currentModel === 'balanced' ? 'bg-surface-hover text-accent' : 'text-text-primary hover:bg-surface-hover'
+                    }`}
                   >
                     Balanced (Sonnet 4.6)
                   </button>
                   <button
-                    type="button"
                     onClick={() => {
                       onModelChange('fast')
                       setDropdownOpen(false)
                     }}
-                    className={`chat-model-option${currentModel === 'fast' ? ' chat-model-option--selected' : ''}`}
-                    role="option"
-                    aria-selected={currentModel === 'fast'}
+                    className={`w-full text-left px-4 py-2 text-sm transition-colors border-t border-border ${
+                      currentModel === 'fast' ? 'bg-surface-hover text-accent' : 'text-text-primary hover:bg-surface-hover'
+                    }`}
                   >
                     Fast (Haiku 4.5)
                   </button>
                 </div>
-              ) : null}
+              )}
             </div>
 
             <button
-              type="button"
               onClick={() => onSendMessage(input)}
               disabled={disabled || (!input.trim() && !imagePreview)}
-              className="chat-composer-icon-button"
+              className="p-2 text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors rounded disabled:opacity-30 disabled:cursor-not-allowed shrink-0"
               aria-label="Send message"
               title="Send message"
             >
@@ -168,7 +160,7 @@ export function ChatInputBar({
             </button>
           </div>
 
-          {error ? <p className="chat-composer-error">{error}</p> : null}
+          {error && <p className="text-xs text-status-error mt-2">{error}</p>}
         </div>
       </div>
     </div>

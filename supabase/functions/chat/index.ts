@@ -82,10 +82,18 @@ Deno.serve(async (req) => {
     const userId = user.id
 
     // [2] Parse request body
-    const { message, sessionId: providedSessionId, model: requestedModel } = (await req.json()) as {
+    const {
+      message,
+      sessionId: providedSessionId,
+      model: requestedModel,
+      clientNowIso,
+      clientTimeZone,
+    } = (await req.json()) as {
       message: string
       sessionId?: string
       model?: string
+      clientNowIso?: string
+      clientTimeZone?: string
     }
 
     const resolvedChatModel = resolveChatModel(requestedModel)
@@ -154,7 +162,12 @@ Deno.serve(async (req) => {
         try {
           emit({ type: 'status', status: 'thinking' })
 
-          const systemPrompt = buildSystemPrompt(userMemory, todayTimeEntries)
+          const systemPrompt = buildSystemPrompt(
+            userMemory,
+            todayTimeEntries,
+            clientNowIso,
+            clientTimeZone,
+          )
           const anthropic = new Anthropic({ apiKey: Deno.env.get('ANTHROPIC_API_KEY') })
 
           let maxHops = 5

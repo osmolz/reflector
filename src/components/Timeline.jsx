@@ -43,6 +43,32 @@ export function Timeline({ refreshKey = 0 }) {
   const [syncModalOpen, setSyncModalOpen] = useState(false)
   const [addToCalendarEntry, setAddToCalendarEntry] = useState(null)
 
+  const getWeekStart = (date) => {
+    const start = new Date(date)
+    start.setDate(date.getDate() - date.getDay())
+    start.setHours(0, 0, 0, 0)
+    return start
+  }
+
+  const formatWeekRangeLabel = (date) => {
+    const weekStart = getWeekStart(date)
+    const weekEnd = new Date(weekStart)
+    weekEnd.setDate(weekStart.getDate() + 6)
+
+    const sameYear = weekStart.getFullYear() === weekEnd.getFullYear()
+    const sameMonth = sameYear && weekStart.getMonth() === weekEnd.getMonth()
+
+    if (sameMonth) {
+      return `${weekStart.toLocaleString('default', { month: 'long' })} ${weekStart.getDate()}-${weekEnd.getDate()}, ${weekStart.getFullYear()}`
+    }
+
+    if (sameYear) {
+      return `${weekStart.toLocaleString('default', { month: 'short' })} ${weekStart.getDate()} - ${weekEnd.toLocaleString('default', { month: 'short' })} ${weekEnd.getDate()}, ${weekStart.getFullYear()}`
+    }
+
+    return `${weekStart.toLocaleDateString()} - ${weekEnd.toLocaleDateString()}`
+  }
+
   useEffect(() => {
     fetchActivities()
   }, [refreshKey, user, selectedDate, view])
@@ -168,6 +194,13 @@ export function Timeline({ refreshKey = 0 }) {
     )
   }
 
+  const currentPeriodLabel =
+    view === 'day'
+      ? formatDate(selectedDate)
+      : view === 'week'
+      ? formatWeekRangeLabel(selectedDate)
+      : selectedDate.toLocaleString('default', { month: 'long', year: 'numeric' })
+
   const renderDayView = () => {
     const dayActivities = activities.filter((a) => {
       const aDate = new Date(a.start_time)
@@ -182,7 +215,6 @@ export function Timeline({ refreshKey = 0 }) {
           <button type="button" className="timeline-nav-btn" onClick={() => setSelectedDate(new Date(selectedDate.getTime() - 86400000))}>
             ← Prev
           </button>
-          <span className="timeline-day-label">{formatDate(selectedDate)}</span>
           <button type="button" className="timeline-nav-btn" onClick={() => setSelectedDate(new Date(selectedDate.getTime() + 86400000))}>
             Next →
           </button>
@@ -262,8 +294,7 @@ export function Timeline({ refreshKey = 0 }) {
   }
 
   const renderWeekView = () => {
-    const weekStart = new Date(selectedDate)
-    weekStart.setDate(selectedDate.getDate() - selectedDate.getDay())
+    const weekStart = getWeekStart(selectedDate)
 
     const weekDays = Array.from({ length: 7 }).map((_, i) => {
       const day = new Date(weekStart)
@@ -279,9 +310,6 @@ export function Timeline({ refreshKey = 0 }) {
           <button className="timeline-nav-btn" onClick={() => setSelectedDate(new Date(selectedDate.getTime() - 604800000))}>
             ← Prev Week
           </button>
-          <span className="timeline-week-label">
-            {weekStart.toLocaleDateString()} – {weekDays[6].toLocaleDateString()}
-          </span>
           <button className="timeline-nav-btn" onClick={() => setSelectedDate(new Date(selectedDate.getTime() + 604800000))}>
             Next Week →
           </button>
@@ -341,7 +369,6 @@ export function Timeline({ refreshKey = 0 }) {
           <button className="timeline-nav-btn" onClick={() => setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() - 1, 1))}>
             ← Prev
           </button>
-          <span className="timeline-month-label">{selectedDate.toLocaleString('default', { month: 'long', year: 'numeric' })}</span>
           <button className="timeline-nav-btn" onClick={() => setSelectedDate(new Date(selectedDate.getFullYear(), selectedDate.getMonth() + 1, 1))}>
             Next →
           </button>
@@ -383,27 +410,28 @@ export function Timeline({ refreshKey = 0 }) {
 
   return (
     <div className="timeline-wrapper">
-      <div className="timeline-header">
-        <div className="timeline-header-top">
-          <h1 className="timeline-page-title">Timeline</h1>
+      <div className="timeline-period-shell" aria-label="Timeline controls and current period">
+        <div className="timeline-view-toggle">
+          <button className={`toggle-btn ${view === 'day' ? 'active' : ''}`} onClick={() => setView('day')}>
+            Day
+          </button>
+          <button className={`toggle-btn ${view === 'week' ? 'active' : ''}`} onClick={() => setView('week')}>
+            Week
+          </button>
+          <button className={`toggle-btn ${view === 'month' ? 'active' : ''}`} onClick={() => setView('month')}>
+            Month
+          </button>
+        </div>
+
+        <p className="timeline-current-period">{currentPeriodLabel}</p>
+
+        <div className="timeline-header-actions">
           {SyncCalendarModal && (
             <button className="btn-sync-calendar" onClick={() => setSyncModalOpen(true)}>
               Sync with Google Calendar
             </button>
           )}
         </div>
-      </div>
-
-      <div className="timeline-view-toggle">
-        <button className={`toggle-btn ${view === 'day' ? 'active' : ''}`} onClick={() => setView('day')}>
-          Day
-        </button>
-        <button className={`toggle-btn ${view === 'week' ? 'active' : ''}`} onClick={() => setView('week')}>
-          Week
-        </button>
-        <button className={`toggle-btn ${view === 'month' ? 'active' : ''}`} onClick={() => setView('month')}>
-          Month
-        </button>
       </div>
 
       {loading && <p className="timeline-loading">Loading...</p>}

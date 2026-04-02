@@ -1,0 +1,12 @@
+[   10642ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:5185/favicon.ico:0
+[   41100ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://jjwmtqkjpbaviwdvyuuq.supabase.co/rest/v1/chat_messages:0
+[   41102ms] [ERROR] [persistence] Failed to save user message: {code: 23502, details: null, hint: null, message: null value in column "question" of relation "chat_messages" violates not-null constraint} @ http://localhost:5185/@vite/client:509
+[   41105ms] [ERROR] [chat] Failed to persist user message: {code: 23502, details: null, hint: null, message: null value in column "question" of relation "chat_messages" violates not-null constraint} @ http://localhost:5185/@vite/client:509
+[  136027ms] [ERROR] Failed to load resource: the server responded with a status of 400 () @ https://jjwmtqkjpbaviwdvyuuq.supabase.co/rest/v1/chat_messages:0
+[  136029ms] [ERROR] [persistence] Failed to save user message: {code: 23502, details: null, hint: null, message: null value in column "response" of relation "chat_messages" violates not-null constraint} @ http://localhost:5185/@vite/client:509
+[  136030ms] [ERROR] [chat] Failed to persist user message: {code: 23502, details: null, hint: null, message: null value in column "response" of relation "chat_messages" violates not-null constraint} @ http://localhost:5185/@vite/client:509
+[  372805ms] [ERROR] Failed to load resource: net::ERR_INTERNET_DISCONNECTED @ https://jjwmtqkjpbaviwdvyuuq.supabase.co/rest/v1/chat_messages:0
+[  372806ms] [ERROR] [persistence] Failed to save user message: {message: TypeError: Failed to fetch, details: TypeError: Failed to fetch
+    at http://localhost…85/src/components/Chat.jsx?t=1774882163901:112:4), hint: , code: } @ http://localhost:5185/@vite/client:509
+[  372807ms] [ERROR] [chat] Failed to persist user message: {message: TypeError: Failed to fetch, details: TypeError: Failed to fetch
+    at http://localhost…85/src/components/Chat.jsx?t=1774882163901:112:4), hint: , code: } @ http://localhost:5185/@vite/client:509

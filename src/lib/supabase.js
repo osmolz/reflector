@@ -9,30 +9,9 @@ if (!supabaseUrl || !supabaseAnonKey) {
   console.error('VITE_SUPABASE_ANON_KEY:', supabaseAnonKey ? 'set' : 'missing');
 }
 
-/**
- * Must run before createClient(). GoTrue initializes on import and reads
- * localStorage immediately; clearing in React useEffect is too late.
- */
-function clearSupabaseBrowserAuthStorage() {
-  if (typeof window === 'undefined') return;
-  try {
-    for (const key of Object.keys(localStorage)) {
-      if (key.startsWith('sb-')) localStorage.removeItem(key);
-    }
-    for (const key of Object.keys(sessionStorage)) {
-      if (key.startsWith('sb-')) sessionStorage.removeItem(key);
-    }
-  } catch {
-    // ignore
-  }
-}
-
-clearSupabaseBrowserAuthStorage();
-
-// No persistence: each full page load starts logged out (session only in memory after sign-in).
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
-    persistSession: false,
+    persistSession: true,
     autoRefreshToken: true,
     detectSessionInUrl: false,
   },

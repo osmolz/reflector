@@ -189,21 +189,30 @@ const CAPABILITIES = `
 You can query the user's time logs, their calendar when connected, and store or update remembered goals, preferences, and facts. You can offer a two-step flow to add activities they describe in chat to their timeline: preview (parse only), then commit only after they clearly confirm—same records as Log (check-in plus time entries). Use these silently. Never quote raw tool output or machine formats to the user — interpret and speak in your voice.
 `
 
-export function buildSystemPrompt(userMemory: UserMemory | null, todayTimeEntries?: any[]): string {
-  const now = new Date()
-  const today = now.toLocaleDateString('en-US', {
+export function buildSystemPrompt(
+  userMemory: UserMemory | null,
+  todayTimeEntries?: any[],
+  clientNowIso?: string,
+  clientTimeZone?: string,
+): string {
+  const safeNow = clientNowIso ? new Date(clientNowIso) : new Date()
+  const now = Number.isNaN(safeNow.getTime()) ? new Date() : safeNow
+  const formatterOptsDate: Intl.DateTimeFormatOptions = {
     weekday: 'long',
     month: 'long',
     day: 'numeric',
     year: 'numeric',
-  })
-
-  // Include current time (e.g., "8:17 PM")
-  const currentTime = now.toLocaleTimeString('en-US', {
+  }
+  const formatterOptsTime: Intl.DateTimeFormatOptions = {
     hour: '2-digit',
     minute: '2-digit',
-    meridiem: 'short',
-  })
+  }
+  if (typeof clientTimeZone === 'string' && clientTimeZone.trim()) {
+    formatterOptsDate.timeZone = clientTimeZone
+    formatterOptsTime.timeZone = clientTimeZone
+  }
+  const today = new Intl.DateTimeFormat('en-US', formatterOptsDate).format(now)
+  const currentTime = new Intl.DateTimeFormat('en-US', formatterOptsTime).format(now)
 
   let memoryContext = ''
   if (userMemory) {

@@ -26,7 +26,11 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",
+    "@tailwindcss/postcss": "^4.2.2",
     "@vitejs/plugin-react": "^6.0.1",
-    "supabase": "^2.22.6"
+    "autoprefixer": "^10.4.27",
+    "postcss": "^8.5.8",
+    "supabase": "^2.22.6",
+    "tailwindcss": "^4.2.2"
   }
 }

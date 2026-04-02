@@ -3,6 +3,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,200;9..144,300;9..144,400;9..144,700;9..144,800;9..144,900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@200;300;400;500;600;700&display=swap');
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 *,
 *::before,
 *::after {
@@ -26,16 +30,16 @@
   --accent-color: #a0644e;
   --accent-hover: #8b5742;
   /* Ink — primary filled actions (distinct from accent) */
-  --btn-primary-bg: #1a1a1a;
+  --btn-primary-bg: #a0644e;
   --btn-primary-fg: #f5f5f5;
-  --btn-primary-hover-bg: #111111;
+  --btn-primary-hover-bg: #8b5742;
 
   --border-light: #e5e5e5;
   --border-medium: #e5e5e5;
 
-  --success: #1a8917;
+  --success: #2a4a30;
   --error: #d32f2f;
-  --warning: #f57c00;
+  --warning: #7a4f12;
 
   --space-xs: 4px;
   --space-sm: 8px;
@@ -46,8 +50,8 @@
   --space-3xl: 64px;
   --space-4xl: 96px;
 
-  --font-serif: 'Fraunces', 'Georgia', 'Times New Roman', serif;
-  --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-serif: 'Fraunces', serif;
+  --font-sans: 'IBM Plex Sans', sans-serif;
   --font-mono: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
 
   --radius-sm: 8px;
@@ -67,9 +71,6 @@
   --chat-accent-muted-bg: rgba(160, 100, 78, 0.12);
   --chat-surface-hover: #f0f0f0;
   --chat-border-subtle: #e5e5e5;
-  --gap-small: 20px;
-  --gap-medium: 40px;
-  --gap-large: 60px;
   --chat-z-backdrop: 30;
   --chat-z-sheet: 40;
   --chat-z-dropdown: 50;
@@ -82,9 +83,9 @@ html {
 
 body {
   font-family: var(--font-sans);
-  font-size: 1rem;
+  font-size: 14px;
   font-weight: 400;
-  line-height: 1.65;
+  line-height: 1.6;
   color: var(--text-primary);
   background-color: var(--bg-primary);
   -webkit-font-smoothing: antialiased;
