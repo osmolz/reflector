@@ -189,7 +189,7 @@ export function VoiceCheckIn({ onActivitiesSaved }) {
                 {isLoading ? 'Parsing...' : 'Parse and review'}
               </button>
             </div>
-          )}
+          </div>
 
           {error && <div className="voice-check-in-error">{error}</div>}
         </>
