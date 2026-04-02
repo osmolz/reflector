@@ -189,12 +189,20 @@ const CAPABILITIES = `
 You can query the user's time logs, their calendar when connected, and store or update remembered goals, preferences, and facts. You can offer a two-step flow to add activities they describe in chat to their timeline: preview (parse only), then commit only after they clearly confirm—same records as Log (check-in plus time entries). Use these silently. Never quote raw tool output or machine formats to the user — interpret and speak in your voice.
 `
 
-export function buildSystemPrompt(userMemory: UserMemory | null): string {
-  const today = new Date().toLocaleDateString('en-US', {
+export function buildSystemPrompt(userMemory: UserMemory | null, todayTimeEntries?: any[]): string {
+  const now = new Date()
+  const today = now.toLocaleDateString('en-US', {
     weekday: 'long',
     month: 'long',
     day: 'numeric',
     year: 'numeric',
+  })
+
+  // Include current time (e.g., "8:17 PM")
+  const currentTime = now.toLocaleTimeString('en-US', {
+    hour: '2-digit',
+    minute: '2-digit',
+    meridiem: 'short',
   })
 
   let memoryContext = ''
@@ -210,9 +218,22 @@ export function buildSystemPrompt(userMemory: UserMemory | null): string {
     }
   }
 
+  // Build today's time summary if entries exist
+  let todayTimeSummary = ''
+  if (todayTimeEntries && todayTimeEntries.length > 0) {
+    const totalMinutes = todayTimeEntries.reduce((sum, entry) => sum + (entry.duration_minutes || 0), 0)
+    const totalHours = (totalMinutes / 60).toFixed(1)
+    const activities = todayTimeEntries.map((e) => `${e.activity_name} (${(e.duration_minutes / 60).toFixed(1)}h)`).join(', ')
+
+    todayTimeSummary = `\n## Today's Time Log So Far\n- Total: ${totalHours} hours\n- Activities: ${activities}`
+  } else {
+    todayTimeSummary = `\n## Today's Time Log So Far\n- No activities logged yet.`
+  }
+
   return `${COACH_CORE}${OUTPUT_RULES}
 
-Today is ${today}.
+Today is ${today}. Right now it's ${currentTime}.
+${todayTimeSummary}
 ${memoryContext}
 ${TIMELINE_FROM_CHAT}
 ${CAPABILITIES}`

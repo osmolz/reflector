@@ -137,7 +137,7 @@ Deno.serve(async (req) => {
     }
 
     // [4] Load context and prepare for full LLM loop
-    const { messages: contextMessages, userMemory } = await loadConversationContext(supabase, userId, sessionId)
+    const { messages: contextMessages, userMemory, todayTimeEntries } = await loadConversationContext(supabase, userId, sessionId)
 
     // Save user message
     await saveMessage(supabase, userId, 'user', message, sessionId)
@@ -154,7 +154,7 @@ Deno.serve(async (req) => {
         try {
           emit({ type: 'status', status: 'thinking' })
 
-          const systemPrompt = buildSystemPrompt(userMemory)
+          const systemPrompt = buildSystemPrompt(userMemory, todayTimeEntries)
           const anthropic = new Anthropic({ apiKey: Deno.env.get('ANTHROPIC_API_KEY') })
 
           let maxHops = 5

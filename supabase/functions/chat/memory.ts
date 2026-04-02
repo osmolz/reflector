@@ -7,7 +7,7 @@ export async function loadConversationContext(
   supabase: ReturnType<typeof createClient>,
   userId: string,
   sessionId: string | null,
-): Promise<{ messages: ChatMessage[]; userMemory: UserMemory | null }> {
+): Promise<{ messages: ChatMessage[]; userMemory: UserMemory | null; todayTimeEntries?: any[] }> {
   // Load last 20 messages (DESC), reverse to chronological
   let query = supabase
     .from('chat_messages')
@@ -29,6 +29,21 @@ export async function loadConversationContext(
     .eq('user_id', userId)
     .maybeSingle()
 
+  // Load today's time entries for system prompt context
+  const today = new Date()
+  const todayStart = new Date(today)
+  todayStart.setHours(0, 0, 0, 0)
+  const todayEnd = new Date(today)
+  todayEnd.setHours(23, 59, 59, 999)
+
+  const { data: todayTimeEntries } = await supabase
+    .from('time_entries')
+    .select('activity_name, category, duration_minutes, start_time')
+    .eq('user_id', userId)
+    .gte('start_time', todayStart.toISOString())
+    .lte('start_time', todayEnd.toISOString())
+    .order('start_time', { ascending: true })
+
   // Reverse DESC query to chronological order
   const messages: ChatMessage[] = (recentMessages ?? [])
     .reverse()
@@ -40,6 +55,7 @@ export async function loadConversationContext(
   return {
     messages,
     userMemory: userMemory as UserMemory | null,
+    todayTimeEntries: todayTimeEntries ?? [],
   }
 }
 
