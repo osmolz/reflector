@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 // Test configuration
-test.describe('Reflector App - E2E Tests', () => {
+test.describe('Prohairesis App - E2E Tests', () => {
   const baseUrl = 'http://localhost:5173';
   const testEmail = `test-${Date.now()}@example.com`;
   const testPassword = 'TestPass123!@#';
@@ -14,7 +14,7 @@ test.describe('Reflector App - E2E Tests', () => {
 
   test('1. App loads successfully', async ({ page }) => {
     // Check for app title
-    await expect(page).toHaveTitle(/Reflector/);
+    await expect(page).toHaveTitle(/Prohairesis/);
 
     // Check for main content
     const authForm = page.locator('input[type="email"]');

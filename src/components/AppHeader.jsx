@@ -8,7 +8,7 @@ export function AppHeader({ views, currentView, onViewChange, onSignOut }) {
   return (
     <header className="header" role="banner">
       <div className="header-brand">
-        <span className="header-title">Reflector</span>
+        <span className="header-title">Prohairesis</span>
       </div>
 
       <nav aria-label="Main navigation">

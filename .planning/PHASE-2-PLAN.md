@@ -229,7 +229,7 @@ function App() {
   return (
     <AuthProvider>
       <div>
-        <h1>Reflector</h1>
+        <h1>Prohairesis</h1>
         {user ? (
           <VoiceCheckIn />
         ) : (
@@ -1315,7 +1315,7 @@ function App() {
   return (
     <AuthProvider>
       <div>
-        <h1>Reflector</h1>
+        <h1>Prohairesis</h1>
         {user ? (
           <div>
             <VoiceCheckIn />

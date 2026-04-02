@@ -3,7 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 // CORS headers for all responses
 const corsHeaders = {
-  "Access-Control-Allow-Origin": Deno.env.get("CORS_ORIGIN") || "https://reflector-osmol.vercel.app",
+  "Access-Control-Allow-Origin": Deno.env.get("CORS_ORIGIN") || "https://prohairesis-osmol.vercel.app",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Access-Control-Allow-Headers": "authorization, content-type",
 };

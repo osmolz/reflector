@@ -5,7 +5,7 @@ const { chromium } = require('@playwright/test');
   const page = await browser.newPage();
 
   try {
-    console.log('[find] Taking screenshots of redesigned Reflector app...\n');
+    console.log('[find] Taking screenshots of redesigned Prohairesis app...\n');
 
     // Navigate to the app
     await page.goto('http://localhost:5175', { waitUntil: 'networkidle' });

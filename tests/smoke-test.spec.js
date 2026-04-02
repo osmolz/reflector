@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Reflector Smoke Tests', () => {
+test.describe('Prohairesis Smoke Tests', () => {
   const baseUrl = 'http://localhost:5173';
 
   test('App loads and displays main content', async ({ page }) => {
@@ -18,9 +18,9 @@ test.describe('Reflector Smoke Tests', () => {
     const bodyText = await page.locator('body').innerText();
     console.log('Page content preview:', bodyText.substring(0, 200));
 
-    // Check if Reflector heading exists
-    const hasReflector = bodyText.includes('Reflector');
-    expect(hasReflector).toBeTruthy();
+    // Check if Prohairesis heading exists
+    const hasProhairesis = bodyText.includes('Prohairesis');
+    expect(hasProhairesis).toBeTruthy();
   });
 
   test('Check if user is logged in', async ({ page }) => {

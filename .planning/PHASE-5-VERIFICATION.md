@@ -8,7 +8,7 @@
 
 ## Objective
 
-Transform Reflector from functional to visually cohesive and ship-ready. Every pixel deliberate, no AI scaffolding. Design is the centerpiece of MVP.
+Transform Prohairesis from functional to visually cohesive and ship-ready. Every pixel deliberate, no AI scaffolding. Design is the centerpiece of MVP.
 
 ---
 
@@ -464,7 +464,7 @@ Still has inline styles (not refactored). Can be improved in future polish pass.
 
 **Phase 5: COMPLETE** [OK]
 
-The Reflector app is now visually cohesive, accessible, and ready for ship. Every pixel is intentional. No AI scaffolding visible. A serious designer could have made this.
+The Prohairesis app is now visually cohesive, accessible, and ready for ship. Every pixel is intentional. No AI scaffolding visible. A serious designer could have made this.
 
 **Key Achievements:**
 1. Locked design system (colors, typography, spacing)

@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-Complete rebuild of the Reflector chat system using proven osmPosm architecture patterns. Creates a time-tracking coach that analyzes personal activity data via agentic reasoning, streaming responses, and persistent multi-turn conversations.
+Complete rebuild of the Prohairesis chat system using proven osmPosm architecture patterns. Creates a time-tracking coach that analyzes personal activity data via agentic reasoning, streaming responses, and persistent multi-turn conversations.
 
 **Key characteristics:**
 - Dual-path execution: Fast-path regex (~50ms) for simple stats, full LLM agentic loop (~4-8s) for reasoning

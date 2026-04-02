@@ -2,7 +2,7 @@
 
 **Status:** READY FOR PRODUCTION [OK]
 
-This checklist covers everything needed to deploy Reflector to Vercel and go live.
+This checklist covers everything needed to deploy Prohairesis to Vercel and go live.
 
 ---
 
@@ -35,7 +35,7 @@ Latest: 18eb17a docs(phase-6): execution summary
 3. Click "New Project"
 4. Click "Import" (for GitHub repo)
 5. Authorize Vercel to access GitHub (if not authorized)
-6. Search for and select: `osmolz/reflector`
+6. Search for and select: `osmolz/prohairesis`
 7. Click "Import"
 
 ### 1b. Configure Build Settings
@@ -70,7 +70,7 @@ sb_publishable_DV6VyO5OiTRZaMMjPTE53A_BNbOd-SX
 Click "Deploy" button → Wait for build (~2-5 minutes) → Get live URL
 
 **Result:**
-- Live URL: `https://reflector-osmol.vercel.app` (or custom domain)
+- Live URL: `https://prohairesis-osmol.vercel.app` (or custom domain)
 - Deployment automatic on future `git push main`
 
 ---
@@ -86,7 +86,7 @@ npm install -g supabase
 ### 2b. Link to Your Supabase Project
 
 ```bash
-cd /path/to/reflector
+cd /path/to/prohairesis
 supabase link --project-ref <your-project-ref>
 ```
 
@@ -179,7 +179,7 @@ curl -X POST https://jjwmtqkjpbaviwdvyuuq.supabase.co/functions/v1/chat \
 
 ### 4a. Test Auth Flow
 
-1. Visit https://reflector-osmol.vercel.app
+1. Visit https://prohairesis-osmol.vercel.app
 2. Click "Sign Up"
 3. Create account with test email/password
 4. Verify redirect to dashboard
@@ -242,7 +242,7 @@ curl -X POST https://jjwmtqkjpbaviwdvyuuq.supabase.co/functions/v1/chat \
 
 ### 4h. Test on Mobile/Tablet
 
-1. Open https://reflector-osmol.vercel.app on tablet
+1. Open https://prohairesis-osmol.vercel.app on tablet
 2. Verify layout responsive (no horizontal scroll)
 3. Verify buttons/inputs touchable (44px+ size)
 4. Test one check-in on mobile (full flow)
@@ -389,7 +389,7 @@ Frontend will get error about function not found, user sees graceful error messa
 
 ## Success Criteria
 
-[OK] **Site is live at:** https://reflector-osmol.vercel.app
+[OK] **Site is live at:** https://prohairesis-osmol.vercel.app
 
 [OK] **All features working:**
 - Voice check-in with parsing [ok]
@@ -447,7 +447,7 @@ When all checks pass:
 
 **Status:** READY TO SHARE [run]
 
-Share the live URL: **https://reflector-osmol.vercel.app**
+Share the live URL: **https://prohairesis-osmol.vercel.app**
 
 ---
 

@@ -244,7 +244,7 @@ Running 12 tests using 1 worker
 
 ## [*] Conclusion
 
-**The Reflector app is fully functional and ready for use!**
+**The Prohairesis app is fully functional and ready for use!**
 
 All core features are working:
 - [OK] User authentication

@@ -1,12 +1,12 @@
-# Reflector
+# Prohairesis
 
 A personal time-tracking and journaling app. Speak your day, see your time.
 
-**Live:** https://reflector-osmol.vercel.app
+**Live:** https://prohairesis-osmol.vercel.app
 
 ## Features
 
-- **Voice Check-ins:** Speak stream-of-consciousness about your day; Reflector parses it into a timeline of activities with durations
+- **Voice Check-ins:** Speak stream-of-consciousness about your day; Prohairesis parses it into a timeline of activities with durations
 - **Timeline:** See activities with durations, categories, and start times. Unaccounted gaps are flagged for awareness
 - **Google Calendar Integration:** Sync events from Google Calendar to your timeline, add time entries to your calendar, and let the coach see your calendar for smarter suggestions
 - **Journal:** Separate text/voice notes, no time association. Reflect freely
@@ -110,8 +110,8 @@ If you're running this app in your own environment, you'll need to:
 1. Clone repository
 
 ```bash
-git clone https://github.com/osmol/reflector.git
-cd reflector
+git clone https://github.com/osmol/prohairesis.git
+cd prohairesis
 ```
 
 2. Install dependencies
@@ -169,7 +169,7 @@ npm run build
 ### Deploy to Vercel
 
 1. Connect GitHub repo to Vercel (https://vercel.com → New Project → Import GitHub)
-2. Select `osmol/reflector` repo
+2. Select `osmol/prohairesis` repo
 3. Configure environment variables in Vercel dashboard (Project Settings → Environment Variables):
    - `VITE_SUPABASE_URL`
    - `VITE_SUPABASE_ANON_KEY`
@@ -403,7 +403,7 @@ Built with care by osmol.
 
 ## Support & Feedback
 
-Found a bug or have a feature request? Create an issue on GitHub: https://github.com/osmol/reflector/issues
+Found a bug or have a feature request? Create an issue on GitHub: https://github.com/osmol/prohairesis/issues
 
 For questions about Claude API or Supabase, check their respective docs:
 

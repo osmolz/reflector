@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Reflector E2E UAT - Complete Feature Testing', () => {
+test.describe('Prohairesis E2E UAT - Complete Feature Testing', () => {
   const baseUrl = 'http://localhost:5173';
   const testEmail = `test-uat-${Date.now()}@example.com`;
   const testPassword = 'TestPass123!@#';
@@ -210,7 +210,7 @@ test.describe('Reflector E2E UAT - Complete Feature Testing', () => {
       await page.goto(baseUrl);
       const title = await page.title();
 
-      expect(title).toContain('Reflector');
+      expect(title).toContain('Prohairesis');
       console.log(`[ok] Page title is "${title}"`);
     });
 

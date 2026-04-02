@@ -1,4 +1,4 @@
-const PREFIX = 'reflector_chat_active_session_v1_'
+const PREFIX = 'prohairesis_chat_active_session_v1_'
 
 export function chatActiveSessionKey(userId) {
   return `${PREFIX}${userId}`

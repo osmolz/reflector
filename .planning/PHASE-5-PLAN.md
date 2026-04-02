@@ -1,7 +1,7 @@
 ---
 phase: "05-design-polish"
 title: "Design & Polish: Editorial, Restrained, Premium Craft"
-description: "Transform Reflector from functional to visually cohesive and ship-ready. Every pixel deliberate, no AI scaffolding."
+description: "Transform Prohairesis from functional to visually cohesive and ship-ready. Every pixel deliberate, no AI scaffolding."
 start_date: "2026-04-01"
 estimated_hours: "8-10"
 depends_on: ["Phase 2 (voice capture)", "Phase 3 (journal & editing)", "Phase 4 (chat)"]
@@ -67,7 +67,7 @@ Option C (Minimal-Premium):
 - Headers: **EB Garamond** (serif, refined)
 - Body: **Roboto** (sans-serif, clean)
 
-**Recommendation for Reflector:** Option A (Crimson Text + Sohne). Crimson is editorial without being pretentious. Sohne has humanist geometry that feels intentional.
+**Recommendation for Prohairesis:** Option A (Crimson Text + Sohne). Crimson is editorial without being pretentious. Sohne has humanist geometry that feels intentional.
 
 **Type Scale (Desktop-first)**
 
@@ -1313,4 +1313,4 @@ When Phase 5 is complete:
 
 **End of PLAN.md**
 
-*Design blueprint for Reflector MVP. Lock accent color (#2B5A6B or #3D5C47) before starting Task 1. Timeline is centerpiece—don't compromise. Whitespace is feature. Never ship AI scaffolding.*
+*Design blueprint for Prohairesis MVP. Lock accent color (#2B5A6B or #3D5C47) before starting Task 1. Timeline is centerpiece—don't compromise. Whitespace is feature. Never ship AI scaffolding.*

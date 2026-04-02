@@ -27,7 +27,7 @@
 
 2. Create a new project:
    - Click "New Project"
-   - Name: `reflector-mvp` (or similar)
+   - Name: `prohairesis-mvp` (or similar)
    - Database password: Generate and save securely (e.g., pass manager)
    - Region: Closest to you or us-east-1
    - Click "Create new project" (wait 2–3 min for DB to initialize)
@@ -41,8 +41,8 @@
 4. Set up local environment:
    ```bash
    # Create project root if not already done
-   mkdir -p ~/reflector
-   cd ~/reflector
+   mkdir -p ~/prohairesis
+   cd ~/prohairesis
    npm init -y
    npm install vite react react-dom
    npx vite --version  # Verify Vite is installed
@@ -344,8 +344,8 @@
 
 1. Create React + Vite scaffold (with TypeScript):
    ```bash
-   npm create vite@latest reflector -- --template react-ts
-   cd reflector
+   npm create vite@latest prohairesis -- --template react-ts
+   cd prohairesis
    npm install
    npm install @supabase/supabase-js zustand
    npm install -D @types/node
@@ -508,7 +508,7 @@
      return (
        <AuthProvider>
          <div>
-           <h1>Reflector</h1>
+           <h1>Prohairesis</h1>
            <Auth />
          </div>
        </AuthProvider>

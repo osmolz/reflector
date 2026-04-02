@@ -1,7 +1,7 @@
 # Google Calendar Integration Design
 
 **Date:** 2026-03-30
-**Feature:** Google Calendar sync for Reflector timeline + coach visibility
+**Feature:** Google Calendar sync for Prohairesis timeline + coach visibility
 **Scope:** MVP (ships with v1.0)
 **Approach:** Lightweight storage (Approach 2)
 
@@ -9,7 +9,7 @@
 
 ## Overview
 
-Reflector will integrate with Google Calendar to:
+Prohairesis will integrate with Google Calendar to:
 1. **Display calendar events on the timeline** alongside logged time entries
 2. **Create calendar events from time entries** with one click
 3. **Give the coach calendar visibility** to provide context-aware advice without creating events directly
@@ -186,7 +186,7 @@ Gap detection includes calendar events, so gaps only appear when neither a time 
 |----------|----------|
 | First sync, no token | Redirect to Google OAuth consent screen |
 | Token expired | Edge Function auto-refreshes using refresh token |
-| Token revoked (user removed Reflector from Google) | Show "Reconnect to Google Calendar" button in sync modal |
+| Token revoked (user removed Prohairesis from Google) | Show "Reconnect to Google Calendar" button in sync modal |
 | Token refresh fails | Prompt user: "Reconnect to Google Calendar?" |
 
 ### API Errors
@@ -203,7 +203,7 @@ Gap detection includes calendar events, so gaps only appear when neither a time 
 | Scenario | Behavior |
 |----------|----------|
 | Same event synced twice | Idempotent upsert by `gcp_event_id` (no duplicates) |
-| Event deleted in GCal, but still in Reflector | No auto-delete. User sees stale event; can be cleared on next manual refresh |
+| Event deleted in GCal, but still in Prohairesis | No auto-delete. User sees stale event; can be cleared on next manual refresh |
 | Calendar changed between syncs | Next sync pulls latest version from GCal (GCal is source of truth) |
 
 ### Push Conflicts
@@ -212,7 +212,7 @@ Gap detection includes calendar events, so gaps only appear when neither a time 
 |----------|----------|
 | Time entry edited after calendar event created | Calendar event is snapshot (doesn't auto-update) |
 | Time entry deleted after calendar event created | Calendar event persists independently |
-| Calendar event created from time entry, then deleted from GCal | Reflector still shows stored event (can be manually removed) |
+| Calendar event created from time entry, then deleted from GCal | Prohairesis still shows stored event (can be manually removed) |
 
 ---
 
@@ -286,7 +286,7 @@ Format calendar suggestions clearly:
 - Sync of changes from GCal back to local (watch/webhook)
 - Conflict resolution UI (manual handling only)
 - Multiple calendar selection (syncs primary calendar only)
-- Calendar event editing (delete via GCal, not Reflector)
+- Calendar event editing (delete via GCal, not Prohairesis)
 - Analytics on calendar vs logged time patterns (v1.1+)
 
 ---
@@ -295,7 +295,7 @@ Format calendar suggestions clearly:
 
 **Design philosophy alignment:**
 - Minimal, restrained UI (no heavy modals, clean visual distinction)
-- Single source of truth (GCal is authoritative for calendar, Reflector for logged time)
+- Single source of truth (GCal is authoritative for calendar, Prohairesis for logged time)
 - User control (no surprises, explicit sync action, coach suggests but doesn't create)
 
 **Performance considerations:**
@@ -305,7 +305,7 @@ Format calendar suggestions clearly:
 
 **Future work (v1.1+):**
 - Automatic daily sync
-- Calendar event editing from Reflector
+- Calendar event editing from Prohairesis
 - Conflict detection and resolution UI
 - Analytics: time blocked vs time logged by category
 - Push to other calendars if user has multiple

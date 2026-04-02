@@ -1,7 +1,7 @@
 # AddToCalendarModal Component Implementation Report
 
 ## Overview
-Successfully implemented the `AddToCalendarModal` component for creating Google Calendar events from existing time entries in the Reflector app.
+Successfully implemented the `AddToCalendarModal` component for creating Google Calendar events from existing time entries in the Prohairesis app.
 
 ## Files Created
 
@@ -44,7 +44,7 @@ AddToCalendarModal({
 - Animation for success state (fade-in with scale)
 
 **Design Adherence:**
-- Uses Reflector design tokens (CSS variables for colors, spacing, fonts)
+- Uses Prohairesis design tokens (CSS variables for colors, spacing, fonts)
 - Minimal, typography-first approach with no decorative elements
 - Zero border-radius (square corners) consistent with app design
 - Proper spacing using var(--space-*) scales
@@ -103,7 +103,7 @@ AddToCalendarModal({
 
 ### Design Consistency
 
-The component follows Reflector's design philosophy:
+The component follows Prohairesis's design philosophy:
 - **Typography-first**: Uses serif headings (Crimson Text) for titles
 - **Minimal color**: Only uses design system variables (--accent-color, --success, --error)
 - **Generous whitespace**: Uses consistent spacing scale (--space-*)
@@ -251,7 +251,7 @@ Note: Tests are designed to run against the live application in a browser. They 
 ## Summary
 The AddToCalendarModal component is a complete, production-ready implementation that:
 - Meets all stated requirements
-- Follows Reflector's design philosophy
+- Follows Prohairesis's design philosophy
 - Maintains accessibility standards
 - Integrates cleanly with existing codebase
 - Includes comprehensive test coverage

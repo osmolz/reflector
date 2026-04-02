@@ -288,7 +288,7 @@ test.describe('AddToCalendarModal Component', () => {
       console.log('Modal styling classes present');
     });
 
-    test('Color palette follows Reflector design system', async ({ page }) => {
+    test('Color palette follows Prohairesis design system', async ({ page }) => {
       await page.goto(baseUrl);
       await page.waitForLoadState('networkidle');
 

@@ -18,7 +18,7 @@
 **Go to https://app.supabase.com and:**
 
 1. Create a new project:
-   - Name: `reflector-mvp`
+   - Name: `prohairesis-mvp`
    - Database password: Generate a strong password and save it securely
    - Region: Choose the region closest to you (or us-east-1 for default)
    - Click "Create new project"

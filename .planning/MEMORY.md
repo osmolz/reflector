@@ -1,4 +1,4 @@
-# Memory Index: Reflector Project
+# Memory Index: Prohairesis Project
 
 ## Project Documents (Auto-loaded on each session)
 

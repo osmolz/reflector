@@ -5,7 +5,7 @@ description: Implements and evolves Next.js/React UI for osmPosm per Phase 21 (J
 
 # osmPosm UI design (Phase 21)
 
-## This repository (Reflector / Vite)
+## This repository (Prohairesis / Vite)
 
 - **Stack here:** Vite + React + **CSS variables** in [`src/index.css`](src/index.css) and component styles under [`src/components/*.css`](src/components/). There is **no** `tailwind.config.ts` or `globals.css` unless the project adds them.
 - **Map “Tailwind-first”** to: extend **`:root` tokens** and **shared patterns** in existing CSS files; avoid one-off hex except as new documented tokens.

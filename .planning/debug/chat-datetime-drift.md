@@ -17,7 +17,7 @@ next_action: wait for user verification result
 expected: Chat should always reference the actual current local date and time correctly.
 actual: Chat sometimes believes an incorrect day/date/time (example: Thursday April 2 at 8pm) and answers using that wrong context.
 errors: No explicit runtime error reported.
-reproduction: Ask the reflector chat what day/time it is or ask time-relative questions; it may answer with stale/incorrect date context.
+reproduction: Ask the prohairesis chat what day/time it is or ask time-relative questions; it may answer with stale/incorrect date context.
 started: Observed now in current build; unclear when it started.
 
 ## Eliminated

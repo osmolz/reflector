@@ -23,32 +23,33 @@ export function ChatWelcomePanel({
   }
 
   return (
-    <section className="mx-auto mb-8 max-w-2xl border border-border-subtle/80 bg-background/70 px-5 py-6">
-      <h2 className="font-serif text-[2rem] font-semibold leading-[1.15] tracking-tight text-text-primary/95">
+    <section className="mx-auto mb-8 max-w-2xl border border-border bg-background px-4 py-5">
+      <h2 className="font-serif text-h2 text-text-primary">
         {prefix}, {displayName}.
       </h2>
-      <p className="mt-3 font-sans text-body text-text-secondary/85">What should we discuss today?</p>
+      <p className="mt-2 font-sans text-body text-text-secondary">What should we discuss today?</p>
 
-      <p className="mt-6 font-sans text-[11px] font-light uppercase tracking-[0.08em] text-text-muted">
+      <p className="mt-6 font-sans text-label uppercase tracking-wide text-text-secondary">
         Here are some questions I can answer:
       </p>
 
-      <div className="mt-3 space-y-2.5">
+      <ul className="mt-3 flex flex-col gap-2">
         {prompts.map((prompt) => (
-          <button
-            key={prompt.text}
-            type="button"
-            onClick={() => handleSelect(prompt.text)}
-            disabled={disabled}
-            className="w-full border border-border-subtle/85 bg-transparent px-4 py-3 text-left transition-colors hover:border-border hover:bg-surface-hover/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 disabled:opacity-40"
-          >
-            <div className="font-sans text-body font-medium text-text-primary/95">{prompt.text}</div>
-            <div className="mt-1 font-sans text-[12px] font-light leading-relaxed text-text-muted">
-              {prompt.description}
-            </div>
-          </button>
+          <li key={prompt.text}>
+            <button
+              type="button"
+              onClick={() => handleSelect(prompt.text)}
+              disabled={disabled}
+              className="w-full border border-border-subtle px-3 py-2.5 text-left font-sans text-body text-text-primary transition-colors hover:border-border hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 disabled:opacity-40"
+            >
+              <span className="font-medium">{prompt.text}</span>
+              <span className="mt-0.5 block font-sans text-label font-thin text-text-secondary">
+                {prompt.description}
+              </span>
+            </button>
+          </li>
         ))}
-      </div>
+      </ul>
     </section>
   )
 }

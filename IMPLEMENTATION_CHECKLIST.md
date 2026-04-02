@@ -21,7 +21,7 @@
 - [x] API response: { success, eventId, message }
 
 ### Design Constraints
-- [x] Follow Reflector's minimal design (typography-first, minimal color, generous whitespace)
+- [x] Follow Prohairesis's minimal design (typography-first, minimal color, generous whitespace)
 - [x] Use existing color palette from the app
 - [x] Modal clean and functional, no decorative elements
 

@@ -89,7 +89,7 @@ Provided step-by-step how it works:
 Covered edge cases:
 - Email addresses (safe - | check is line-start only)
 - Inline markdown (not removed to avoid complexity)
-- Code examples (Reflector has no legitimate code return)
+- Code examples (Prohairesis has no legitimate code return)
 - Newlines (preserved for paragraph breaks)
 
 ### 4. Testing Strategy (120 lines)

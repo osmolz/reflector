@@ -1,4 +1,4 @@
-# Project: Reflector — Personal Time Tracking & Journaling App
+# Project: Prohairesis — Personal Time Tracking & Journaling App
 
 **Vision:**
 A desktop-first web app that transforms stream-of-consciousness speech about daily activities into a clean, visual timeline and persistent journal. Users speak in raw, unstructured form; the app parses it into categorized time blocks with duration. A chat interface lets users ask questions of their own data ("what did I waste time on this week?") and get real answers from real logs.

@@ -96,4 +96,4 @@ Use subagent-driven development:
 - Task 5 → implementer → spec reviewer → code quality reviewer → Task 6
 - Continue through Task 13
 
-All backend APIs tested and ready. Frontend is straightforward React following Reflector patterns.
+All backend APIs tested and ready. Frontend is straightforward React following Prohairesis patterns.

@@ -404,7 +404,7 @@ Testing Steps (to complete before production):
 2. Click "New Project"
 3. Click "Import" for GitHub
 4. Authorize Vercel to access GitHub account
-5. Select repository: `osmol/reflector`
+5. Select repository: `osmol/prohairesis`
 6. Click "Import"
 
 ### Step 2: Configure Build Settings
@@ -433,7 +433,7 @@ Click "Deploy" → Wait for build to complete (~2-5 minutes)
 
 ### Step 5: Get Live URL
 
-After deployment succeeds, Vercel provides: `https://reflector-osmol.vercel.app` (or custom domain if configured)
+After deployment succeeds, Vercel provides: `https://prohairesis-osmol.vercel.app` (or custom domain if configured)
 
 ---
 
@@ -463,9 +463,9 @@ ANTHROPIC_API_KEY=your_api_key_here
 ### After Deployment to Vercel
 
 1. **Site is live and accessible**
-   - [ ] Visit https://reflector-osmol.vercel.app
+   - [ ] Visit https://prohairesis-osmol.vercel.app
    - [ ] Page loads without 404 errors
-   - [ ] Title is "Reflector"
+   - [ ] Title is "Prohairesis"
 
 2. **Authentication works**
    - [ ] Sign up with test email/password

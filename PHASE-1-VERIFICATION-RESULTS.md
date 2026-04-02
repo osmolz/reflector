@@ -206,7 +206,7 @@ If you want to manually test the authentication flow in the browser:
 
 2. **Open the app:**
    - Navigate to http://localhost:5173 in your browser
-   - You should see the Reflector app with login form
+   - You should see the Prohairesis app with login form
 
 3. **Test Sign-Up:**
    - Click "Sign Up" tab

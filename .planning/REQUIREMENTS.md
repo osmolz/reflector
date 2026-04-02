@@ -1,4 +1,4 @@
-# Requirements: Reflector MVP
+# Requirements: Prohairesis MVP
 
 ## 1. User Authentication & Sessions
 

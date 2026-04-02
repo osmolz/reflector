@@ -390,7 +390,7 @@ new Date(startTime).toLocaleString();
 - Web Speech API: https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API
 - datetime-local input: https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/datetime-local
 
-**Reflector Docs:**
+**Prohairesis Docs:**
 - Full Plan: PHASE-3-PLAN.md
 - Quick Reference: PHASE-3-QUICK-REFERENCE.md
 - Architecture: PROJECT.md

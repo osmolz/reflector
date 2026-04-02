@@ -1,4 +1,4 @@
-# Roadmap: Reflector MVP
+# Roadmap: Prohairesis MVP
 
 **Total Phases:** 6
 **Timeline:** 1–2 weeks (starting 2026-03-28)

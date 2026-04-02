@@ -337,7 +337,7 @@
    - Go to [vercel.com](https://vercel.com)
    - Click "New Project"
    - Import GitHub repo (authorize if needed)
-   - Select repository `osmol/reflector` (or your repo name)
+   - Select repository `osmol/prohairesis` (or your repo name)
    - Click "Import"
 
 2. **Configure build & output:**
@@ -476,7 +476,7 @@ Create `README.md` in project root with:
 
 #### 1. Project Overview
 ```markdown
-# Reflector
+# Prohairesis
 
 A personal time-tracking and journaling app. Speak your day, see your time.
 
@@ -487,7 +487,7 @@ A personal time-tracking and journaling app. Speak your day, see your time.
 ```markdown
 ## Features
 
-- **Voice Check-ins:** Speak stream-of-consciousness about your day; Reflector parses it into a timeline
+- **Voice Check-ins:** Speak stream-of-consciousness about your day; Prohairesis parses it into a timeline
 - **Timeline:** See activities with durations, flag unaccounted gaps
 - **Journal:** Separate text/voice notes, no time association
 - **Chat Analytics:** Ask questions about your time data ("What did I spend time on this week?")
@@ -516,8 +516,8 @@ A personal time-tracking and journaling app. Speak your day, see your time.
 
 1. Clone repository
    ```bash
-   git clone https://github.com/osmol/reflector.git
-   cd reflector
+   git clone https://github.com/osmol/prohairesis.git
+   cd prohairesis
    ```
 
 2. Install dependencies

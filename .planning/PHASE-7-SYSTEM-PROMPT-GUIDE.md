@@ -30,7 +30,7 @@ italics, code blocks, or any markdown whatsoever.
 
 3. **Prevents distraction** from content. Bold headers and bullet points draw the eye away from the substance of the advice. Plain prose keeps focus on the insight itself.
 
-4. **Mobile-first design**. Reflector prioritizes mobile experience (voice input on phone, quick glance at timeline). Markdown formatting often renders poorly or inconsistently on small screens.
+4. **Mobile-first design**. Prohairesis prioritizes mobile experience (voice input on phone, quick glance at timeline). Markdown formatting often renders poorly or inconsistently on small screens.
 
 ### The "Executive Coach" Voice Characteristics
 
@@ -110,7 +110,7 @@ This function:
 **Edge cases handled:**
 - Email addresses (e.g., user@example.com) — safe because `|` check requires line start
 - Markdown in middle of sentence (e.g., "**bold** word") — not currently removed (see Future Evolution)
-- Code examples — Reflector has no legitimate reason to return code, so removal is safe
+- Code examples — Prohairesis has no legitimate reason to return code, so removal is safe
 
 **Execution sequence:**
 1. Claude generates response via streaming API
@@ -154,7 +154,7 @@ The prose version:
 
 ### Server-Sent Events (SSE) Pattern
 
-Reflector uses Server-Sent Events to stream Claude's response in real-time. This improves perceived latency by 5-10x: users see text appearing character-by-character instead of waiting 3-5 seconds for a full response.
+Prohairesis uses Server-Sent Events to stream Claude's response in real-time. This improves perceived latency by 5-10x: users see text appearing character-by-character instead of waiting 3-5 seconds for a full response.
 
 **Architecture:**
 
@@ -404,7 +404,7 @@ Output: "Contact us at user@example.com"  [ok] Preserved
 2. Removing it would require more complex parsing
 3. Asterisks alone don't break readability (they're just extra characters)
 
-**Code examples:** Reflector has no legitimate reason to return code (time tracking doesn't require code snippets). If Claude somehow returns a code block, removing it is correct behavior.
+**Code examples:** Prohairesis has no legitimate reason to return code (time tracking doesn't require code snippets). If Claude somehow returns a code block, removing it is correct behavior.
 
 **Newlines:** The function preserves empty lines and whitespace (only removes markdown structures). This maintains paragraph breaks.
 

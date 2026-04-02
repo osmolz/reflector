@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Add Google Calendar sync to Reflector, allowing users to view calendar events on the timeline, create calendar events from time blocks, and enable the coach to see calendar context.
+**Goal:** Add Google Calendar sync to Prohairesis, allowing users to view calendar events on the timeline, create calendar events from time blocks, and enable the coach to see calendar context.
 
 **Architecture:** Lightweight storage model with `calendar_events` table. OAuth tokens stored in user metadata. Two Edge Functions handle sync (pull) and push operations. Timeline UI enhanced to display calendar events alongside time entries. Coach gains read-only access via `gcal_list_events` tool.
 

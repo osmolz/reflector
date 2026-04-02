@@ -230,7 +230,7 @@ Test all flows with a real Google Calendar account connected to the application.
 
 ### 2.14 - Verify Event Appears on Timeline After Sync
 
-- [ ] Return to Reflector app
+- [ ] Return to Prohairesis app
 - [ ] Click Sync with Google Calendar
 - [ ] Verify newly created event appears on timeline
 - [ ] **Validation:** Push-created events sync back correctly
@@ -298,7 +298,7 @@ Test all flows with a real Google Calendar account connected to the application.
 - [ ] Timezone handling is correct
 - [ ] All-day events handled properly
 - [ ] Deleted events reflected in sync
-- [ ] Modified events updated in Reflector
+- [ ] Modified events updated in Prohairesis
 - [ ] Events merge and sort correctly
 - [ ] **Validation:** Data integrity maintained
 

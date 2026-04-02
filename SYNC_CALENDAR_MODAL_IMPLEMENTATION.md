@@ -64,7 +64,7 @@ Successfully implemented Task 5 of the Google Calendar integration feature - a f
 - Date inputs use native browser controls
 
 ## Design Integration
-- Follows Reflector's minimal design philosophy
+- Follows Prohairesis's minimal design philosophy
 - Uses existing design tokens from index.css variables
 - Integrates with Modal.css patterns
 - Typography-first approach with Crimson Text serif headings
