@@ -77,9 +77,9 @@ export function ChatInputBar({
   const modelLabel = currentModel === 'balanced' ? 'Balanced' : 'Fast'
 
   return (
-    <div className="w-full shrink-0 border-t border-border-subtle bg-surface-base px-4 pb-5 pt-3">
+    <div className="w-full shrink-0 border-t border-border-subtle/70 bg-surface-base px-4 pb-4 pt-3">
       <div className="mx-auto max-w-2xl">
-        <div className="rounded-2xl bg-accent-muted px-4 py-3 text-text-primary focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2 focus-within:ring-offset-surface-base">
+        <div className="rounded-[18px] border border-border-subtle/60 bg-[rgba(160,100,78,0.08)] px-4 py-2.5 text-text-primary focus-within:ring-2 focus-within:ring-accent/70 focus-within:ring-offset-1 focus-within:ring-offset-surface-base">
           {imagePreview && (
             <div className="mb-2 flex items-center gap-2">
               <img src={imagePreview} alt="Attachment preview" className="h-12 w-12 rounded-lg border border-border-subtle object-cover" />
@@ -93,7 +93,7 @@ export function ChatInputBar({
             <button
               onClick={onAttachClick}
               disabled={disabled}
-              className="p-2 text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors rounded disabled:opacity-30 disabled:cursor-not-allowed shrink-0"
+              className="p-2 text-text-muted hover:text-text-secondary transition-colors rounded disabled:opacity-30 disabled:cursor-not-allowed shrink-0"
               aria-label="Attach image"
               title="Attach image"
             >
@@ -108,7 +108,7 @@ export function ChatInputBar({
               disabled={disabled}
               placeholder={placeholder}
               rows={1}
-              className="flex-1 bg-transparent text-sm text-text-primary placeholder:text-text-primary/60 resize-none focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed leading-relaxed font-serif"
+              className="flex-1 bg-transparent text-sm text-text-primary/90 placeholder:text-text-muted resize-none focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed leading-relaxed font-serif"
               style={{ minHeight: '24px', maxHeight: '150px', overflowY: 'auto' }}
             />
 
@@ -116,7 +116,7 @@ export function ChatInputBar({
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
                 disabled={disabled}
-                className="px-3 py-1 text-label text-text-secondary bg-surface-hover hover:text-text-primary transition-colors rounded-full disabled:opacity-30 disabled:cursor-not-allowed shrink-0"
+                className="px-3 py-1 text-label font-normal text-text-muted bg-background/40 hover:text-text-secondary transition-colors rounded-full border border-border-subtle/60 disabled:opacity-30 disabled:cursor-not-allowed shrink-0"
               >
                 {modelLabel}
               </button>
@@ -152,7 +152,7 @@ export function ChatInputBar({
             <button
               onClick={() => onSendMessage(input)}
               disabled={disabled || (!input.trim() && !imagePreview)}
-              className="p-2 text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors rounded disabled:opacity-30 disabled:cursor-not-allowed shrink-0"
+              className="p-2 text-text-muted hover:text-text-secondary transition-colors rounded disabled:opacity-30 disabled:cursor-not-allowed shrink-0"
               aria-label="Send message"
               title="Send message"
             >

@@ -17,14 +17,14 @@
 
 :root {
   /* Surfaces — one warm off-white family */
-  --bg-primary: #f5f5f5;
-  --bg-secondary: #f5f5f5;
-  --bg-tertiary: #f0f0f0;
+  --bg-primary: #f6f5f3;
+  --bg-secondary: #f5f4f2;
+  --bg-tertiary: #efedea;
 
   /* Type — charcoal, not pure black; tertiary dark enough for AA on paper */
   --text-primary: #1a1a1a;
-  --text-secondary: #737373;
-  --text-tertiary: #a6a6a6;
+  --text-secondary: #7a7873;
+  --text-tertiary: #b0ada7;
 
   /* Accent — terracotta: links, active nav, focus ring, meaningful emphasis only */
   --accent-color: #a0644e;
@@ -34,8 +34,8 @@
   --btn-primary-fg: #f5f5f5;
   --btn-primary-hover-bg: #8b5742;
 
-  --border-light: #e5e5e5;
-  --border-medium: #e5e5e5;
+  --border-light: #e7e4df;
+  --border-medium: #e2dfda;
 
   --success: #2a4a30;
   --error: #d32f2f;
@@ -69,8 +69,8 @@
   --chat-gap-medium: 40px;
   --chat-gap-message-y: 20px;
   --chat-accent-muted-bg: rgba(160, 100, 78, 0.12);
-  --chat-surface-hover: #f0f0f0;
-  --chat-border-subtle: #e5e5e5;
+  --chat-surface-hover: #efede9;
+  --chat-border-subtle: #e3e0db;
   --chat-z-backdrop: 30;
   --chat-z-sheet: 40;
   --chat-z-dropdown: 50;

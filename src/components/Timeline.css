@@ -8,21 +8,27 @@
 }
 
 .timeline-period-shell {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-  align-items: center;
-  gap: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
   margin-bottom: var(--space-xl);
   padding-bottom: var(--space-md);
   border-bottom: 1px solid var(--border-light);
 }
 
+.timeline-controls-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-lg);
+}
+
 .timeline-current-period {
   font-family: var(--font-serif);
-  font-size: 2rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
+  font-size: clamp(2rem, 3vw, 2.35rem);
+  font-weight: 650;
+  letter-spacing: -0.015em;
+  line-height: 1.08;
   color: var(--text-primary);
   text-align: center;
   margin: 0;
@@ -34,23 +40,31 @@
 }
 
 .btn-sync-calendar {
-  padding: var(--space-sm) var(--space-md);
-  border: 1px solid var(--border-medium);
-  background-color: var(--bg-secondary);
-  color: var(--text-primary);
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--text-secondary);
   font-size: 0.8125rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  font-weight: 500;
+  letter-spacing: 0.01em;
   cursor: pointer;
-  transition: border-color 0.15s ease, background-color 0.15s ease;
+  transition: color 0.15s ease, text-decoration-color 0.15s ease;
   border-radius: 0;
   white-space: nowrap;
   font-family: var(--font-sans);
+  text-decoration: underline;
+  text-decoration-color: var(--border-medium);
+  text-underline-offset: 3px;
 }
 
 .btn-sync-calendar:hover {
-  background-color: var(--bg-primary);
-  border-color: var(--text-tertiary);
+  color: var(--accent-hover);
+  text-decoration-color: var(--accent-color);
+}
+
+.btn-sync-calendar:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 4px;
 }
 
 /* ============================================================
@@ -65,28 +79,41 @@
 }
 
 .toggle-btn {
-  padding: var(--space-sm) var(--space-md);
+  position: relative;
+  padding: var(--space-xs) var(--space-sm);
   background: none;
   border: none;
   color: var(--text-tertiary);
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   font-weight: 500;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
   cursor: pointer;
-  transition: all 0.15s ease;
-  border-bottom: 2px solid transparent;
-  margin-bottom: calc(-1 * var(--space-md) - 1px);
-  padding-bottom: calc(var(--space-sm) + 1px);
+  transition: color 0.15s ease;
+  line-height: 1.2;
+}
+
+.toggle-btn:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
 }
 
 .toggle-btn:hover {
-  color: var(--text-secondary);
+  color: var(--text-primary);
 }
 
 .toggle-btn.active {
   color: var(--text-primary);
   font-weight: 600;
-  border-bottom-color: var(--accent-color);
+}
+
+.toggle-btn.active::after {
+  content: '';
+  position: absolute;
+  left: var(--space-xs);
+  right: var(--space-xs);
+  bottom: -6px;
+  height: 1px;
+  background-color: var(--accent-color);
 }
 
 /* ============================================================
@@ -103,7 +130,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-md);
-  margin-bottom: var(--space-lg);
+  margin-bottom: var(--space-xl);
   padding-bottom: var(--space-md);
   border-bottom: 1px solid var(--border-light);
 }
@@ -315,7 +342,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-md);
-  margin-bottom: var(--space-lg);
+  margin-bottom: var(--space-xl);
   padding-bottom: var(--space-md);
   border-bottom: 1px solid var(--border-light);
 }
@@ -432,7 +459,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-md);
-  margin-bottom: var(--space-lg);
+  margin-bottom: var(--space-xl);
   padding-bottom: var(--space-md);
   border-bottom: 1px solid var(--border-light);
 }
@@ -578,23 +605,29 @@
   }
 
   .timeline-period-shell {
-    grid-template-columns: 1fr;
-    gap: var(--space-sm);
+    gap: var(--space-md);
     margin-bottom: var(--space-lg);
   }
 
+  .timeline-controls-row {
+    grid-template-columns: 1fr;
+    gap: var(--space-sm);
+  }
+
   .timeline-current-period {
-    order: 1;
-    text-align: left;
-    font-size: 1.625rem;
+    order: 0;
+    text-align: center;
+    font-size: 1.875rem;
   }
 
   .timeline-view-toggle {
-    order: 2;
+    order: 1;
+    justify-content: flex-start;
+    flex-wrap: wrap;
   }
 
   .timeline-header-actions {
-    order: 3;
+    order: 2;
     justify-content: flex-start;
   }
 

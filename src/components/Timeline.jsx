@@ -411,27 +411,29 @@ export function Timeline({ refreshKey = 0 }) {
   return (
     <div className="timeline-wrapper">
       <div className="timeline-period-shell" aria-label="Timeline controls and current period">
-        <div className="timeline-view-toggle">
-          <button className={`toggle-btn ${view === 'day' ? 'active' : ''}`} onClick={() => setView('day')}>
-            Day
-          </button>
-          <button className={`toggle-btn ${view === 'week' ? 'active' : ''}`} onClick={() => setView('week')}>
-            Week
-          </button>
-          <button className={`toggle-btn ${view === 'month' ? 'active' : ''}`} onClick={() => setView('month')}>
-            Month
-          </button>
+        <div className="timeline-controls-row">
+          <div className="timeline-view-toggle">
+            <button className={`toggle-btn ${view === 'day' ? 'active' : ''}`} onClick={() => setView('day')}>
+              Day
+            </button>
+            <button className={`toggle-btn ${view === 'week' ? 'active' : ''}`} onClick={() => setView('week')}>
+              Week
+            </button>
+            <button className={`toggle-btn ${view === 'month' ? 'active' : ''}`} onClick={() => setView('month')}>
+              Month
+            </button>
+          </div>
+
+          <div className="timeline-header-actions">
+            {SyncCalendarModal && (
+              <button className="btn-sync-calendar" onClick={() => setSyncModalOpen(true)}>
+                Sync with Google Calendar
+              </button>
+            )}
+          </div>
         </div>
 
         <p className="timeline-current-period">{currentPeriodLabel}</p>
-
-        <div className="timeline-header-actions">
-          {SyncCalendarModal && (
-            <button className="btn-sync-calendar" onClick={() => setSyncModalOpen(true)}>
-              Sync with Google Calendar
-            </button>
-          )}
-        </div>
       </div>
 
       {loading && <p className="timeline-loading">Loading...</p>}

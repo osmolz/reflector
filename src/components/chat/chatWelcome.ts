@@ -7,16 +7,16 @@ const WELCOME_TOPIC_STORAGE_KEY = 'chat-welcome-topics-v1'
 
 const FALLBACK_WELCOME_PROMPTS: readonly WelcomePrompt[] = [
   {
-    text: 'How did I sleep last night?',
-    description: 'Sleep stages, HRV, and recovery',
+    text: 'Where did my time go this week?',
+    description: 'Calendar reality, focus blocks, and drift',
   },
   {
-    text: 'Should I train hard today?',
-    description: 'Readiness, strain, and training load',
+    text: 'What should I prioritize today?',
+    description: 'Top outcomes, constraints, and trade-offs',
   },
   {
-    text: 'What should I eat today?',
-    description: 'Nutrition targets and meal ideas',
+    text: 'Am I working from my values?',
+    description: 'Values alignment, energy, and decisions',
   },
 ] as const
 
@@ -84,31 +84,31 @@ export function writeRecentWelcomeTopicHint(text: string): void {
 export function resolveWelcomePrompts(): readonly WelcomePrompt[] {
   const recent = readRecentTopicsFromStorage()
 
-  const sleepSignals = /\b(sleep|hrv|recover|recovery|rested|tired)\b/.test(recent)
-  const trainingSignals = /\b(train|workout|run|lift|strain|readiness|cardio)\b/.test(recent)
-  const nutritionSignals = /\b(eat|meal|protein|calorie|nutrition|macros)\b/.test(recent)
+  const timeSignals = /\b(time|calendar|week|hours|meeting|schedule|focus|deep work)\b/.test(recent)
+  const prioritySignals = /\b(priority|priorities|important|urgent|tradeoff|decision|deadline)\b/.test(recent)
+  const valuesSignals = /\b(value|values|purpose|meaning|alignment|intentional|regret)\b/.test(recent)
 
   if (!recent) {
     return ensureExactlyThree(FALLBACK_WELCOME_PROMPTS, 'fallback prompts')
   }
 
   const adaptive: WelcomePrompt[] = [
-    sleepSignals
+    timeSignals
       ? {
-          text: 'How does my recovery trend look this week?',
-          description: 'Sleep quality, HRV trends, and readiness',
+          text: 'What patterns are stealing my focus?',
+          description: 'Interruptions, context switching, and time leakage',
         }
       : FALLBACK_WELCOME_PROMPTS[0],
-    trainingSignals
+    prioritySignals
       ? {
-          text: 'What training intensity makes sense today?',
-          description: 'Readiness, recent strain, and load balance',
+          text: 'What is the most important thing today?',
+          description: 'Priority ranking, leverage, and execution risk',
         }
       : FALLBACK_WELCOME_PROMPTS[1],
-    nutritionSignals
+    valuesSignals
       ? {
-          text: 'How should I structure meals for today?',
-          description: 'Protein, energy targets, and timing ideas',
+          text: 'Where am I out of alignment this week?',
+          description: 'Stated values vs actual time allocation',
         }
       : FALLBACK_WELCOME_PROMPTS[2],
   ]
