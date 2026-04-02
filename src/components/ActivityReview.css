@@ -8,15 +8,15 @@
    Activity Review Container
    ============================================================ */
 .activity-review {
-  padding: var(--space-lg) 0;
+  padding: var(--space-xl) 0;
 }
 
 .activity-review-title {
   font-family: var(--font-serif);
-  font-size: 1.25rem;
+  font-size: 1.4rem;
   font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: var(--space-lg);
+  margin-bottom: var(--space-xl);
   letter-spacing: -0.01em;
 }
 
@@ -24,8 +24,8 @@
    Activity Item (Card)
    ============================================================ */
 .activity-item {
-  padding: var(--space-lg);
-  margin-bottom: var(--space-sm);
+  padding: var(--space-xl);
+  margin-bottom: var(--space-md);
   border: 1px solid var(--border-light);
   background-color: var(--bg-secondary);
   border-radius: 0;
@@ -57,10 +57,12 @@
 }
 
 .activity-item-name {
-  font-size: 1rem;
+  font-family: var(--font-serif);
+  font-size: 1.125rem;
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: var(--space-xs);
+  letter-spacing: -0.01em;
 }
 
 .activity-item-meta {
@@ -93,35 +95,36 @@
 }
 
 .activity-item-actions button {
-  padding: var(--space-xs) var(--space-sm);
-  font-size: 0.75rem;
-  border: none;
+  padding: var(--space-xs) var(--space-md);
+  font-size: 0.8125rem;
+  border: 1px solid var(--border-light);
   border-radius: 0;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
   background-color: transparent;
   font-family: var(--font-sans);
   font-weight: 500;
 }
 
 .activity-item-actions .btn-edit {
-  color: var(--accent-color);
-  border: 1px solid var(--border-medium);
+  color: var(--text-secondary);
+  border-color: var(--border-medium);
 }
 
 .activity-item-actions .btn-edit:hover {
   background-color: var(--bg-primary);
   border-color: var(--accent-color);
+  color: var(--text-primary);
 }
 
 .activity-item-actions .btn-delete {
   color: var(--error);
-  border: 1px solid var(--border-medium);
+  border-color: var(--border-medium);
 }
 
 .activity-item-actions .btn-delete:hover {
-  border-left: 2px solid var(--error); padding-left: var(--space-md);
   border-color: var(--error);
+  background-color: var(--bg-primary);
 }
 
 /* ============================================================
@@ -194,13 +197,16 @@
 }
 
 .activity-item-edit-actions .btn-save {
-  background-color: var(--btn-primary-bg);
-  color: var(--btn-primary-fg);
+  background-color: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-medium);
   flex: 1;
 }
 
 .activity-item-edit-actions .btn-save:hover:not(:disabled) {
-  background-color: var(--btn-primary-hover-bg);
+  border-color: var(--accent-color);
+  color: var(--accent-hover);
+  background-color: var(--bg-primary);
 }
 
 .activity-item-edit-actions .btn-cancel {
@@ -240,12 +246,15 @@
 }
 
 .activity-review-controls .btn-save-activities {
-  background-color: var(--btn-primary-bg);
-  color: var(--btn-primary-fg);
+  background-color: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-medium);
 }
 
 .activity-review-controls .btn-save-activities:hover:not(:disabled) {
-  background-color: var(--btn-primary-hover-bg);
+  border-color: var(--accent-color);
+  color: var(--accent-hover);
+  background-color: var(--bg-primary);
 }
 
 .activity-review-controls .btn-discard {
@@ -298,18 +307,26 @@
 
 .activity-review-empty button {
   padding: var(--space-md) var(--space-lg);
-  background-color: var(--btn-primary-bg);
-  color: var(--btn-primary-fg);
-  border: none;
+  background-color: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-medium);
   border-radius: 0;
   cursor: pointer;
   font-weight: 600;
   font-family: var(--font-sans);
-  transition: background-color 0.15s ease;
+  transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
 }
 
 .activity-review-empty button:hover {
-  background-color: var(--btn-primary-hover-bg);
+  border-color: var(--accent-color);
+  color: var(--accent-hover);
+  background-color: var(--bg-primary);
+}
+
+.activity-item-note {
+  font-size: 0.8125rem;
+  color: var(--error);
+  margin-top: var(--space-xs);
 }
 
 /* ============================================================

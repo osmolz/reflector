@@ -8,8 +8,8 @@
    Journal Entry (Card)
    ============================================================ */
 .journal-entry {
-  padding: var(--space-lg);
-  margin-bottom: var(--space-lg);
+  padding: var(--space-xl);
+  margin-bottom: var(--space-md);
   border: 1px solid var(--border-light);
   background-color: var(--bg-secondary);
   border-radius: 0;
@@ -37,18 +37,20 @@
    Entry Title / Heading
    ============================================================ */
 .journal-entry-title {
-  font-size: 1.1rem;
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
   font-weight: 600;
   color: var(--text-primary);
-  margin-bottom: var(--space-sm);
+  margin-bottom: var(--space-xs);
   line-height: 1.4;
+  letter-spacing: -0.01em;
 }
 
 /* ============================================================
    Entry Content (Body text)
    ============================================================ */
 .journal-entry-content {
-  font-size: 0.95rem;
+  font-size: 1rem;
   line-height: 1.7;
   color: var(--text-secondary);
 }
@@ -83,7 +85,7 @@
    Journal Form
    ============================================================ */
 .journal-form {
-  margin-bottom: var(--space-3xl);
+  margin-bottom: var(--space-4xl);
   padding: 0;
   background-color: transparent;
   border: none;
@@ -100,7 +102,7 @@
 }
 
 .journal-form-group {
-  margin-bottom: var(--space-lg);
+  margin-bottom: var(--space-xl);
 }
 
 .journal-form-group:last-child {
@@ -109,22 +111,23 @@
 
 .journal-textarea {
   width: 100%;
-  padding: var(--space-md) var(--space-lg);
-  border: 1px solid var(--border-medium);
+  padding: var(--space-lg) var(--space-xl);
+  border: 1px solid var(--border-light);
   border-radius: 0;
   background-color: var(--bg-secondary);
   color: var(--text-primary);
   font-family: var(--font-sans);
-  font-size: 1rem;
-  line-height: 1.65;
+  font-size: 1.0625rem;
+  line-height: 1.7;
   resize: vertical;
-  min-height: 140px;
-  transition: border-color 0.15s ease;
+  min-height: 180px;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
 }
 
 .journal-textarea:focus {
   outline: none;
   border-color: var(--accent-color);
+  background-color: var(--bg-primary);
 }
 
 .journal-textarea:disabled {
@@ -151,55 +154,58 @@
    ============================================================ */
 .journal-form-controls {
   display: flex;
-  gap: var(--space-md);
+  gap: var(--space-lg);
   flex-wrap: wrap;
-  margin-top: var(--space-md);
+  margin-top: var(--space-sm);
 }
 
 .journal-voice-button {
-  padding: var(--space-md) var(--space-md);
-  background-color: var(--bg-secondary);
-  border: 1px solid var(--border-medium);
+  padding: var(--space-md) var(--space-lg);
+  background-color: transparent;
+  border: 1px solid var(--border-light);
   border-radius: 0;
-  color: var(--text-primary);
+  color: var(--text-secondary);
   cursor: pointer;
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: 500;
   font-family: var(--font-sans);
-  transition: border-color 0.15s ease, background-color 0.15s ease;
+  transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
 }
 
 .journal-voice-button:hover:not(:disabled) {
-  border-color: var(--text-tertiary);
+  border-color: var(--accent-color);
   background-color: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 .journal-voice-button.listening {
-  border-left: 2px solid var(--error); padding-left: var(--space-md);
   border-color: var(--error);
   color: var(--error);
   font-weight: 500;
+  background-color: transparent;
 }
 
 .journal-submit-button {
-  padding: var(--space-md) var(--space-lg);
-  background-color: var(--btn-primary-bg);
-  color: var(--btn-primary-fg);
-  border: none;
+  padding: var(--space-md) var(--space-xl);
+  background-color: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-medium);
   border-radius: 0;
   cursor: pointer;
   font-weight: 600;
   font-size: 0.9375rem;
   font-family: var(--font-sans);
-  transition: background-color 0.15s ease;
+  transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
 }
 
 .journal-submit-button:hover:not(:disabled) {
-  background-color: var(--btn-primary-hover-bg);
+  border-color: var(--accent-color);
+  color: var(--accent-hover);
+  background-color: var(--bg-primary);
 }
 
 .journal-submit-button:active:not(:disabled) {
-  background-color: var(--btn-primary-bg);
+  background-color: transparent;
 }
 
 .journal-submit-button:disabled {
@@ -277,10 +283,12 @@
 
   .journal-textarea {
     font-size: 16px; /* Prevents zoom on iOS */
+    min-height: 160px;
+    padding: var(--space-md) var(--space-lg);
   }
 
   .journal-entry {
-    padding: var(--space-md);
+    padding: var(--space-lg);
     margin-bottom: var(--space-md);
   }
 
@@ -296,9 +304,9 @@
 
 .journal-history-heading {
   font-family: var(--font-serif);
-  font-size: 1.25rem;
+  font-size: 1.4rem;
   font-weight: 700;
-  margin: var(--space-3xl) 0 var(--space-lg);
+  margin: var(--space-4xl) 0 var(--space-xl);
   color: var(--text-primary);
   letter-spacing: -0.02em;
 }
@@ -327,16 +335,16 @@
   background: transparent;
   color: var(--accent-color);
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: 500;
   padding: 0;
   text-decoration: underline;
-  text-underline-offset: 2px;
+  text-underline-offset: 3px;
 }
 
 .journal-entry-body {
-  margin-top: var(--space-md);
+  margin-top: var(--space-lg);
   color: var(--text-secondary);
-  font-size: 0.95rem;
+  font-size: 1rem;
   line-height: 1.7;
   white-space: pre-wrap;
   word-break: break-word;

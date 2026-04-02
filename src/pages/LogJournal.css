@@ -4,16 +4,18 @@
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
+  gap: var(--space-lg);
 }
 
 .log-journal-tablist {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-sm);
+  gap: var(--space-md);
   margin-bottom: 0;
   list-style: none;
+  padding-bottom: var(--space-sm);
+  border-bottom: 1px solid var(--border-light);
 }
 
 .log-journal-tab-item {
@@ -25,9 +27,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: var(--space-sm) var(--space-sm);
+  position: relative;
+  padding: var(--space-xs) var(--space-sm);
   font-family: var(--font-sans);
-  font-size: 0.9375rem;
+  font-size: 1rem;
   font-weight: 500;
   color: var(--text-tertiary);
   text-decoration: none;
@@ -43,6 +46,11 @@
   color: var(--text-primary);
 }
 
+.log-journal-tab:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
 .log-journal-tab[aria-selected='true'] {
   color: var(--text-primary);
   font-weight: 600;
@@ -51,20 +59,20 @@
 .log-journal-tab[aria-selected='true']::after {
   content: '';
   position: absolute;
-  left: var(--space-md);
-  right: var(--space-md);
-  bottom: 0;
-  height: 2px;
+  left: var(--space-xs);
+  right: var(--space-xs);
+  bottom: calc(-1 * var(--space-sm) - 1px);
+  height: 1px;
   background-color: var(--accent-color);
 }
 
 .log-journal-tab-hint {
-  font-size: 0.9375rem;
+  font-size: 1rem;
   font-weight: 400;
-  color: var(--text-tertiary);
-  line-height: 1.5;
-  max-width: 36em;
-  margin: 0 0 var(--space-lg);
+  color: var(--text-secondary);
+  line-height: 1.65;
+  max-width: 46ch;
+  margin: 0 0 var(--space-xl);
 }
 
 .log-journal-tabpanel.section {
@@ -72,12 +80,12 @@
 }
 
 .log-journal-tabpanel.section:not([hidden]) {
-  margin-bottom: var(--space-3xl);
+  margin-bottom: var(--space-4xl);
 }
 
 @media (max-width: 640px) {
   .log-journal-tab {
-    font-size: 0.875rem;
+    font-size: 0.9375rem;
     padding: var(--space-sm) var(--space-md);
   }
 

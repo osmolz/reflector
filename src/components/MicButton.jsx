@@ -175,7 +175,7 @@ export function MicButton({ onTranscriptReady }) {
           {isRecording ? <StopIcon /> : <MicIcon />}
         </button>
         <div className={`mic-status ${isRecording ? 'recording' : ''}`}>
-          {isRecording ? 'Recording…' : 'Ready to record'}
+          {isRecording ? 'Recording...' : 'Tap mic to dictate'}
         </div>
       </div>
       {error && <div className="mic-error">{error}</div>}

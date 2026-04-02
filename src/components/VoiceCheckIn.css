@@ -20,40 +20,63 @@
 .voice-check-in-input {
   display: flex;
   flex-direction: column;
-  gap: var(--space-lg);
+  gap: var(--space-xl);
 }
 
 .voice-check-in-helper {
   font-size: 0.9375rem;
-  color: var(--text-tertiary);
-  margin-bottom: var(--space-sm);
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin-bottom: var(--space-md);
 }
 
 .voice-check-in-actions {
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
-  margin-top: var(--space-sm);
+  gap: var(--space-lg);
+  margin-top: var(--space-md);
 }
 
 .voice-check-in-textarea {
   width: 100%;
-  min-height: 140px;
-  padding: var(--space-md) var(--space-lg);
-  border: 1px solid var(--border-medium);
+  min-height: 180px;
+  padding: var(--space-lg) var(--space-xl);
+  border: 1px solid var(--border-light);
   border-radius: 0;
   background-color: var(--bg-secondary);
   color: var(--text-primary);
   font-family: var(--font-sans);
-  font-size: 1rem;
-  line-height: 1.65;
+  font-size: 1.0625rem;
+  line-height: 1.7;
   resize: vertical;
-  transition: border-color 0.15s ease;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
 }
 
 .voice-check-in-textarea:focus {
   outline: none;
   border-color: var(--accent-color);
+  background-color: var(--bg-primary);
+}
+
+.voice-check-in .btn.btn-primary {
+  align-self: flex-end;
+  border: 1px solid var(--border-medium);
+  background-color: transparent;
+  color: var(--text-primary);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  padding: var(--space-md) var(--space-xl);
+}
+
+.voice-check-in .btn.btn-primary:hover:not(:disabled) {
+  border-color: var(--accent-color);
+  color: var(--accent-hover);
+  background-color: var(--bg-primary);
+}
+
+.voice-check-in .btn.btn-primary:disabled {
+  opacity: 0.45;
 }
 
 .voice-check-in-error {
@@ -68,10 +91,10 @@
 
 .voice-check-in-status {
   margin: 0 0 var(--space-lg);
-  font-size: 1.0625rem;
+  font-size: 1rem;
   font-weight: 500;
-  color: var(--text-primary);
-  line-height: 1.5;
+  color: var(--text-secondary);
+  line-height: 1.6;
 }
 
 @media (min-width: 640px) {
@@ -79,5 +102,17 @@
     flex-direction: row;
     align-items: flex-end;
     justify-content: space-between;
+  }
+}
+
+@media (max-width: 640px) {
+  .voice-check-in-textarea {
+    min-height: 160px;
+    padding: var(--space-md) var(--space-lg);
+    font-size: 1rem;
+  }
+
+  .voice-check-in .btn.btn-primary {
+    width: 100%;
   }
 }

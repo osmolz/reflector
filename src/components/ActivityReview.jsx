@@ -156,7 +156,7 @@ export function ActivityReview({
                       )}
                     </div>
                     {activity.notes && (
-                      <div style={{ fontSize: '0.8125rem', color: 'var(--error)', marginTop: 'var(--space-xs)' }}>
+                      <div className="activity-item-note">
                         Note: {activity.notes}
                       </div>
                     )}
