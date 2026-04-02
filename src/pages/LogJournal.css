@@ -1,6 +1,7 @@
 /* Log route — editorial tabs (nav-aligned), no decorative chrome */
 
 .log-journal-shell {
+  --log-font-family: var(--font-sans);
   --log-fs-heading: 1.4rem;
   --log-fs-body: 1rem;
   --log-fs-control: 0.9375rem;
@@ -13,6 +14,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-lg);
+  font-family: var(--log-font-family);
 }
 
 .log-journal-tablist {
@@ -37,7 +39,7 @@
   justify-content: center;
   position: relative;
   padding: var(--space-xs) var(--space-sm);
-  font-family: var(--font-sans);
+  font-family: var(--log-font-family);
   font-size: var(--log-fs-control);
   font-weight: 500;
   color: var(--text-tertiary);
@@ -89,6 +91,13 @@
 
 .log-journal-tabpanel.section:not([hidden]) {
   margin-bottom: var(--space-4xl);
+}
+
+.log-journal-tabpanel .section-title {
+  font-family: var(--log-font-family);
+  font-size: var(--log-fs-heading);
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 @media (max-width: 640px) {

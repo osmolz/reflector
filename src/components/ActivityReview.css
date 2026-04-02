@@ -12,7 +12,7 @@
 }
 
 .activity-review-title {
-  font-family: var(--font-serif);
+  font-family: var(--log-font-family, var(--font-sans));
   font-size: var(--log-fs-heading, 1.4rem);
   font-weight: 700;
   color: var(--text-primary);
@@ -57,7 +57,7 @@
 }
 
 .activity-item-name {
-  font-family: var(--font-serif);
+  font-family: var(--log-font-family, var(--font-sans));
   font-size: calc(var(--log-fs-heading, 1.4rem) * 0.82);
   font-weight: 600;
   color: var(--text-primary);
@@ -102,7 +102,7 @@
   cursor: pointer;
   transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
   background-color: transparent;
-  font-family: var(--font-sans);
+  font-family: var(--log-font-family, var(--font-sans));
   font-weight: 500;
 }
 
@@ -176,7 +176,7 @@
   border-radius: 0;
   background-color: var(--bg-secondary);
   color: var(--text-primary);
-  font-family: var(--font-sans);
+  font-family: var(--log-font-family, var(--font-sans));
   font-size: var(--log-fs-body, 1rem);
   transition: border-color 0.2s ease;
 }
@@ -202,7 +202,7 @@
   cursor: pointer;
   font-weight: 600;
   font-size: var(--log-fs-control, 0.9375rem);
-  font-family: var(--font-sans);
+  font-family: var(--log-font-family, var(--font-sans));
   transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 
@@ -250,7 +250,7 @@
   cursor: pointer;
   font-weight: 600;
   font-size: var(--log-fs-control, 0.9375rem);
-  font-family: var(--font-sans);
+  font-family: var(--log-font-family, var(--font-sans));
   transition: background-color 0.15s ease, border-color 0.15s ease;
   flex: 1;
 }
@@ -323,7 +323,7 @@
   border-radius: 0;
   cursor: pointer;
   font-weight: 600;
-  font-family: var(--font-sans);
+  font-family: var(--log-font-family, var(--font-sans));
   transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
 }
 

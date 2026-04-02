@@ -82,8 +82,8 @@ export function ChatInputBar({
   const modelLabel = currentModel === 'balanced' ? 'Balanced' : 'Fast'
 
   return (
-    <div className="w-full shrink-0 border-t border-[#e5e5e5] bg-[#f5f5f5] px-4 pb-8 pt-3">
-      <div className="mx-auto mb-1 w-full max-w-[42rem]">
+    <div className="w-full shrink-0 bg-[#f5f5f5] px-4 pb-6 pt-3">
+      <div className="mx-auto w-full max-w-[42rem]">
         <div className="rounded-[16px] border border-[rgba(160,100,78,0.70)] bg-[rgba(160,100,78,0.12)] px-4 py-2.5 text-[#1a1a1a]">
           {imagePreview && (
             <div className="mb-2 flex items-center gap-2">
@@ -114,8 +114,8 @@ export function ChatInputBar({
                 disabled={disabled}
                 placeholder={placeholder}
                 rows={1}
-                className="w-full resize-none bg-transparent font-serif text-[14px] leading-[1.5] text-[#1a1a1a] placeholder:text-[rgba(26,26,26,0.45)] focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-                style={{ minHeight: '24px', maxHeight: '150px', overflowY: 'auto' }}
+                className="w-full resize-none bg-transparent text-[14px] leading-[1.5] text-[#1a1a1a] placeholder:text-[rgba(26,26,26,0.45)] focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                style={{ minHeight: '24px', maxHeight: '150px', overflowY: 'auto', fontFamily: 'var(--font-serif)' }}
               />
             </div>
 

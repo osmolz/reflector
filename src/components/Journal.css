@@ -37,7 +37,7 @@
    Entry Title / Heading
    ============================================================ */
 .journal-entry-title {
-  font-family: var(--font-serif);
+  font-family: var(--log-font-family, var(--font-sans));
   font-size: var(--log-fs-heading, 1.4rem);
   font-weight: 600;
   color: var(--text-primary);
@@ -93,7 +93,7 @@
 }
 
 .journal-form-title {
-  font-family: var(--font-serif);
+  font-family: var(--log-font-family, var(--font-sans));
   font-size: var(--log-fs-heading, 1.4rem);
   font-weight: 700;
   color: var(--text-primary);
@@ -116,7 +116,7 @@
   border-radius: 0;
   background-color: var(--bg-secondary);
   color: var(--text-primary);
-  font-family: var(--font-sans);
+  font-family: var(--log-font-family, var(--font-sans));
   font-size: var(--log-fs-body, 1rem);
   line-height: var(--log-lh-body, 1.65);
   resize: vertical;
@@ -168,7 +168,7 @@
   cursor: pointer;
   font-size: var(--log-fs-control, 0.9375rem);
   font-weight: 500;
-  font-family: var(--font-sans);
+  font-family: var(--log-font-family, var(--font-sans));
   transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
 }
 
@@ -194,7 +194,7 @@
   cursor: pointer;
   font-weight: 600;
   font-size: var(--log-fs-control, 0.9375rem);
-  font-family: var(--font-sans);
+  font-family: var(--log-font-family, var(--font-sans));
   transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
 }
 
@@ -303,7 +303,7 @@
 
 
 .journal-history-heading {
-  font-family: var(--font-serif);
+  font-family: var(--log-font-family, var(--font-sans));
   font-size: var(--log-fs-heading, 1.4rem);
   font-weight: 700;
   margin: var(--space-4xl) 0 var(--space-xl);

@@ -6,7 +6,7 @@
 
 .voice-check-in h2,
 .voice-check-in h3 {
-  font-family: var(--font-serif);
+  font-family: var(--log-font-family, var(--font-sans));
   font-weight: 700;
   color: var(--text-primary);
 }
@@ -27,7 +27,7 @@
   font-size: var(--log-fs-helper, 0.9375rem);
   color: var(--text-secondary);
   line-height: var(--log-lh-helper, 1.55);
-  margin-bottom: var(--space-md);
+  margin-bottom: var(--space-sm);
 }
 
 .voice-check-in-actions {
@@ -39,17 +39,23 @@
 
 .voice-check-in-textarea {
   width: 100%;
-  min-height: 180px;
+  min-height: 170px;
   padding: var(--space-lg) var(--space-xl);
   border: 1px solid var(--border-light);
   border-radius: 0;
   background-color: var(--bg-secondary);
   color: var(--text-primary);
-  font-family: var(--font-sans);
+  font-family: var(--log-font-family, var(--font-sans));
   font-size: var(--log-fs-body, 1rem);
   line-height: var(--log-lh-body, 1.65);
   resize: vertical;
   transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.voice-check-in-textarea::placeholder {
+  font-size: var(--log-fs-body, 1rem);
+  color: var(--text-secondary);
+  font-weight: 400;
 }
 
 .voice-check-in-textarea:focus {
@@ -60,8 +66,8 @@
 
 .voice-check-in .btn.btn-primary {
   align-self: flex-end;
-  border: 1px solid var(--border-medium);
-  background-color: transparent;
+  border: 1px solid var(--accent-color);
+  background-color: rgba(160, 100, 78, 0.08);
   color: var(--text-primary);
   font-size: var(--log-fs-control, 0.9375rem);
   font-weight: 600;
@@ -72,7 +78,7 @@
 .voice-check-in .btn.btn-primary:hover:not(:disabled) {
   border-color: var(--accent-color);
   color: var(--accent-hover);
-  background-color: var(--bg-primary);
+  background-color: rgba(160, 100, 78, 0.14);
 }
 
 .voice-check-in .btn.btn-primary:disabled {
@@ -91,10 +97,11 @@
 
 .voice-check-in-status {
   margin: 0 0 var(--space-lg);
-  font-size: var(--log-fs-helper, 0.9375rem);
+  font-size: var(--log-fs-meta, 0.8125rem);
   font-weight: 400;
-  color: var(--text-primary);
-  line-height: 1.6;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  letter-spacing: 0.01em;
 }
 
 @media (min-width: 640px) {
