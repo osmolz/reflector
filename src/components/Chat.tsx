@@ -7,7 +7,7 @@ import { readActiveChatSessionId, writeActiveChatSessionId } from '../lib/chatSe
 import { AppHeader } from './AppHeader'
 import { ChatInputBar } from './chat/ChatInputBar'
 import { ChatWelcomePanel } from './chat/ChatWelcomePanel'
-import { getDisplayName, writeRecentWelcomeTopicHint } from './chat/chatWelcome'
+import { getDisplayName, resolveWelcomePrompts, type WelcomePrompt, writeRecentWelcomeTopicHint } from './chat/chatWelcome'
 import './Chat.css'
 
 const SIDEBAR_LS_KEY = 'chat-sidebar-open'
@@ -18,6 +18,9 @@ const CHAT_MODEL_BY_TIER = {
   balanced: 'claude-opus-4-6',
   fast: 'claude-haiku-4-5-20251001',
 }
+
+const DEBUG_INGEST_URL = 'http://127.0.0.1:7272/ingest/9a054363-0560-4f2a-a7fd-71d649a23059'
+const DEBUG_SESSION_ID = '0547ca'
 
 function formatSessionMeta(createdAt) {
   const d = new Date(createdAt)
@@ -133,6 +136,10 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
   const [modelTier, setModelTier] = useState('balanced')
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [composerError, setComposerError] = useState<string | null>(null)
+  const [selectedWelcomeRecommendation, setSelectedWelcomeRecommendation] = useState<{
+    id: string
+    text: string
+  } | null>(null)
   const chatHistoryRef = useRef(null)
   const isStreamingRef = useRef(false)
   const searchFieldRef = useRef(null)
@@ -395,11 +402,32 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
   const loadingSessions = sessionLoading
   const loadingMessages = historyLoading
   const showChatWelcome = !loadingSessions && !loadingMessages && messages.length === 0
+  const logRecommendationTelemetry = useCallback((action: 'clicked' | 'submitted', recommendation: { id: string; text: string }) => {
+    fetch(DEBUG_INGEST_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': DEBUG_SESSION_ID },
+      body: JSON.stringify({
+        sessionId: DEBUG_SESSION_ID,
+        location: 'Chat.tsx:welcomeSuggestionTelemetry',
+        message: `welcome suggestion ${action}`,
+        data: {
+          action,
+          recommendationId: recommendation.id,
+          recommendationText: recommendation.text,
+          chatSessionId: sessionId,
+          userId: user?.id ?? null,
+        },
+        timestamp: Date.now(),
+      }),
+    }).catch(() => {})
+  }, [sessionId, user?.id])
 
-  const handleSelectWelcomePrompt = useCallback((text: string) => {
-    setInput(text)
-    requestAnimationFrame(() => textareaRef.current?.focus())
-  }, [])
+  const handleComposerInputChange = useCallback((nextText: string) => {
+    setInput(nextText)
+    if (selectedWelcomeRecommendation && selectedWelcomeRecommendation.text !== nextText.trim()) {
+      setSelectedWelcomeRecommendation(null)
+    }
+  }, [selectedWelcomeRecommendation])
 
   const openSearch = useCallback(() => {
     setSidebarOpen(false)
@@ -444,15 +472,39 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
     }
   }
 
-  const sendMessage = async (overrideText) => {
+  const sendMessage = async (
+    overrideText,
+    options?: { recommendation?: { id: string; text: string } }
+  ) => {
+    if (loading || isStreamingRef.current) return
     const fromComposer = overrideText === undefined
     const text = (fromComposer ? input : String(overrideText)).trim()
     const composedText = text || (imagePreview ? '[Image attached]' : '')
     if (!composedText || !user || !sessionId) return
 
+    const recommendationFromOptions = options?.recommendation ?? null
+    const recommendationFromState =
+      selectedWelcomeRecommendation && selectedWelcomeRecommendation.text === text
+        ? selectedWelcomeRecommendation
+        : null
+    const recommendationFromTextMatch = text
+      ? resolveWelcomePrompts().find((prompt) => prompt.text === text) ?? null
+      : null
+    const recommendationForSubmit =
+      recommendationFromOptions ??
+      recommendationFromState ??
+      (recommendationFromTextMatch
+        ? { id: recommendationFromTextMatch.id, text: recommendationFromTextMatch.text }
+        : null)
+
+    if (recommendationForSubmit) {
+      logRecommendationTelemetry('submitted', recommendationForSubmit)
+    }
+
     writeRecentWelcomeTopicHint(composedText)
 
     if (fromComposer) setInput('')
+    setSelectedWelcomeRecommendation(null)
     setComposerError(null)
 
     const userMessage = {
@@ -623,6 +675,14 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
       setImagePreview(null)
     }
   }
+
+  const handleSelectWelcomePrompt = useCallback((prompt: WelcomePrompt) => {
+    const recommendation = { id: prompt.id, text: prompt.text }
+    setSelectedWelcomeRecommendation(recommendation)
+    logRecommendationTelemetry('clicked', recommendation)
+    sendMessage(prompt.text, { recommendation })
+    requestAnimationFrame(() => textareaRef.current?.focus())
+  }, [logRecommendationTelemetry, sendMessage])
 
   const handleAttachClick = () => fileInputRef.current?.click()
 
@@ -904,7 +964,7 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
               />
               <ChatInputBar
                 input={input}
-                onInputChange={setInput}
+                onInputChange={handleComposerInputChange}
                 onSendMessage={sendMessage}
                 disabled={loading || historyLoading || creatingSession || !sessionId}
                 placeholder="Ask Prohairesis about your time, priorities, or values..."

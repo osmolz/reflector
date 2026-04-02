@@ -82,9 +82,9 @@ export function ChatInputBar({
   const modelLabel = currentModel === 'balanced' ? 'Balanced' : 'Fast'
 
   return (
-    <div className="w-full shrink-0 border-t border-[#e5e5e5] bg-[#f5f5f5] px-4 pb-5 pt-3">
+    <div className="w-full shrink-0 border-t border-[#e5e5e5] bg-[#f5f5f5] px-4 pb-6 pt-2">
       <div className="mx-auto w-full max-w-[42rem]">
-        <div className="rounded-2xl border border-[rgba(160,100,78,0.65)] bg-[rgba(160,100,78,0.12)] px-4 py-3 text-[#1a1a1a]">
+        <div className="rounded-[16px] border border-[rgba(160,100,78,0.70)] bg-[rgba(160,100,78,0.12)] px-4 py-2.5 text-[#1a1a1a]">
           {imagePreview && (
             <div className="mb-2 flex items-center gap-2">
               <img src={imagePreview} alt="Attachment preview" className="h-12 w-12 rounded-lg border border-[#e5e5e5] object-cover" />
@@ -94,18 +94,18 @@ export function ChatInputBar({
             </div>
           )}
 
-          <div className="flex items-end gap-2">
+          <div className="flex items-end gap-1.5">
             <button
               onClick={onAttachClick}
               disabled={disabled}
-              className="shrink-0 rounded p-2 text-[#737373] transition-colors hover:bg-[#f0f0f0] hover:text-[#1a1a1a] disabled:cursor-not-allowed disabled:opacity-30"
+              className="shrink-0 rounded p-2 text-[#8a8a8a] transition-colors hover:bg-[#f0f0f0] hover:text-[#6f6f6f] disabled:cursor-not-allowed disabled:opacity-30"
               aria-label="Attach image"
               title="Attach image"
             >
               <AttachmentIcon />
             </button>
 
-            <div className="flex-1 border border-[#d7d0c7] bg-transparent px-3 py-1.5">
+            <div className="flex-1 border border-[#cfc8bf] bg-transparent px-3 py-1">
               <textarea
                 ref={setTextareaRef}
                 value={input}
@@ -114,7 +114,7 @@ export function ChatInputBar({
                 disabled={disabled}
                 placeholder={placeholder}
                 rows={1}
-                className="w-full resize-none bg-transparent font-serif text-sm leading-relaxed text-[#1a1a1a] placeholder:text-[rgba(26,26,26,0.6)] focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                className="w-full resize-none bg-transparent font-serif text-[14px] leading-[1.5] text-[#1a1a1a] placeholder:text-[rgba(26,26,26,0.45)] focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                 style={{ minHeight: '24px', maxHeight: '150px', overflowY: 'auto' }}
               />
             </div>
@@ -123,7 +123,7 @@ export function ChatInputBar({
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
                 disabled={disabled}
-                className="shrink-0 rounded-full border border-[#e5e5e5] bg-[#f0f0f0] px-3 py-1 text-[12px] font-[200] leading-[1.5] text-[#737373] transition-colors hover:text-[#1a1a1a] disabled:cursor-not-allowed disabled:opacity-30"
+                className="shrink-0 rounded-full border border-[#dfdfdf] bg-[#f0f0f0] px-3 py-1 text-[11px] font-[300] leading-[1.4] text-[#b0b0b0] transition-colors hover:text-[#8d8d8d] disabled:cursor-not-allowed disabled:opacity-30"
               >
                 {modelLabel}
               </button>
@@ -153,7 +153,7 @@ export function ChatInputBar({
             <button
               onClick={() => onSendMessage(input)}
               disabled={disabled || (!input.trim() && !imagePreview)}
-              className="shrink-0 rounded p-2 text-[#737373] transition-colors hover:bg-[#f0f0f0] hover:text-[#1a1a1a] disabled:cursor-not-allowed disabled:opacity-30"
+              className="shrink-0 rounded p-2 text-[#c2c2c2] transition-colors hover:bg-[#f0f0f0] hover:text-[#9a9a9a] disabled:cursor-not-allowed disabled:opacity-30"
               aria-label="Send message"
               title="Send message"
             >

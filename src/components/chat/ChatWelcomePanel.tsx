@@ -1,9 +1,9 @@
 import React from 'react'
-import { greetingPrefixForHour, resolveWelcomePrompts } from './chatWelcome'
+import { greetingPrefixForHour, resolveWelcomePrompts, type WelcomePrompt } from './chatWelcome'
 
 interface ChatWelcomePanelProps {
   displayName: string
-  onSelectPrompt: (text: string) => void
+  onSelectPrompt: (prompt: WelcomePrompt) => void
   disabled?: boolean
   inputRef: React.RefObject<HTMLTextAreaElement | null>
 }
@@ -17,35 +17,35 @@ export function ChatWelcomePanel({
   const prefix = greetingPrefixForHour(new Date().getHours())
   const prompts = resolveWelcomePrompts()
 
-  const handleSelect = (text: string) => {
-    onSelectPrompt(text)
+  const handleSelect = (prompt: WelcomePrompt) => {
+    onSelectPrompt(prompt)
     requestAnimationFrame(() => inputRef.current?.focus())
   }
 
   return (
-    <section className="mx-auto mb-8 w-full max-w-[42rem] border border-[#e5e5e5] bg-[#f5f5f5] px-4 py-5">
-      <h2 className="font-serif text-[20px] font-bold leading-[1.3] text-[#1a1a1a]">
+    <section className="mx-auto mb-8 w-full max-w-[42rem] border border-[#e8e8e8] bg-[#f5f5f5] px-6 py-6">
+      <h2 className="font-serif text-[20px] font-semibold leading-[1.3] text-[#1f1f1f]">
         {prefix}, {displayName}.
       </h2>
-      <p className="mt-2 font-sans text-[14px] font-normal leading-[1.6] text-[#737373]">
+      <p className="mt-3 font-sans text-[14px] font-normal leading-[1.6] text-[#787878]">
         What should we discuss today?
       </p>
 
-      <p className="mt-6 font-sans text-[12px] font-[200] uppercase tracking-wide leading-[1.5] text-[#a6a6a6]">
+      <p className="mt-8 font-sans text-[12px] font-[200] uppercase tracking-[0.06em] leading-[1.5] text-[#b0b0b0]">
         Here are some questions I can answer:
       </p>
 
-      <ul className="mt-3 list-none p-0 m-0 flex flex-col gap-2">
+      <ul className="m-0 mt-4 flex list-none flex-col gap-3 p-0">
         {prompts.map((prompt) => (
-          <li key={prompt.text} className="list-none m-0 p-0">
+          <li key={prompt.id} className="list-none m-0 p-0">
             <button
               type="button"
-              onClick={() => handleSelect(prompt.text)}
+              onClick={() => handleSelect(prompt)}
               disabled={disabled}
-              className="w-full border border-[#e5e5e5] px-3 py-2.5 text-left font-sans text-[14px] font-normal leading-[1.6] text-[#1a1a1a] transition-colors hover:border-[#e5e5e5] hover:bg-[#f0f0f0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a0644e] focus-visible:ring-offset-2 disabled:opacity-40"
+              className="w-full border border-[#e8e8e8] px-4 py-3 text-left font-sans text-[14px] font-normal leading-[1.6] text-[#1f1f1f] transition-colors hover:border-[#e8e8e8] hover:bg-[#f4f4f4] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a0644e] focus-visible:ring-offset-2 disabled:opacity-40"
             >
-              <span className="font-medium">{prompt.text}</span>
-              <span className="mt-0.5 block font-sans text-[12px] font-[200] leading-[1.5] text-[#a6a6a6]">
+              <span className="text-[14px] font-semibold">{prompt.text}</span>
+              <span className="mt-1 block font-sans text-[12px] font-[200] leading-[1.5] text-[#b3b3b3]">
                 {prompt.description}
               </span>
             </button>

@@ -1,4 +1,5 @@
 export interface WelcomePrompt {
+  id: string
   text: string
   description: string
 }
@@ -7,14 +8,17 @@ const WELCOME_TOPIC_STORAGE_KEY = 'chat-welcome-topics-v1'
 
 const FALLBACK_WELCOME_PROMPTS: readonly WelcomePrompt[] = [
   {
+    id: 'time_week_review',
     text: 'Where did my time go this week?',
     description: 'Calendar reality, focus blocks, and drift',
   },
   {
+    id: 'daily_priority',
     text: 'What should I prioritize today?',
     description: 'Top outcomes, constraints, and trade-offs',
   },
   {
+    id: 'values_alignment',
     text: 'Am I working from my values?',
     description: 'Values alignment, energy, and decisions',
   },
@@ -95,18 +99,21 @@ export function resolveWelcomePrompts(): readonly WelcomePrompt[] {
   const adaptive: WelcomePrompt[] = [
     timeSignals
       ? {
+          id: 'focus_drift_patterns',
           text: 'What patterns are stealing my focus?',
           description: 'Interruptions, context switching, and time leakage',
         }
       : FALLBACK_WELCOME_PROMPTS[0],
     prioritySignals
       ? {
+          id: 'daily_top_priority',
           text: 'What is the most important thing today?',
           description: 'Priority ranking, leverage, and execution risk',
         }
       : FALLBACK_WELCOME_PROMPTS[1],
     valuesSignals
       ? {
+          id: 'weekly_alignment_gap',
           text: 'Where am I out of alignment this week?',
           description: 'Stated values vs actual time allocation',
         }
