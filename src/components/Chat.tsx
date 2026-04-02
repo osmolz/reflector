@@ -907,7 +907,7 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
                 onInputChange={setInput}
                 onSendMessage={sendMessage}
                 disabled={loading || historyLoading || creatingSession || !sessionId}
-                placeholder="Ask Prohairesis about your time, priorities, or values..."
+                placeholder="Ask Reflector about your time, priorities, or values..."
                 currentModel={modelTier}
                 onModelChange={setModelTier}
                 imagePreview={imagePreview}

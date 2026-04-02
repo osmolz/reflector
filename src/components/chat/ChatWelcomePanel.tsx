@@ -23,13 +23,15 @@ export function ChatWelcomePanel({
   }
 
   return (
-    <section className="mx-auto mb-8 max-w-2xl border border-border bg-background px-4 py-5">
-      <h2 className="font-serif text-h2 text-text-primary">
+    <section className="mx-auto mb-8 w-full max-w-[42rem] border border-[#e5e5e5] bg-[#f5f5f5] px-4 py-5">
+      <h2 className="font-serif text-[20px] font-bold leading-[1.3] text-[#1a1a1a]">
         {prefix}, {displayName}.
       </h2>
-      <p className="mt-2 font-sans text-body text-text-secondary">What should we discuss today?</p>
+      <p className="mt-2 font-sans text-[14px] font-normal leading-[1.6] text-[#737373]">
+        What should we discuss today?
+      </p>
 
-      <p className="mt-6 font-sans text-label uppercase tracking-wide text-text-secondary">
+      <p className="mt-6 font-sans text-[12px] font-[200] uppercase tracking-wide leading-[1.5] text-[#a6a6a6]">
         Here are some questions I can answer:
       </p>
 
@@ -40,10 +42,10 @@ export function ChatWelcomePanel({
               type="button"
               onClick={() => handleSelect(prompt.text)}
               disabled={disabled}
-              className="w-full border border-border-subtle px-3 py-2.5 text-left font-sans text-body text-text-primary transition-colors hover:border-border hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 disabled:opacity-40"
+              className="w-full border border-[#e5e5e5] px-3 py-2.5 text-left font-sans text-[14px] font-normal leading-[1.6] text-[#1a1a1a] transition-colors hover:border-[#e5e5e5] hover:bg-[#f0f0f0] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a0644e] focus-visible:ring-offset-2 disabled:opacity-40"
             >
               <span className="font-medium">{prompt.text}</span>
-              <span className="mt-0.5 block font-sans text-label font-thin text-text-secondary">
+              <span className="mt-0.5 block font-sans text-[12px] font-[200] leading-[1.5] text-[#a6a6a6]">
                 {prompt.description}
               </span>
             </button>

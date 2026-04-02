@@ -82,13 +82,13 @@ export function ChatInputBar({
   const modelLabel = currentModel === 'balanced' ? 'Balanced' : 'Fast'
 
   return (
-    <div className="w-full shrink-0 border-t border-border-subtle bg-surface-base px-4 pb-5 pt-3">
-      <div className="mx-auto max-w-2xl">
-        <div className="rounded-2xl bg-accent-muted px-4 py-3 text-text-primary focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2 focus-within:ring-offset-surface-base">
+    <div className="w-full shrink-0 border-t border-[#e5e5e5] bg-[#f5f5f5] px-4 pb-5 pt-3">
+      <div className="mx-auto w-full max-w-[42rem]">
+        <div className="rounded-2xl bg-[rgba(160,100,78,0.12)] px-4 py-3 text-[#1a1a1a] focus-within:ring-2 focus-within:ring-[#a0644e] focus-within:ring-offset-2 focus-within:ring-offset-[#f5f5f5]">
           {imagePreview && (
             <div className="mb-2 flex items-center gap-2">
-              <img src={imagePreview} alt="Attachment preview" className="h-12 w-12 rounded-lg border border-border-subtle object-cover" />
-              <button onClick={onImageRemove} disabled={disabled} className="text-xs text-text-secondary hover:text-status-error transition-colors">
+              <img src={imagePreview} alt="Attachment preview" className="h-12 w-12 rounded-lg border border-[#e5e5e5] object-cover" />
+              <button onClick={onImageRemove} disabled={disabled} className="text-xs text-[#737373] hover:text-[#d32f2f] transition-colors">
                 Remove
               </button>
             </div>
@@ -98,7 +98,7 @@ export function ChatInputBar({
             <button
               onClick={onAttachClick}
               disabled={disabled}
-              className="p-2 text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors rounded disabled:opacity-30 disabled:cursor-not-allowed shrink-0"
+              className="shrink-0 rounded p-2 text-[#737373] transition-colors hover:bg-[#f0f0f0] hover:text-[#1a1a1a] disabled:cursor-not-allowed disabled:opacity-30"
               aria-label="Attach image"
               title="Attach image"
             >
@@ -113,7 +113,7 @@ export function ChatInputBar({
               disabled={disabled}
               placeholder={placeholder}
               rows={1}
-              className="flex-1 bg-transparent text-sm text-text-primary placeholder:text-text-primary/60 resize-none focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed leading-relaxed font-serif"
+              className="flex-1 resize-none bg-transparent font-serif text-sm leading-relaxed text-[#1a1a1a] placeholder:text-[rgba(26,26,26,0.6)] focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
               style={{ minHeight: '24px', maxHeight: '150px', overflowY: 'auto' }}
             />
 
@@ -121,25 +121,25 @@ export function ChatInputBar({
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
                 disabled={disabled}
-                className="px-3 py-1 text-label text-text-secondary bg-surface-hover hover:text-text-primary transition-colors rounded-full disabled:opacity-30 disabled:cursor-not-allowed shrink-0"
+                className="shrink-0 rounded-full bg-[#f0f0f0] px-3 py-1 text-[12px] font-[200] leading-[1.5] text-[#737373] transition-colors hover:text-[#1a1a1a] disabled:cursor-not-allowed disabled:opacity-30"
               >
                 {modelLabel}
               </button>
 
               {dropdownOpen && (
-                <div className="absolute bottom-full right-0 mb-2 bg-background border border-border rounded shadow-lg w-48 z-50">
+                <div className="absolute bottom-full right-0 z-50 mb-2 w-48 rounded border border-[#e5e5e5] bg-[#f5f5f5] shadow-lg">
                   <button
                     onClick={() => handleModelSelect('balanced')}
                     className={`w-full text-left px-4 py-2 text-sm transition-colors ${
-                      currentModel === 'balanced' ? 'bg-surface-hover text-accent' : 'text-text-primary hover:bg-surface-hover'
+                      currentModel === 'balanced' ? 'bg-[#f0f0f0] text-[#a0644e]' : 'text-[#1a1a1a] hover:bg-[#f0f0f0]'
                     }`}
                   >
                     Balanced (Sonnet 4.6)
                   </button>
                   <button
                     onClick={() => handleModelSelect('fast')}
-                    className={`w-full text-left px-4 py-2 text-sm transition-colors border-t border-border ${
-                      currentModel === 'fast' ? 'bg-surface-hover text-accent' : 'text-text-primary hover:bg-surface-hover'
+                    className={`w-full border-t border-[#e5e5e5] px-4 py-2 text-left text-sm transition-colors ${
+                      currentModel === 'fast' ? 'bg-[#f0f0f0] text-[#a0644e]' : 'text-[#1a1a1a] hover:bg-[#f0f0f0]'
                     }`}
                   >
                     Fast (Haiku 4.5)
@@ -151,7 +151,7 @@ export function ChatInputBar({
             <button
               onClick={() => onSendMessage(input)}
               disabled={disabled || (!input.trim() && !imagePreview)}
-              className="p-2 text-text-secondary hover:text-text-primary hover:bg-surface-hover transition-colors rounded disabled:opacity-30 disabled:cursor-not-allowed shrink-0"
+              className="shrink-0 rounded p-2 text-[#737373] transition-colors hover:bg-[#f0f0f0] hover:text-[#1a1a1a] disabled:cursor-not-allowed disabled:opacity-30"
               aria-label="Send message"
               title="Send message"
             >
