@@ -1,4 +1,4 @@
-import type React from 'react'
+import React from 'react'
 import { greetingPrefixForHour, resolveWelcomePrompts } from './chatWelcome'
 
 interface ChatWelcomePanelProps {
@@ -35,9 +35,9 @@ export function ChatWelcomePanel({
         Here are some questions I can answer:
       </p>
 
-      <ul className="mt-3 flex flex-col gap-2">
+      <ul className="mt-3 list-none p-0 m-0 flex flex-col gap-2">
         {prompts.map((prompt) => (
-          <li key={prompt.text}>
+          <li key={prompt.text} className="list-none m-0 p-0">
             <button
               type="button"
               onClick={() => handleSelect(prompt.text)}
