@@ -82,8 +82,8 @@ export function ChatInputBar({
   const modelLabel = currentModel === 'balanced' ? 'Balanced' : 'Fast'
 
   return (
-    <div className="w-full shrink-0 border-t border-[#e5e5e5] bg-[#f5f5f5] px-4 pb-6 pt-2">
-      <div className="mx-auto w-full max-w-[42rem]">
+    <div className="w-full shrink-0 border-t border-[#e5e5e5] bg-[#f5f5f5] px-4 pb-8 pt-3">
+      <div className="mx-auto mb-1 w-full max-w-[42rem]">
         <div className="rounded-[16px] border border-[rgba(160,100,78,0.70)] bg-[rgba(160,100,78,0.12)] px-4 py-2.5 text-[#1a1a1a]">
           {imagePreview && (
             <div className="mb-2 flex items-center gap-2">
@@ -153,7 +153,7 @@ export function ChatInputBar({
             <button
               onClick={() => onSendMessage(input)}
               disabled={disabled || (!input.trim() && !imagePreview)}
-              className="shrink-0 rounded p-2 text-[#c2c2c2] transition-colors hover:bg-[#f0f0f0] hover:text-[#9a9a9a] disabled:cursor-not-allowed disabled:opacity-30"
+              className="shrink-0 rounded-full border border-[#dfdfdf] bg-[#f0f0f0] p-2 text-[#b0b0b0] transition-colors hover:text-[#8d8d8d] disabled:cursor-not-allowed disabled:opacity-30"
               aria-label="Send message"
               title="Send message"
             >

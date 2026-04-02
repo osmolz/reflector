@@ -13,7 +13,7 @@
 
 .activity-review-title {
   font-family: var(--font-serif);
-  font-size: 1.4rem;
+  font-size: var(--log-fs-heading, 1.4rem);
   font-weight: 700;
   color: var(--text-primary);
   margin-bottom: var(--space-xl);
@@ -58,7 +58,7 @@
 
 .activity-item-name {
   font-family: var(--font-serif);
-  font-size: 1.125rem;
+  font-size: calc(var(--log-fs-heading, 1.4rem) * 0.82);
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: var(--space-xs);
@@ -69,7 +69,7 @@
   display: flex;
   gap: var(--space-lg);
   flex-wrap: wrap;
-  font-size: 0.875rem;
+  font-size: var(--log-fs-label, 0.875rem);
   color: var(--text-secondary);
 }
 
@@ -96,7 +96,7 @@
 
 .activity-item-actions button {
   padding: var(--space-xs) var(--space-md);
-  font-size: 0.8125rem;
+  font-size: var(--log-fs-control, 0.9375rem);
   border: 1px solid var(--border-light);
   border-radius: 0;
   cursor: pointer;
@@ -115,6 +115,16 @@
   background-color: var(--bg-primary);
   border-color: var(--accent-color);
   color: var(--text-primary);
+}
+
+.activity-item-actions .btn-edit:focus-visible,
+.activity-item-actions .btn-delete:focus-visible,
+.activity-item-edit-actions .btn-save:focus-visible,
+.activity-item-edit-actions .btn-cancel:focus-visible,
+.activity-review-controls .btn-save-activities:focus-visible,
+.activity-review-controls .btn-discard:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
 }
 
 .activity-item-actions .btn-delete {
@@ -153,7 +163,7 @@
 }
 
 .activity-item-form-group label {
-  font-size: 0.8125rem;
+  font-size: var(--log-fs-label, 0.875rem);
   font-weight: 500;
   color: var(--text-secondary);
   text-transform: none;
@@ -167,7 +177,7 @@
   background-color: var(--bg-secondary);
   color: var(--text-primary);
   font-family: var(--font-sans);
-  font-size: 0.95rem;
+  font-size: var(--log-fs-body, 1rem);
   transition: border-color 0.2s ease;
 }
 
@@ -191,7 +201,7 @@
   border-radius: 0;
   cursor: pointer;
   font-weight: 600;
-  font-size: 0.8125rem;
+  font-size: var(--log-fs-control, 0.9375rem);
   font-family: var(--font-sans);
   transition: background-color 0.15s ease, border-color 0.15s ease;
 }
@@ -239,7 +249,7 @@
   border-radius: 0;
   cursor: pointer;
   font-weight: 600;
-  font-size: 0.9375rem;
+  font-size: var(--log-fs-control, 0.9375rem);
   font-family: var(--font-sans);
   transition: background-color 0.15s ease, border-color 0.15s ease;
   flex: 1;
@@ -324,7 +334,7 @@
 }
 
 .activity-item-note {
-  font-size: 0.8125rem;
+  font-size: var(--log-fs-meta, 0.8125rem);
   color: var(--error);
   margin-top: var(--space-xs);
 }

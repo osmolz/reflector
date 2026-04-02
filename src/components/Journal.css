@@ -25,7 +25,7 @@
    ============================================================ */
 .journal-entry-date {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: var(--log-fs-meta, 0.8125rem);
   color: var(--text-tertiary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -38,7 +38,7 @@
    ============================================================ */
 .journal-entry-title {
   font-family: var(--font-serif);
-  font-size: 1.2rem;
+  font-size: var(--log-fs-heading, 1.4rem);
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: var(--space-xs);
@@ -50,8 +50,8 @@
    Entry Content (Body text)
    ============================================================ */
 .journal-entry-content {
-  font-size: 1rem;
-  line-height: 1.7;
+  font-size: var(--log-fs-body, 1rem);
+  line-height: var(--log-lh-body, 1.65);
   color: var(--text-secondary);
 }
 
@@ -94,7 +94,7 @@
 
 .journal-form-title {
   font-family: var(--font-serif);
-  font-size: 1.25rem;
+  font-size: var(--log-fs-heading, 1.4rem);
   font-weight: 700;
   color: var(--text-primary);
   margin-bottom: var(--space-lg);
@@ -117,8 +117,8 @@
   background-color: var(--bg-secondary);
   color: var(--text-primary);
   font-family: var(--font-sans);
-  font-size: 1.0625rem;
-  line-height: 1.7;
+  font-size: var(--log-fs-body, 1rem);
+  line-height: var(--log-lh-body, 1.65);
   resize: vertical;
   min-height: 180px;
   transition: border-color 0.15s ease, background-color 0.15s ease;
@@ -142,7 +142,7 @@
 
 /* Character count */
 .journal-char-count {
-  font-size: 0.75rem;
+  font-size: var(--log-fs-meta, 0.8125rem);
   color: var(--text-tertiary);
   margin-top: var(--space-xs);
   text-align: right;
@@ -166,7 +166,7 @@
   border-radius: 0;
   color: var(--text-secondary);
   cursor: pointer;
-  font-size: 0.875rem;
+  font-size: var(--log-fs-control, 0.9375rem);
   font-weight: 500;
   font-family: var(--font-sans);
   transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
@@ -193,7 +193,7 @@
   border-radius: 0;
   cursor: pointer;
   font-weight: 600;
-  font-size: 0.9375rem;
+  font-size: var(--log-fs-control, 0.9375rem);
   font-family: var(--font-sans);
   transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
 }
@@ -217,7 +217,7 @@
    Transcript Display
    ============================================================ */
 .journal-transcript {
-  font-size: 0.8125rem;
+  font-size: var(--log-fs-meta, 0.8125rem);
   color: var(--text-secondary);
   margin-top: var(--space-sm);
   padding: var(--space-sm) var(--space-md);
@@ -304,7 +304,7 @@
 
 .journal-history-heading {
   font-family: var(--font-serif);
-  font-size: 1.4rem;
+  font-size: var(--log-fs-heading, 1.4rem);
   font-weight: 700;
   margin: var(--space-4xl) 0 var(--space-xl);
   color: var(--text-primary);
@@ -334,7 +334,7 @@
   border: none;
   background: transparent;
   color: var(--accent-color);
-  font-size: 0.875rem;
+  font-size: var(--log-fs-control, 0.9375rem);
   font-weight: 500;
   padding: 0;
   text-decoration: underline;
@@ -344,8 +344,8 @@
 .journal-entry-body {
   margin-top: var(--space-lg);
   color: var(--text-secondary);
-  font-size: 1rem;
-  line-height: 1.7;
+  font-size: var(--log-fs-body, 1rem);
+  line-height: var(--log-lh-body, 1.65);
   white-space: pre-wrap;
   word-break: break-word;
 }

@@ -1,6 +1,14 @@
 /* Log route — editorial tabs (nav-aligned), no decorative chrome */
 
 .log-journal-shell {
+  --log-fs-heading: 1.4rem;
+  --log-fs-body: 1rem;
+  --log-fs-control: 0.9375rem;
+  --log-fs-label: 0.875rem;
+  --log-fs-meta: 0.8125rem;
+  --log-fs-helper: 0.9375rem;
+  --log-lh-body: 1.65;
+  --log-lh-helper: 1.55;
   padding: 0;
   display: flex;
   flex-direction: column;
@@ -30,7 +38,7 @@
   position: relative;
   padding: var(--space-xs) var(--space-sm);
   font-family: var(--font-sans);
-  font-size: 1rem;
+  font-size: var(--log-fs-control);
   font-weight: 500;
   color: var(--text-tertiary);
   text-decoration: none;
@@ -67,10 +75,10 @@
 }
 
 .log-journal-tab-hint {
-  font-size: 1rem;
+  font-size: var(--log-fs-helper);
   font-weight: 400;
   color: var(--text-secondary);
-  line-height: 1.65;
+  line-height: var(--log-lh-helper);
   max-width: 46ch;
   margin: 0 0 var(--space-xl);
 }
@@ -85,7 +93,7 @@
 
 @media (max-width: 640px) {
   .log-journal-tab {
-    font-size: 0.9375rem;
+    font-size: var(--log-fs-control);
     padding: var(--space-sm) var(--space-md);
   }
 

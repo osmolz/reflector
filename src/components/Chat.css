@@ -476,7 +476,7 @@
   font-family: var(--font-sans);
   font-size: 0.8125rem;
   line-height: 1.5;
-  color: var(--text-tertiary);
+  color: var(--text-primary);
   margin: 0 0 var(--space-md);
   padding-bottom: var(--space-sm);
   border-bottom: 1px solid var(--chat-border-subtle);
@@ -531,7 +531,7 @@
 }
 
 .chat-message--streaming .chat-bubble--assistant .chat-message-body {
-  color: var(--text-secondary);
+  color: var(--text-primary);
 }
 
 .chat-stream-cursor {
