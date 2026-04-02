@@ -4,7 +4,7 @@ import './Layout.css';
  * Shared top bar for Log, Timeline, and Chat (same markup + tokens as Phase 21 shell).
  * `views` must include logJournal, timeline, chat keys matching App routing.
  */
-export function AppHeader({ views, currentView, onViewChange, user, onSignOut }) {
+export function AppHeader({ views, currentView, onViewChange, onSignOut }) {
   return (
     <header className="header" role="banner">
       <div className="header-brand">
@@ -46,10 +46,7 @@ export function AppHeader({ views, currentView, onViewChange, user, onSignOut })
         </ul>
       </nav>
 
-      <div className="header-actions">
-        <span className="header-user-email" title={user?.email}>
-          {user?.email}
-        </span>
+      <div className="header-actions" aria-label="Account actions">
         <button type="button" className="header-sign-out" onClick={onSignOut}>
           Sign out
         </button>

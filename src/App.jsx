@@ -53,7 +53,6 @@ function App() {
               views={VIEWS}
               currentView={currentView}
               onViewChange={setCurrentView}
-              user={user}
               onSignOut={handleSignOut}
             />
 

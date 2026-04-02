@@ -54,7 +54,7 @@
   --radius-lg: 16px;
 
   --max-width: 680px;
-  --header-height: 56px;
+  --header-height: 64px;
 
   /* Chat shell (Claude-style layout contract) */
   --app-header-height: 5rem;
