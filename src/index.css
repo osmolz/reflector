@@ -1,6 +1,7 @@
 /* Reflector — Phase 21: editorial tokens, terracotta accent, ink CTAs */
 
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Karla:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,200;9..144,300;9..144,400;9..144,700;9..144,800;9..144,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@200;300;400;500;600;700&display=swap');
 
 *,
 *::before,
@@ -12,29 +13,29 @@
 
 :root {
   /* Surfaces — one warm off-white family */
-  --bg-primary: #f3efe8;
-  --bg-secondary: #faf8f4;
-  --bg-tertiary: #e9e4db;
+  --bg-primary: #f5f5f5;
+  --bg-secondary: #f5f5f5;
+  --bg-tertiary: #f0f0f0;
 
   /* Type — charcoal, not pure black; tertiary dark enough for AA on paper */
-  --text-primary: #1c1a17;
-  --text-secondary: #3f3c37;
-  --text-tertiary: #5a554c;
+  --text-primary: #1a1a1a;
+  --text-secondary: #737373;
+  --text-tertiary: #a6a6a6;
 
   /* Accent — terracotta: links, active nav, focus ring, meaningful emphasis only */
-  --accent-color: #9c5a45;
-  --accent-hover: #7d4836;
+  --accent-color: #a0644e;
+  --accent-hover: #8b5742;
   /* Ink — primary filled actions (distinct from accent) */
-  --btn-primary-bg: #1c1a17;
-  --btn-primary-fg: #faf8f4;
-  --btn-primary-hover-bg: #0f0e0c;
+  --btn-primary-bg: #1a1a1a;
+  --btn-primary-fg: #f5f5f5;
+  --btn-primary-hover-bg: #111111;
 
-  --border-light: rgba(28, 26, 23, 0.1);
-  --border-medium: rgba(28, 26, 23, 0.18);
+  --border-light: #e5e5e5;
+  --border-medium: #e5e5e5;
 
-  --success: #2a4a30;
-  --error: #8f2828;
-  --warning: #7a4f12;
+  --success: #1a8917;
+  --error: #d32f2f;
+  --warning: #f57c00;
 
   --space-xs: 4px;
   --space-sm: 8px;
@@ -46,7 +47,7 @@
   --space-4xl: 96px;
 
   --font-serif: 'Fraunces', 'Georgia', 'Times New Roman', serif;
-  --font-sans: 'Karla', system-ui, sans-serif;
+  --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
   --font-mono: ui-monospace, 'Cascadia Code', 'Consolas', monospace;
 
   --radius-sm: 8px;
@@ -63,9 +64,12 @@
   --chat-reading-max: 42rem;
   --chat-gap-medium: 40px;
   --chat-gap-message-y: 20px;
-  --chat-accent-muted-bg: rgba(160, 100, 78, 0.14);
-  --chat-surface-hover: rgba(28, 26, 23, 0.07);
-  --chat-border-subtle: rgba(28, 26, 23, 0.1);
+  --chat-accent-muted-bg: rgba(160, 100, 78, 0.12);
+  --chat-surface-hover: #f0f0f0;
+  --chat-border-subtle: #e5e5e5;
+  --gap-small: 20px;
+  --gap-medium: 40px;
+  --gap-large: 60px;
   --chat-z-backdrop: 30;
   --chat-z-sheet: 40;
   --chat-z-dropdown: 50;

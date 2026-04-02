@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase'
 import { useChatPersistence } from '../hooks/useChatPersistence'
 import { readActiveChatSessionId, writeActiveChatSessionId } from '../lib/chatSessionStorage'
 import { AppHeader } from './AppHeader'
+import { ChatInputBar } from './chat/ChatInputBar'
 import './Chat.css'
 
 const SIDEBAR_LS_KEY = 'chat-sidebar-open'
@@ -86,17 +87,17 @@ function IconSessions() {
   return (
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
       <path
-        d="M6 9a3 3 0 116 0 3 3 0 01-6 0zM12 15a3 3 0 013 3v1H3v-1a3 3 0 013-3h6z"
-        stroke="currentColor"
-        strokeWidth="1.75"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M14 7a2.5 2.5 0 114 2.2M17 13.5h.5a2.5 2.5 0 012.5 2.5V17h-3"
+        d="M4 6.75A2.75 2.75 0 016.75 4h10.5A2.75 2.75 0 0120 6.75v6.5A2.75 2.75 0 0117.25 16H11l-3.9 3.25c-.8.67-1.95.1-1.95-.95V16h-.4A2.75 2.75 0 012 13.25v-6.5A2.75 2.75 0 014.75 4H5"
         stroke="currentColor"
         strokeWidth="1.75"
         strokeLinecap="round"
         strokeLinejoin="round"
+      />
+      <path
+        d="M8 9.5h8M8 12.5h5.5"
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
       />
     </svg>
   )
@@ -135,11 +136,12 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
   const [historyLoading, setHistoryLoading] = useState(false)
   const [error, setError] = useState(null)
   const [modelTier, setModelTier] = useState('balanced')
-  const [modelMenuOpen, setModelMenuOpen] = useState(false)
+  const [imagePreview, setImagePreview] = useState(null)
   const chatHistoryRef = useRef(null)
+  const fileInputRef = useRef(null)
+  const composerTextareaRef = useRef(null)
   const isStreamingRef = useRef(false)
   const searchFieldRef = useRef(null)
-  const modelSelectRef = useRef(null)
 
   const applyNewSession = useCallback((data) => {
     setSessions((prev) => [data, ...prev])
@@ -201,26 +203,6 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
       /* ignore */
     }
   }, [modelTier])
-
-  useEffect(() => {
-    if (!modelMenuOpen) return
-    const onPointerDown = (e) => {
-      if (modelSelectRef.current && !modelSelectRef.current.contains(e.target)) {
-        setModelMenuOpen(false)
-      }
-    }
-    document.addEventListener('mousedown', onPointerDown)
-    return () => document.removeEventListener('mousedown', onPointerDown)
-  }, [modelMenuOpen])
-
-  useEffect(() => {
-    if (!modelMenuOpen) return
-    const onKey = (e) => {
-      if (e.key === 'Escape') setModelMenuOpen(false)
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [modelMenuOpen])
 
   useEffect(() => {
     const t = setTimeout(() => setDebouncedSearch(searchInput.trim()), 300)
@@ -311,12 +293,30 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
           }),
         }).catch(() => {})
         // #endregion
-        const { data, error: fetchError } = await supabase
-          .from('chat_messages')
-          .select('id, role, content, created_at, thinking_summary')
-          .eq('user_id', user.id)
-          .eq('session_id', sessionId)
-          .order('created_at', { ascending: true })
+        let rows = []
+        let fetchError = null
+
+        const runSelect = (columns) =>
+          supabase
+            .from('chat_messages')
+            .select(columns)
+            .eq('user_id', user.id)
+            .eq('session_id', sessionId)
+            .order('created_at', { ascending: true })
+
+        const firstAttempt = await runSelect('id, role, content, created_at, thinking_summary')
+        rows = firstAttempt.data || []
+        fetchError = firstAttempt.error
+
+        const missingThinkingSummary =
+          fetchError?.code === '42703' &&
+          String(fetchError?.message || '').toLowerCase().includes('thinking_summary')
+
+        if (missingThinkingSummary) {
+          const fallbackAttempt = await runSelect('id, role, content, created_at')
+          rows = fallbackAttempt.data || []
+          fetchError = fallbackAttempt.error
+        }
 
         if (fetchError) {
           // #region agent log
@@ -349,7 +349,7 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
             message: 'chat_messages select ok',
             data: {
               hypothesisId: 'H-B',
-              rowCount: (data || []).length,
+              rowCount: rows.length,
             },
             timestamp: Date.now(),
           }),
@@ -357,7 +357,7 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
         // #endregion
 
         setMessages(
-          (data || []).map((msg) => ({
+          rows.map((msg) => ({
             id: msg.id,
             role: msg.role,
             content: msg.content,
@@ -435,14 +435,15 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
   const sendMessage = async (overrideText) => {
     const fromComposer = overrideText === undefined
     const text = (fromComposer ? input : String(overrideText)).trim()
-    if (!text || !user || !sessionId) return
+    const normalizedText = text || (imagePreview ? '[Image attached]' : '')
+    if (!normalizedText || !user || !sessionId) return
 
     if (fromComposer) setInput('')
 
     const userMessage = {
       id: Date.now().toString(),
       role: 'user',
-      content: text,
+      content: normalizedText,
       created_at: new Date().toISOString(),
       isStreaming: false,
     }
@@ -504,6 +505,8 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
           message: userMessage.content,
           sessionId,
           model: CHAT_MODEL_BY_TIER[modelTier] ?? CHAT_MODEL_BY_TIER.balanced,
+          clientNowIso: new Date().toISOString(),
+          clientTimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone || null,
         }),
       })
 
@@ -604,16 +607,31 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
     } finally {
       isStreamingRef.current = false
       setLoading(false)
+      if (fromComposer && imagePreview) {
+        setImagePreview(null)
+        if (fileInputRef.current) fileInputRef.current.value = ''
+      }
     }
   }
 
-  const handleSend = () => sendMessage()
+  const handleAttachClick = () => {
+    fileInputRef.current?.click()
+  }
 
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault()
-      sendMessage()
+  const handleImageRemove = () => {
+    setImagePreview(null)
+    if (fileInputRef.current) fileInputRef.current.value = ''
+  }
+
+  const handleFileSelected = (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = () => {
+      const result = typeof reader.result === 'string' ? reader.result : null
+      setImagePreview(result)
     }
+    reader.readAsDataURL(file)
   }
 
   const startersDisabled = !sessionId || loading || historyLoading || creatingSession
@@ -680,7 +698,6 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
             views={views}
             currentView={currentView}
             onViewChange={onViewChange}
-            user={user}
             onSignOut={onSignOut}
           />
 
@@ -800,15 +817,6 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
 
             {/* Transcript + composer */}
             <div className="chat-main-col">
-              {error && (
-                <div className="chat-inline-error" role="alert">
-                  <span>{error}</span>
-                  <button type="button" className="chat-inline-error-dismiss" onClick={() => setError(null)}>
-                    Dismiss
-                  </button>
-                </div>
-              )}
-
               <div className="chat-transcript-scroll" ref={chatHistoryRef}>
                 <div className="chat-transcript-inner">
                   {historyLoading && messages.length === 0 && (
@@ -883,83 +891,29 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
                 </div>
               </div>
 
-              <div className="chat-composer-wrap">
-                <div className="chat-composer-inner">
-                  <form className="chat-composer-form" onSubmit={(e) => { e.preventDefault(); handleSend() }}>
-                    <div className="chat-composer-box">
-                      <textarea
-                        className="chat-composer-input chat-input"
-                        placeholder="Ask about your time…"
-                        value={input}
-                        onChange={(e) => setInput(e.target.value)}
-                        onKeyDown={handleKeyDown}
-                        disabled={loading || historyLoading || creatingSession || !sessionId}
-                        name="message"
-                        rows={1}
-                        autoComplete="off"
-                      />
-                      <div className="chat-model-select" ref={modelSelectRef}>
-                        <button
-                          type="button"
-                          className="chat-model-pill chat-model-pill--trigger"
-                          aria-haspopup="listbox"
-                          aria-expanded={modelMenuOpen}
-                          aria-label={`Response speed: ${modelTier === 'fast' ? 'Fast' : 'Balanced'}`}
-                          disabled={loading || historyLoading || creatingSession || !sessionId}
-                          onClick={() => setModelMenuOpen((open) => !open)}
-                        >
-                          {modelTier === 'fast' ? 'Fast' : 'Balanced'}
-                        </button>
-                        {modelMenuOpen ? (
-                          <div
-                            className="chat-model-dropdown"
-                            role="listbox"
-                            aria-label="Choose response speed"
-                          >
-                            <button
-                              type="button"
-                              className={`chat-model-option${modelTier === 'balanced' ? ' chat-model-option--selected' : ''}`}
-                              role="option"
-                              aria-selected={modelTier === 'balanced'}
-                              onClick={() => {
-                                setModelTier('balanced')
-                                setModelMenuOpen(false)
-                              }}
-                            >
-                              Balanced (Opus 4.6)
-                            </button>
-                            <button
-                              type="button"
-                              className={`chat-model-option${modelTier === 'fast' ? ' chat-model-option--selected' : ''}`}
-                              role="option"
-                              aria-selected={modelTier === 'fast'}
-                              onClick={() => {
-                                setModelTier('fast')
-                                setModelMenuOpen(false)
-                              }}
-                            >
-                              Fast (Haiku 4.5)
-                            </button>
-                          </div>
-                        ) : null}
-                      </div>
-                      <button
-                        type="submit"
-                        className="chat-composer-send chat-send-button"
-                        disabled={
-                          loading ||
-                          historyLoading ||
-                          creatingSession ||
-                          !sessionId ||
-                          !input.trim()
-                        }
-                      >
-                        Send
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              </div>
+              <ChatInputBar
+                input={input}
+                onInputChange={setInput}
+                onSendMessage={sendMessage}
+                disabled={loading || historyLoading || creatingSession || !sessionId}
+                placeholder="Ask Phronesis about your sleep, training, or nutrition..."
+                currentModel={modelTier}
+                onModelChange={setModelTier}
+                imagePreview={imagePreview}
+                onAttachClick={handleAttachClick}
+                onImageRemove={handleImageRemove}
+                error={error}
+                composerTextareaRef={composerTextareaRef}
+              />
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="chat-file-input"
+                onChange={handleFileSelected}
+                tabIndex={-1}
+                aria-hidden="true"
+              />
             </div>
           </div>
         </div>
