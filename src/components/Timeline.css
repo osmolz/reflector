@@ -1,10 +1,13 @@
 /* ============================================================
    Timeline Component Redesign
    Compact grid layout for day/week/month views
+   Chrome (tabs, nav, sync, categories, calendar links): --nav-chrome-*
+   matches header nav (Layout.css). Period headline: serif (index h1–h3).
    ============================================================ */
 
 .timeline-wrapper {
   padding: var(--space-lg) 0;
+  font-family: var(--font-sans);
 }
 
 .timeline-period-shell {
@@ -44,14 +47,14 @@
   border: none;
   background: none;
   color: var(--text-secondary);
-  font-size: 0.8125rem;
-  font-weight: 500;
-  letter-spacing: 0.01em;
+  font-family: var(--nav-chrome-font-family);
+  font-size: var(--nav-chrome-font-size);
+  font-weight: var(--nav-chrome-font-weight);
+  letter-spacing: var(--nav-chrome-letter-spacing);
   cursor: pointer;
   transition: color 0.15s ease, text-decoration-color 0.15s ease;
   border-radius: 0;
   white-space: nowrap;
-  font-family: var(--font-sans);
   text-decoration: underline;
   text-decoration-color: var(--border-medium);
   text-underline-offset: 3px;
@@ -68,25 +71,33 @@
 }
 
 /* ============================================================
-   View Toggle
+   View Toggle — spacing / underline aligned with Log tabs; type = app sans
    ============================================================ */
 .timeline-view-toggle {
   display: flex;
-  gap: var(--space-sm);
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-md);
   margin-bottom: 0;
   border-bottom: none;
   padding-bottom: 0;
 }
 
 .toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   position: relative;
   padding: var(--space-xs) var(--space-sm);
+  box-sizing: border-box;
   background: none;
   border: none;
-  color: var(--text-tertiary);
-  font-size: 0.9375rem;
-  font-weight: 500;
-  letter-spacing: 0.01em;
+  border-radius: 0;
+  font-family: var(--nav-chrome-font-family);
+  font-size: var(--nav-chrome-font-size);
+  font-weight: var(--nav-chrome-font-weight);
+  letter-spacing: var(--nav-chrome-letter-spacing);
+  color: var(--text-secondary);
   cursor: pointer;
   transition: color 0.15s ease;
   line-height: 1.2;
@@ -111,7 +122,7 @@
   position: absolute;
   left: var(--space-xs);
   right: var(--space-xs);
-  bottom: -6px;
+  bottom: calc(-1 * var(--space-sm) - 1px);
   height: 1px;
   background-color: var(--accent-color);
 }
@@ -137,18 +148,21 @@
 
 .timeline-nav-btn {
   padding: var(--space-xs) var(--space-md);
+  font-family: var(--nav-chrome-font-family);
+  font-size: var(--nav-chrome-font-size);
+  font-weight: var(--nav-chrome-font-weight);
+  letter-spacing: var(--nav-chrome-letter-spacing);
   background: none;
   border: 1px solid var(--border-light);
   color: var(--text-secondary);
-  font-size: 0.8125rem;
   cursor: pointer;
   transition: border-color 0.2s ease, color 0.2s ease;
   border-radius: 0;
 }
 
 .timeline-nav-btn:hover {
-  border-color: var(--accent-color);
-  color: var(--accent-color);
+  border-color: var(--border-light);
+  color: var(--text-primary);
 }
 
 .timeline-nav-btn:focus-visible {
@@ -208,7 +222,6 @@
 }
 
 .timeline-day-window {
-  font-family: var(--font-mono);
   font-size: 0.8125rem;
   font-variant-numeric: tabular-nums;
   font-weight: 600;
@@ -222,13 +235,13 @@
 }
 
 .timeline-day-title {
-  font-family: var(--font-serif);
+  font-family: var(--nav-chrome-font-family);
   font-size: 1.0625rem;
   font-weight: 600;
   color: var(--text-primary);
   line-height: 1.35;
   margin: 0 0 var(--space-xs);
-  letter-spacing: -0.01em;
+  letter-spacing: var(--nav-chrome-letter-spacing);
 }
 
 .timeline-day-meta {
@@ -236,24 +249,22 @@
   flex-wrap: wrap;
   align-items: baseline;
   gap: var(--space-sm) var(--space-md);
-  font-family: var(--font-sans);
   font-size: 0.8125rem;
   color: var(--text-secondary);
   line-height: 1.4;
 }
 
 .timeline-day-duration {
-  font-family: var(--font-mono);
   font-weight: 600;
   font-variant-numeric: tabular-nums;
   color: var(--text-secondary);
 }
 
 .timeline-day-category {
-  text-transform: uppercase;
-  font-size: 0.6875rem;
+  font-family: var(--nav-chrome-font-family);
+  font-size: 0.8125rem;
   font-weight: 600;
-  letter-spacing: 0.06em;
+  letter-spacing: var(--nav-chrome-letter-spacing);
   color: var(--text-tertiary);
 }
 
@@ -268,9 +279,10 @@
   padding: 0;
   border: none;
   background: none;
-  font-family: var(--font-sans);
-  font-size: 0.8125rem;
-  font-weight: 500;
+  font-family: var(--nav-chrome-font-family);
+  font-size: var(--nav-chrome-font-size);
+  font-weight: var(--nav-chrome-font-weight);
+  letter-spacing: var(--nav-chrome-letter-spacing);
   color: var(--accent-color);
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -300,7 +312,6 @@
 }
 
 .timeline-day-gap-window {
-  font-family: var(--font-mono);
   font-size: 0.75rem;
   font-variant-numeric: tabular-nums;
   font-weight: 600;
@@ -313,7 +324,6 @@
   flex-wrap: wrap;
   align-items: baseline;
   gap: var(--space-sm) var(--space-md);
-  font-family: var(--font-sans);
   font-size: 0.8125rem;
 }
 
@@ -323,7 +333,6 @@
 }
 
 .timeline-day-gap-duration {
-  font-family: var(--font-mono);
   font-size: 0.75rem;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
@@ -381,16 +390,20 @@
 }
 
 .timeline-week-day-name {
-  font-family: var(--font-serif);
-  font-size: 0.875rem;
+  font-family: var(--nav-chrome-font-family);
+  font-size: var(--nav-chrome-font-size);
   font-weight: 600;
+  letter-spacing: var(--nav-chrome-letter-spacing);
   color: var(--text-primary);
   line-height: 1;
 }
 
 .timeline-week-day-date {
-  font-family: var(--font-mono);
+  font-family: var(--nav-chrome-font-family);
   font-size: 0.75rem;
+  font-weight: var(--nav-chrome-font-weight);
+  letter-spacing: var(--nav-chrome-letter-spacing);
+  font-variant-numeric: tabular-nums;
   color: var(--text-tertiary);
   margin-top: 2px;
 }
@@ -410,6 +423,7 @@
   border-radius: 1px;
   cursor: pointer;
   transition: all 0.1s ease;
+  font-family: inherit;
   font-size: 0.7rem;
   line-height: 1.3;
 }
@@ -431,14 +445,16 @@
 
 .timeline-week-activity-time {
   display: block;
-  font-family: var(--font-mono);
   font-size: 0.625rem;
+  font-variant-numeric: tabular-nums;
   color: var(--text-secondary);
   font-weight: 500;
 }
 
 .timeline-week-activity-name {
   display: block;
+  font-family: var(--nav-chrome-font-family);
+  letter-spacing: var(--nav-chrome-letter-spacing);
   color: var(--text-primary);
   font-weight: 500;
   margin-top: 1px;
@@ -476,9 +492,10 @@
 .timeline-month-day-header {
   padding: var(--space-sm);
   background-color: var(--bg-tertiary);
-  font-family: var(--font-serif);
-  font-size: 0.875rem;
+  font-family: var(--nav-chrome-font-family);
+  font-size: var(--nav-chrome-font-size);
   font-weight: 600;
+  letter-spacing: var(--nav-chrome-letter-spacing);
   color: var(--text-primary);
   text-align: center;
 }
@@ -515,15 +532,19 @@
 }
 
 .timeline-month-cell-date {
-  font-family: var(--font-mono);
-  font-size: 0.875rem;
+  font-family: var(--nav-chrome-font-family);
+  font-size: var(--nav-chrome-font-size);
   font-weight: 500;
+  letter-spacing: var(--nav-chrome-letter-spacing);
+  font-variant-numeric: tabular-nums;
   color: var(--text-primary);
 }
 
 .timeline-month-cell-count {
+  font-family: var(--nav-chrome-font-family);
   font-size: 0.75rem;
   font-weight: 600;
+  letter-spacing: var(--nav-chrome-letter-spacing);
   color: var(--accent-color);
   background-color: rgba(43, 90, 107, 0.1);
   padding: 2px 6px;
@@ -536,23 +557,29 @@
    ============================================================ */
 .timeline-loading {
   padding: var(--space-2xl) 0;
+  font-family: var(--nav-chrome-font-family);
   color: var(--text-tertiary);
-  font-size: 0.875rem;
+  font-size: var(--nav-chrome-font-size);
+  letter-spacing: var(--nav-chrome-letter-spacing);
   font-style: italic;
 }
 
 .timeline-error {
   padding: var(--space-md) var(--space-lg);
   border-left: 2px solid var(--error);
+  font-family: var(--nav-chrome-font-family);
   color: var(--error);
-  font-size: 0.875rem;
+  font-size: var(--nav-chrome-font-size);
+  letter-spacing: var(--nav-chrome-letter-spacing);
   background-color: rgba(198, 40, 40, 0.05);
 }
 
 .timeline-empty-message {
   padding: var(--space-2xl) 0;
+  font-family: var(--nav-chrome-font-family);
   color: var(--text-tertiary);
-  font-size: 0.875rem;
+  font-size: var(--nav-chrome-font-size);
+  letter-spacing: var(--nav-chrome-letter-spacing);
   font-style: italic;
   text-align: center;
   margin: 0;
@@ -624,6 +651,11 @@
     order: 1;
     justify-content: flex-start;
     flex-wrap: wrap;
+  }
+
+  /* Align with Log page tabs at 640px (LogJournal.css) */
+  .timeline-view-toggle .toggle-btn {
+    padding: var(--space-sm) var(--space-md);
   }
 
   .timeline-header-actions {

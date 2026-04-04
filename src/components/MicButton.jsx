@@ -45,7 +45,7 @@ function StopIcon() {
   );
 }
 
-export function MicButton({ onTranscriptReady }) {
+export function MicButton({ onTranscriptReady, disabled = false }) {
   const [isRecording, setIsRecording] = useState(false);
   const [error, setError] = useState(null);
   const recognitionRef = useRef(null);
@@ -154,6 +154,7 @@ export function MicButton({ onTranscriptReady }) {
   };
 
   const handleClick = () => {
+    if (disabled) return;
     if (isRecording) {
       stopRecording();
     } else {
@@ -167,6 +168,7 @@ export function MicButton({ onTranscriptReady }) {
         <button
           type="button"
           onClick={handleClick}
+          disabled={disabled}
           className={`mic-button ${isRecording ? 'recording' : ''}`}
           aria-label={isRecording ? 'Stop recording' : 'Start recording'}
           aria-pressed={isRecording}
@@ -174,9 +176,9 @@ export function MicButton({ onTranscriptReady }) {
         >
           {isRecording ? <StopIcon /> : <MicIcon />}
         </button>
-        <div className={`mic-status ${isRecording ? 'recording' : ''}`}>
-          {isRecording ? 'Recording...' : 'Tap mic to dictate'}
-        </div>
+        {isRecording ? (
+          <div className="mic-status recording">Recording...</div>
+        ) : null}
       </div>
       {error && <div className="mic-error">{error}</div>}
     </div>

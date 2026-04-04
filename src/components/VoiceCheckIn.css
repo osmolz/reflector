@@ -17,12 +17,6 @@
   margin-bottom: var(--space-md);
 }
 
-.voice-check-in-input {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xl);
-}
-
 .voice-check-in-helper {
   font-size: var(--log-fs-helper, 0.9375rem);
   color: var(--text-secondary);
@@ -32,9 +26,14 @@
 
 .voice-check-in-actions {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-lg);
-  margin-top: var(--space-md);
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.voice-check-in-actions .mic-button-wrapper {
+  flex-shrink: 0;
 }
 
 .voice-check-in-textarea {
@@ -65,20 +64,28 @@
 }
 
 .voice-check-in .btn.btn-primary {
-  align-self: flex-end;
-  border: 1px solid var(--accent-color);
-  background-color: rgba(160, 100, 78, 0.08);
+  border: 1px solid var(--border-light);
+  background-color: var(--bg-secondary);
   color: var(--text-primary);
+  font-family: var(--log-font-family, var(--font-sans));
   font-size: var(--log-fs-control, 0.9375rem);
   font-weight: 600;
   letter-spacing: 0.01em;
+  line-height: 1.35;
   padding: var(--space-md) var(--space-xl);
+  min-height: 42px;
+  box-sizing: border-box;
+}
+
+.voice-check-in-parse {
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .voice-check-in .btn.btn-primary:hover:not(:disabled) {
   border-color: var(--accent-color);
-  color: var(--accent-hover);
-  background-color: rgba(160, 100, 78, 0.14);
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
 }
 
 .voice-check-in .btn.btn-primary:disabled {
@@ -89,7 +96,7 @@
   color: var(--error);
   padding: var(--space-md) var(--space-lg);
   margin-top: var(--space-md);
-  font-size: 0.875rem;
+  font-size: var(--log-fs-helper, 0.875rem);
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
   border-left: 3px solid var(--error);
   background: rgba(155, 44, 44, 0.06);
@@ -97,19 +104,11 @@
 
 .voice-check-in-status {
   margin: 0 0 var(--space-lg);
-  font-size: var(--log-fs-meta, 0.8125rem);
+  font-size: var(--log-fs-helper, 0.875rem);
   font-weight: 400;
   color: var(--text-secondary);
-  line-height: 1.45;
+  line-height: var(--log-lh-helper, 1.55);
   letter-spacing: 0.01em;
-}
-
-@media (min-width: 640px) {
-  .voice-check-in-actions {
-    flex-direction: row;
-    align-items: flex-end;
-    justify-content: space-between;
-  }
 }
 
 @media (max-width: 640px) {
@@ -117,9 +116,5 @@
     min-height: 160px;
     padding: var(--space-md) var(--space-lg);
     font-size: 1rem;
-  }
-
-  .voice-check-in .btn.btn-primary {
-    width: 100%;
   }
 }

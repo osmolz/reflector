@@ -1,13 +1,16 @@
 /* Log route — editorial tabs (nav-aligned), no decorative chrome */
 
 .log-journal-shell {
-  --log-font-family: var(--font-sans);
-  --log-fs-heading: 1.4rem;
+  /* Type scale: page title > field titles > body/controls > helper/meta */
+  --log-font-family: var(--font-serif);
+  --log-fs-heading: 1.5rem;
+  --log-fs-subheading: 1.125rem;
   --log-fs-body: 1rem;
   --log-fs-control: 0.9375rem;
-  --log-fs-label: 0.875rem;
+  --log-fs-label: 1rem;
+  --log-fs-form-label: 0.875rem;
   --log-fs-meta: 0.8125rem;
-  --log-fs-helper: 0.9375rem;
+  --log-fs-helper: 0.875rem;
   --log-lh-body: 1.65;
   --log-lh-helper: 1.55;
   padding: 0;
@@ -15,6 +18,17 @@
   flex-direction: column;
   gap: var(--space-lg);
   font-family: var(--log-font-family);
+}
+
+/* Primary field labels (Voice check-in, etc.) — overrides global Form.css label (0.8125rem) */
+.log-journal-shell .form-group > label {
+  font-family: var(--log-font-family);
+  font-size: var(--log-fs-label);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
 }
 
 .log-journal-tablist {
@@ -98,6 +112,52 @@
   font-size: var(--log-fs-heading);
   font-weight: 700;
   letter-spacing: -0.01em;
+  line-height: 1.25;
+}
+
+.log-journal-log-date {
+  margin-bottom: var(--space-xl);
+}
+
+.log-journal-log-date label {
+  display: block;
+  font-family: var(--log-font-family);
+  font-size: var(--log-fs-label);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-xs);
+}
+
+.log-journal-log-date-helper {
+  font-size: var(--log-fs-helper);
+  color: var(--text-secondary);
+  line-height: var(--log-lh-helper);
+  margin: 0 0 var(--space-sm);
+  max-width: 46ch;
+  font-weight: 400;
+}
+
+.log-journal-log-date-input {
+  font-family: var(--log-font-family);
+  font-size: var(--log-fs-control);
+  color: var(--text-primary);
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--border-light);
+  border-radius: 0;
+  background-color: var(--bg-secondary);
+  min-height: 2.75rem;
+  box-sizing: border-box;
+}
+
+.log-journal-log-date-input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  background-color: var(--bg-primary);
+}
+
+.log-journal-log-date-input:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
 }
 
 @media (max-width: 640px) {

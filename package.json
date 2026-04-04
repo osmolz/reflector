@@ -10,7 +10,8 @@
     "test:ui": "playwright test --ui",
     "test:debug": "playwright test --debug",
     "supabase": "supabase",
-    "supabase:deploy": "supabase functions deploy"
+    "supabase:deploy": "supabase functions deploy",
+    "deploy:function:save-check-in": "supabase functions deploy save-check-in"
   },
   "keywords": [],
   "author": "",

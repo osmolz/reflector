@@ -59,6 +59,17 @@ export async function loadConversationContext(
   }
 }
 
+function isUnknownThinkingSummaryColumnError(error: { message?: string; code?: string }): boolean {
+  const m = String(error.message || '').toLowerCase()
+  if (!m.includes('thinking_summary')) return false
+  return (
+    m.includes('column') ||
+    m.includes('schema') ||
+    error.code === '42703' ||
+    error.code === 'PGRST204'
+  )
+}
+
 export async function saveMessage(
   supabase: ReturnType<typeof createClient>,
   userId: string,
@@ -82,7 +93,12 @@ export async function saveMessage(
     row.thinking_summary = thinkingSummary.trim()
   }
 
-  const { error } = await supabase.from('chat_messages').insert(row)
+  let { error } = await supabase.from('chat_messages').insert(row)
+
+  if (error && 'thinking_summary' in row && isUnknownThinkingSummaryColumnError(error)) {
+    const { thinking_summary: _omit, ...withoutThinking } = row
+    ;({ error } = await supabase.from('chat_messages').insert(withoutThinking))
+  }
 
   if (error) {
     console.error('[chat] Failed to save message:', error.message)

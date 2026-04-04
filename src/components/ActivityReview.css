@@ -13,11 +13,12 @@
 
 .activity-review-title {
   font-family: var(--log-font-family, var(--font-sans));
-  font-size: var(--log-fs-heading, 1.4rem);
+  font-size: var(--log-fs-heading, 1.5rem);
   font-weight: 700;
   color: var(--text-primary);
   margin-bottom: var(--space-xl);
   letter-spacing: -0.01em;
+  line-height: 1.25;
 }
 
 /* ============================================================
@@ -58,18 +59,19 @@
 
 .activity-item-name {
   font-family: var(--log-font-family, var(--font-sans));
-  font-size: calc(var(--log-fs-heading, 1.4rem) * 0.82);
+  font-size: var(--log-fs-subheading, 1.125rem);
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: var(--space-xs);
   letter-spacing: -0.01em;
+  line-height: 1.35;
 }
 
 .activity-item-meta {
   display: flex;
   gap: var(--space-lg);
   flex-wrap: wrap;
-  font-size: var(--log-fs-label, 0.875rem);
+  font-size: var(--log-fs-meta, 0.8125rem);
   color: var(--text-secondary);
 }
 
@@ -163,11 +165,12 @@
 }
 
 .activity-item-form-group label {
-  font-size: var(--log-fs-label, 0.875rem);
+  font-size: var(--log-fs-form-label, 0.875rem);
   font-weight: 500;
   color: var(--text-secondary);
   text-transform: none;
   letter-spacing: 0.01em;
+  line-height: 1.4;
 }
 
 .activity-item-form-group input {
@@ -313,6 +316,8 @@
 .activity-review-empty p {
   color: var(--text-secondary);
   margin-bottom: var(--space-lg);
+  font-size: var(--log-fs-helper, 0.875rem);
+  line-height: var(--log-lh-helper, 1.55);
 }
 
 .activity-review-empty button {
@@ -323,6 +328,7 @@
   border-radius: 0;
   cursor: pointer;
   font-weight: 600;
+  font-size: var(--log-fs-control, 0.9375rem);
   font-family: var(--log-font-family, var(--font-sans));
   transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
 }
@@ -346,7 +352,7 @@
   padding: var(--space-md) var(--space-lg);
   border-left: 2px solid var(--error);
   color: var(--error);
-  font-size: 0.875rem;
+  font-size: var(--log-fs-helper, 0.875rem);
   border-radius: 0;
   margin-bottom: var(--space-lg);
 }

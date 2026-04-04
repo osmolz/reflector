@@ -21,8 +21,16 @@ const TAB_HINTS = {
   journal: 'Write a free-form note for yourself.',
 };
 
+function getLocalDateYmd(date = new Date()) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
 export function LogJournal({ onActivitiesSaved }) {
   const [journalRefreshKey, setJournalRefreshKey] = useState(0);
+  const [logDateYmd, setLogDateYmd] = useState(() => getLocalDateYmd());
   const [activeTab, setActiveTab] = useState('time');
   const tabRefs = useRef({ time: null, journal: null });
 
@@ -123,7 +131,21 @@ export function LogJournal({ onActivitiesSaved }) {
               Log time
             </h2>
           </div>
-          <VoiceCheckIn onActivitiesSaved={onActivitiesSaved} />
+          <div className="log-journal-log-date form-group">
+            <label htmlFor="log-time-date">Date for this log</label>
+            <p className="log-journal-log-date-helper" id="log-time-date-hint">
+              Parsed times apply to this calendar day.
+            </p>
+            <input
+              id="log-time-date"
+              type="date"
+              className="log-journal-log-date-input"
+              value={logDateYmd}
+              onChange={(e) => setLogDateYmd(e.target.value)}
+              aria-describedby="log-time-date-hint"
+            />
+          </div>
+          <VoiceCheckIn onActivitiesSaved={onActivitiesSaved} logDateYmd={logDateYmd} />
         </section>
 
         <section
@@ -138,7 +160,24 @@ export function LogJournal({ onActivitiesSaved }) {
               Journal
             </h2>
           </div>
-          <JournalForm onEntryCreated={() => setJournalRefreshKey((k) => k + 1)} />
+          <div className="log-journal-log-date form-group">
+            <label htmlFor="log-journal-date">Date for this log</label>
+            <p className="log-journal-log-date-helper" id="log-journal-date-hint">
+              Entry is saved for this calendar day.
+            </p>
+            <input
+              id="log-journal-date"
+              type="date"
+              className="log-journal-log-date-input"
+              value={logDateYmd}
+              onChange={(e) => setLogDateYmd(e.target.value)}
+              aria-describedby="log-journal-date-hint"
+            />
+          </div>
+          <JournalForm
+            logDateYmd={logDateYmd}
+            onEntryCreated={() => setJournalRefreshKey((k) => k + 1)}
+          />
           <JournalHistory refreshKey={journalRefreshKey} />
         </section>
       </div>

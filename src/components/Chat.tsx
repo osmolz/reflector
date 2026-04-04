@@ -8,8 +8,8 @@ import { AppHeader } from './AppHeader'
 import { ChatInputBar } from './chat/ChatInputBar'
 import { ChatWelcomePanel } from './chat/ChatWelcomePanel'
 import { getDisplayName, resolveWelcomePrompts, type WelcomePrompt, writeRecentWelcomeTopicHint } from './chat/chatWelcome'
-import { ActivityReview } from './ActivityReview'
 import { saveTimelineCheckIn } from '../lib/saveTimelineCheckIn'
+import { ChatTimelinePreviewBar } from './chat/ChatTimelinePreviewBar'
 import './Chat.css'
 
 function localDateYmd() {
@@ -159,18 +159,15 @@ export default function Chat({
   const searchFieldRef = useRef(null)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const textareaRef = useRef<HTMLTextAreaElement | null>(null)
-  const timelinePreviewDialogRef = useRef(null)
-  const [pendingTimelinePreview, setPendingTimelinePreview] = useState(null)
-  const [timelinePreviewKey, setTimelinePreviewKey] = useState(0)
 
-  const dismissTimelinePreview = useCallback(() => {
-    timelinePreviewDialogRef.current?.close()
-    setPendingTimelinePreview(null)
+  const clearTimelinePreview = useCallback((messageId) => {
+    setMessages((prev) =>
+      prev.map((m) => (m.id === messageId ? { ...m, timelinePreview: undefined } : m)),
+    )
   }, [])
 
   const handleTimelinePreviewSave = useCallback(
-    async (editedActivities) => {
-      if (!pendingTimelinePreview) return
+    async (messageId, sourceText, editedActivities) => {
       const {
         data: { session },
       } = await supabase.auth.getSession()
@@ -180,23 +177,15 @@ export default function Chat({
       const tz = Intl.DateTimeFormat().resolvedOptions().timeZone
       await saveTimelineCheckIn(
         session.access_token,
-        pendingTimelinePreview.sourceText?.trim() || '(from chat)',
+        (sourceText && String(sourceText).trim()) || '(from chat)',
         editedActivities,
         { logDateYmd: localDateYmd(), clientTimeZone: tz },
       )
-      dismissTimelinePreview()
+      clearTimelinePreview(messageId)
       onTimelineSaved?.()
     },
-    [pendingTimelinePreview, dismissTimelinePreview, onTimelineSaved],
+    [clearTimelinePreview, onTimelineSaved],
   )
-
-  useEffect(() => {
-    if (!pendingTimelinePreview || !timelinePreviewDialogRef.current) return
-    const el = timelinePreviewDialogRef.current
-    if (!el.open) {
-      el.showModal()
-    }
-  }, [pendingTimelinePreview])
 
   useEffect(() => {
     return () => {
@@ -204,17 +193,13 @@ export default function Chat({
     }
   }, [imagePreview])
 
-  const applyNewSession = useCallback(
-    (data) => {
-      dismissTimelinePreview()
-      setSessions((prev) => [data, ...prev])
-      setSessionId(data.id)
-      setMessages([])
-      setError(null)
-      if (user?.id) writeActiveChatSessionId(user.id, data.id)
-    },
-    [user?.id, dismissTimelinePreview],
-  )
+  const applyNewSession = useCallback((data) => {
+    setSessions((prev) => [data, ...prev])
+    setSessionId(data.id)
+    setMessages([])
+    setError(null)
+    if (user?.id) writeActiveChatSessionId(user.id, data.id)
+  }, [user?.id])
 
   const insertChatSessionRow = useCallback(async () => {
     if (!user?.id) throw new Error('Not signed in')
@@ -519,7 +504,6 @@ export default function Chat({
   }
 
   const switchSession = (sid) => {
-    dismissTimelinePreview()
     setSessionId(sid)
     setError(null)
     if (user?.id) writeActiveChatSessionId(user.id, sid)
@@ -668,11 +652,19 @@ export default function Chat({
                 // Tool names not shown in transcript
               } else if (event.type === 'timeline_preview_pending') {
                 if (Array.isArray(event.activities) && event.activities.length > 0) {
-                  setTimelinePreviewKey((k) => k + 1)
-                  setPendingTimelinePreview({
-                    sourceText: typeof event.source_text === 'string' ? event.source_text : '',
-                    activities: event.activities,
-                  })
+                  setMessages((prev) =>
+                    prev.map((m) =>
+                      m.id === streamingId
+                        ? {
+                            ...m,
+                            timelinePreview: {
+                              sourceText: typeof event.source_text === 'string' ? event.source_text : '',
+                              activities: event.activities,
+                            },
+                          }
+                        : m,
+                    ),
+                  )
                 }
               } else if (event.type === 'text') {
                 updateStreaming((m) => ({
@@ -831,34 +823,6 @@ export default function Chat({
 
   return (
     <div className="chat-viewport chat-container">
-      <dialog
-        ref={timelinePreviewDialogRef}
-        className="chat-timeline-preview-dialog"
-        aria-labelledby="chat-timeline-preview-title"
-        onCancel={(e) => {
-          e.preventDefault()
-          dismissTimelinePreview()
-        }}
-      >
-        <div className="chat-timeline-preview-dialog-panel">
-          <h2 id="chat-timeline-preview-title" className="chat-timeline-preview-heading">
-            Save to timeline
-          </h2>
-          <p className="chat-timeline-preview-lead">
-            Review and save, or discard. Nothing is logged until you save.
-          </p>
-          {pendingTimelinePreview ? (
-            <ActivityReview
-              key={timelinePreviewKey}
-              activities={pendingTimelinePreview.activities}
-              isLoading={false}
-              onSave={handleTimelinePreviewSave}
-              onDiscard={dismissTimelinePreview}
-            />
-          ) : null}
-        </div>
-      </dialog>
-
       <h1 className="sr-only">Chat</h1>
       <main className="chat-main" role="main">
         <div className="chat-layout">
@@ -1032,6 +996,19 @@ export default function Chat({
                             ) : null}
                             <AssistantMessageProse content={msg.content} isStreaming={msg.isStreaming} />
                           </div>
+                          {msg.timelinePreview ? (
+                            <ChatTimelinePreviewBar
+                              activities={msg.timelinePreview.activities}
+                              onSave={(edited) =>
+                                handleTimelinePreviewSave(
+                                  msg.id,
+                                  msg.timelinePreview.sourceText,
+                                  edited,
+                                )
+                              }
+                              onDiscard={() => clearTimelinePreview(msg.id)}
+                            />
+                          ) : null}
                         </div>
                       ) : (
                         <div className={`chat-bubble chat-bubble--user user-message`}>

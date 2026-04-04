@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { getDateRangeForPreset } from '../utils/calendarUtils';
+import './Modal.css';
 import './SyncCalendarModal.css';
 
 export function SyncCalendarModal({ isOpen, onClose, onSyncComplete }) {
@@ -103,7 +104,7 @@ export function SyncCalendarModal({ isOpen, onClose, onSyncComplete }) {
       />
 
       <div
-        className="modal"
+        className="modal sync-calendar-modal"
         role="dialog"
         aria-labelledby="sync-calendar-title"
         aria-describedby="sync-calendar-description"

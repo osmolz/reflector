@@ -135,7 +135,7 @@ export function AddToCalendarModal({ isOpen, timeEntry, onClose, onSuccess }) {
       />
 
       <div
-        className="modal"
+        className="modal add-to-calendar-modal"
         role="dialog"
         aria-labelledby="add-to-calendar-title"
       >

@@ -2,16 +2,33 @@
    Prohairesis — Sync Calendar Modal
    Phase 5: Design & Polish
    Minimal, functional calendar sync modal
+   Typography: align with header nav (--nav-chrome-* in index.css)
    ============================================================ */
+
+.sync-calendar-modal .modal-title {
+  font-family: var(--nav-chrome-font-family);
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: var(--nav-chrome-letter-spacing);
+  color: var(--text-primary);
+}
+
+.sync-calendar-modal .modal-actions button {
+  font-size: var(--nav-chrome-font-size);
+  letter-spacing: var(--nav-chrome-letter-spacing);
+}
 
 /* ============================================================
    Modal Description Text
    ============================================================ */
 .sync-modal-description {
-  font-size: 0.95rem;
+  font-family: var(--nav-chrome-font-family);
+  font-size: var(--nav-chrome-font-size);
+  font-weight: var(--nav-chrome-font-weight);
+  letter-spacing: var(--nav-chrome-letter-spacing);
   color: var(--text-secondary);
   margin-bottom: var(--space-lg);
-  line-height: 1.6;
+  line-height: 1.5;
 }
 
 /* ============================================================
@@ -37,7 +54,10 @@
   gap: var(--space-sm);
   cursor: pointer;
   user-select: none;
-  font-size: 0.95rem;
+  font-family: var(--nav-chrome-font-family);
+  font-size: var(--nav-chrome-font-size);
+  font-weight: var(--nav-chrome-font-weight);
+  letter-spacing: var(--nav-chrome-letter-spacing);
   color: var(--text-primary);
   transition: color 0.2s ease;
 }
@@ -106,8 +126,11 @@
   padding: var(--space-md) var(--space-lg);
   background-color: var(--bg-primary);
   border-left: 2px solid var(--success);
+  font-family: var(--nav-chrome-font-family);
   color: var(--success);
-  font-size: 0.875rem;
+  font-size: var(--nav-chrome-font-size);
+  font-weight: var(--nav-chrome-font-weight);
+  letter-spacing: var(--nav-chrome-letter-spacing);
   border-radius: 0;
   margin-bottom: var(--space-lg);
 }
@@ -156,11 +179,4 @@
     margin-bottom: var(--space-md);
   }
 
-  .sync-preset-label {
-    font-size: 0.9rem;
-  }
-
-  .sync-modal-description {
-    font-size: 0.9rem;
-  }
 }

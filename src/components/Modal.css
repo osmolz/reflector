@@ -208,7 +208,10 @@
   padding: var(--space-md) var(--space-lg);
   border-left: 2px solid var(--error);
   color: var(--error);
-  font-size: 0.875rem;
+  font-family: var(--nav-chrome-font-family);
+  font-size: var(--nav-chrome-font-size);
+  font-weight: var(--nav-chrome-font-weight);
+  letter-spacing: var(--nav-chrome-letter-spacing);
   border-radius: 0;
   margin-bottom: var(--space-lg);
 }

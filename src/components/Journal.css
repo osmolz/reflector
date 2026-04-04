@@ -38,11 +38,11 @@
    ============================================================ */
 .journal-entry-title {
   font-family: var(--log-font-family, var(--font-sans));
-  font-size: var(--log-fs-heading, 1.4rem);
+  font-size: var(--log-fs-subheading, 1.125rem);
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: var(--space-xs);
-  line-height: 1.4;
+  line-height: 1.35;
   letter-spacing: -0.01em;
 }
 
@@ -76,7 +76,7 @@
 }
 
 .journal-entry-actions button {
-  font-size: 0.875rem;
+  font-size: var(--log-fs-form-label, 0.875rem);
   padding: var(--space-sm) var(--space-md);
   flex-shrink: 0;
 }
@@ -94,11 +94,12 @@
 
 .journal-form-title {
   font-family: var(--log-font-family, var(--font-sans));
-  font-size: var(--log-fs-heading, 1.4rem);
+  font-size: var(--log-fs-heading, 1.5rem);
   font-weight: 700;
   color: var(--text-primary);
   margin-bottom: var(--space-lg);
   letter-spacing: -0.01em;
+  line-height: 1.25;
 }
 
 .journal-form-group {
@@ -150,71 +151,56 @@
 }
 
 /* ============================================================
-   Journal Form Controls (Buttons)
+   Journal form actions — mic + save (same row as Time / Parse)
    ============================================================ */
-.journal-form-controls {
+.journal-form-actions {
   display: flex;
-  gap: var(--space-lg);
+  flex-direction: row;
   flex-wrap: wrap;
-  margin-top: var(--space-sm);
+  align-items: center;
+  gap: var(--space-md);
 }
 
-.journal-voice-button {
-  padding: var(--space-md) var(--space-lg);
-  background-color: transparent;
-  border: 1px solid var(--border-light);
-  border-radius: 0;
-  color: var(--text-secondary);
-  cursor: pointer;
-  font-size: var(--log-fs-control, 0.9375rem);
-  font-weight: 500;
-  font-family: var(--log-font-family, var(--font-sans));
-  transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
-}
-
-.journal-voice-button:hover:not(:disabled) {
-  border-color: var(--accent-color);
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-}
-
-.journal-voice-button.listening {
-  border-color: var(--error);
-  color: var(--error);
-  font-weight: 500;
-  background-color: transparent;
+.journal-form-actions .mic-button-wrapper {
+  flex-shrink: 0;
 }
 
 .journal-submit-button {
+  flex-shrink: 0;
+  white-space: nowrap;
   padding: var(--space-md) var(--space-xl);
-  background-color: transparent;
+  min-height: 42px;
+  box-sizing: border-box;
+  background-color: var(--bg-secondary);
   color: var(--text-primary);
-  border: 1px solid var(--border-medium);
+  border: 1px solid var(--border-light);
   border-radius: 0;
   cursor: pointer;
   font-weight: 600;
   font-size: var(--log-fs-control, 0.9375rem);
+  letter-spacing: 0.01em;
+  line-height: 1.35;
   font-family: var(--log-font-family, var(--font-sans));
   transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
 }
 
 .journal-submit-button:hover:not(:disabled) {
   border-color: var(--accent-color);
-  color: var(--accent-hover);
+  color: var(--text-primary);
   background-color: var(--bg-primary);
 }
 
 .journal-submit-button:active:not(:disabled) {
-  background-color: transparent;
+  background-color: var(--bg-primary);
 }
 
 .journal-submit-button:disabled {
-  opacity: 0.5;
+  opacity: 0.45;
   cursor: not-allowed;
 }
 
 /* ============================================================
-   Transcript Display
+   Transcript Display (legacy — voice uses MicButton inline errors)
    ============================================================ */
 .journal-transcript {
   font-size: var(--log-fs-meta, 0.8125rem);
@@ -236,9 +222,10 @@
 }
 
 .journal-empty-message {
-  font-size: 1rem;
+  font-size: var(--log-fs-helper, 0.875rem);
   font-style: italic;
-  line-height: 1.6;
+  line-height: var(--log-lh-helper, 1.55);
+  color: var(--text-secondary);
 }
 
 /* ============================================================
@@ -248,7 +235,7 @@
   padding: var(--space-md) var(--space-lg);
   border-left: 2px solid var(--error);
   color: var(--error);
-  font-size: 0.875rem;
+  font-size: var(--log-fs-helper, 0.875rem);
   border-radius: 0;
   margin-bottom: var(--space-lg);
 }
@@ -259,8 +246,9 @@
 .journal-loading {
   padding: var(--space-xl) 0;
   color: var(--text-tertiary);
-  font-size: 0.875rem;
+  font-size: var(--log-fs-helper, 0.875rem);
   font-style: italic;
+  line-height: var(--log-lh-helper, 1.55);
 }
 
 /* ============================================================
@@ -268,17 +256,8 @@
    ============================================================ */
 @media (max-width: 640px) {
   .journal-form-title {
-    font-size: 1.1rem;
+    font-size: var(--log-fs-subheading, 1.125rem);
     margin-bottom: var(--space-md);
-  }
-
-  .journal-form-controls {
-    flex-direction: column;
-  }
-
-  .journal-voice-button,
-  .journal-submit-button {
-    width: 100%;
   }
 
   .journal-textarea {
@@ -304,11 +283,12 @@
 
 .journal-history-heading {
   font-family: var(--log-font-family, var(--font-sans));
-  font-size: var(--log-fs-heading, 1.4rem);
+  font-size: var(--log-fs-subheading, 1.125rem);
   font-weight: 700;
   margin: var(--space-4xl) 0 var(--space-xl);
   color: var(--text-primary);
   letter-spacing: -0.02em;
+  line-height: 1.35;
 }
 
 .journal-history-list {

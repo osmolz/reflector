@@ -1,0 +1,129 @@
+/* Chat welcome — compact so full panel + starters fit one viewport (Phase 21 tokens) */
+
+.chat-welcome-panel {
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: var(--space-md);
+  width: 100%;
+  max-width: 42rem;
+  box-sizing: border-box;
+  border: 1px solid var(--border-light);
+  background-color: var(--bg-secondary);
+  padding: var(--space-md) var(--space-lg);
+}
+
+.chat-welcome-greeting {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.chat-welcome-lede {
+  margin: var(--space-sm) 0 0;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+.chat-welcome-prompts-label {
+  margin: var(--space-lg) 0 0;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0.06em;
+  line-height: 1.35;
+  color: var(--text-secondary);
+}
+
+.chat-welcome-prompt-list {
+  margin: var(--space-sm) 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.chat-welcome-prompt-list li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chat-welcome-prompt-btn {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: var(--space-sm) var(--space-md);
+  text-align: left;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.45;
+  color: var(--text-primary);
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: 0;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.chat-welcome-prompt-btn:hover:not(:disabled) {
+  border-color: var(--border-medium);
+  background-color: var(--bg-primary);
+}
+
+.chat-welcome-prompt-btn:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+.chat-welcome-prompt-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.chat-welcome-prompt-title {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.chat-welcome-prompt-desc {
+  display: block;
+  margin-top: 0;
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.4;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 640px) {
+  .chat-welcome-panel {
+    padding: var(--space-sm) var(--space-md);
+    margin-bottom: var(--space-sm);
+  }
+
+  .chat-welcome-prompts-label {
+    margin-top: var(--space-md);
+  }
+
+  .chat-welcome-prompt-list {
+    margin-top: var(--space-xs);
+    gap: var(--space-xs);
+  }
+
+  .chat-welcome-prompt-btn {
+    padding: var(--space-xs) var(--space-sm);
+  }
+}

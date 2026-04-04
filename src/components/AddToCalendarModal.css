@@ -1,11 +1,31 @@
+.add-to-calendar-modal .modal-title {
+  font-family: var(--nav-chrome-font-family);
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: var(--nav-chrome-letter-spacing);
+  color: var(--text-primary);
+}
+
+.add-to-calendar-modal .modal-actions button {
+  font-size: var(--nav-chrome-font-size);
+  letter-spacing: var(--nav-chrome-letter-spacing);
+}
+
+.add-to-calendar-modal #event-title {
+  font-family: var(--nav-chrome-font-family);
+  letter-spacing: var(--nav-chrome-letter-spacing);
+}
+
 .duration-display {
   padding: var(--space-md);
   border: 1px solid var(--border-light);
   border-radius: 0;
   background-color: var(--bg-tertiary);
   color: var(--text-secondary);
-  font-family: var(--font-sans);
-  font-size: 1rem;
+  font-family: var(--nav-chrome-font-family);
+  font-size: var(--nav-chrome-font-size);
+  font-weight: var(--nav-chrome-font-weight);
+  letter-spacing: var(--nav-chrome-letter-spacing);
   line-height: 1.5;
 }
 
@@ -19,9 +39,10 @@
 }
 
 .success-message {
-  font-family: var(--font-serif);
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-family: var(--nav-chrome-font-family);
+  font-size: var(--nav-chrome-font-size);
+  font-weight: 600;
+  letter-spacing: var(--nav-chrome-letter-spacing);
   color: var(--text-primary);
   margin: 0;
   line-height: 1.35;
@@ -29,10 +50,6 @@
 
 @media (max-width: 640px) {
   .duration-display {
-    font-size: 16px;
-  }
-
-  .success-message {
-    font-size: 1.125rem;
+    font-size: 16px; /* Prevents zoom on iOS */
   }
 }

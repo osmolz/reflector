@@ -56,13 +56,22 @@ export const useAuthStore = create((set) => ({
 
   checkAuth: async () => {
     try {
+      set({ error: null });
       const { data, error } = await supabase.auth.getSession();
       if (error) throw error;
-      set({
-        user: data.session?.user || null,
-        loading: false
-      });
-      return data.session?.user || null;
+
+      let user = data.session?.user ?? null;
+      if (!user) {
+        const { data: anon, error: anonErr } = await supabase.auth.signInAnonymously();
+        if (!anonErr && anon.session?.user) {
+          user = anon.session.user;
+        } else if (anonErr) {
+          console.warn('[auth] Anonymous sign-in skipped:', anonErr.message);
+        }
+      }
+
+      set({ user, loading: false });
+      return user;
     } catch (err) {
       console.error('Auth check failed:', err);
       set({ loading: false, error: err.message });

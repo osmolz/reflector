@@ -178,16 +178,29 @@ npm run build
 
 ### Deploy Edge Functions
 
-Supabase Edge Functions (parse & chat) are automatically deployed when you push to the repository if linked to Supabase.
+Supabase Edge Functions are deployed from this repo with the Supabase CLI (or your CI, if configured). If a function exists in `supabase/functions/` but was never deployed, the browser will see **404** on `OPTIONS` / `POST` to `/functions/v1/<name>`.
 
 ```bash
+# Use npx so you don't need a global Supabase CLI (Windows-friendly):
+npx supabase login
+npx supabase link --project-ref <your-project-ref>
+
 # Local testing:
-supabase functions serve
+npx supabase functions serve
 
 # Deploy to Supabase:
-supabase functions deploy parse
-supabase functions deploy chat
+npx supabase functions deploy parse
+npx supabase functions deploy chat
+npx supabase functions deploy save-check-in
 ```
+
+Or from this repo (uses the `supabase` devDependency):
+
+```bash
+npm run deploy:function:save-check-in
+```
+
+`save-check-in` is required for **Log → Save** and **Chat → timeline preview → Save**. Without deploying it, Save fails at the CORS preflight with **404 Not Found**.
 
 ## Usage
 
@@ -298,6 +311,32 @@ Answers questions about your time data using Claude.
 
 Requires: Authorization header with Bearer token (Supabase session)
 
+### POST `/functions/v1/save-check-in`
+
+Creates a `check_ins` row and related `time_entries` (same persistence path for Log and Chat).
+
+**Request:**
+
+```json
+{
+  "transcript": "User text used for this check-in",
+  "activities": [
+    {
+      "activity": "Lunch",
+      "duration_minutes": 60,
+      "start_time_inferred": "1:00 PM",
+      "category": "food"
+    }
+  ],
+  "log_date_ymd": "2026-04-02",
+  "client_time_zone": "America/New_York"
+}
+```
+
+`log_date_ymd` and `client_time_zone` are optional; when both are sent, start times are anchored to that local calendar day (Log tab). Chat typically sends both for the user’s current local day.
+
+Requires: `Authorization: Bearer <access_token>`, `apikey: <anon key>` (same as other functions).
+
 ## Security & Privacy
 
 ### Data Security
@@ -335,6 +374,12 @@ Requires: Authorization header with Bearer token (Supabase session)
 - Check browser Network tab (F12 → Network) to verify request succeeded
 - Speak clearly and for at least 1 second of audio
 - Try a short test phrase: "Testing one two three"
+
+### "Save to timeline" / `save-check-in` returns 404
+
+- In DevTools → Network, if **OPTIONS** or **POST** to `/functions/v1/save-check-in` is **404**, the function is not deployed to your Supabase project.
+- Run: `supabase functions deploy save-check-in` (after `supabase login` and `supabase link --project-ref <your-ref>`).
+- Redeploy after pulling changes that add or rename functions.
 
 ### "Claude API errors"
 

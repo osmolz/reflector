@@ -114,26 +114,23 @@ export function VoiceCheckIn({ onActivitiesSaved, logDateYmd = localDateYmd() })
     <div className="voice-check-in">
       {stage === 'recording' && (
         <>
-          <div className="voice-check-in-input">
-            <div className="form-group">
-              <label htmlFor="voice-check-in-transcript">Activities and times</label>
-              <p className="voice-check-in-helper">
-                Type directly, or record and then review before saving.
-              </p>
-              <textarea
-                id="voice-check-in-transcript"
-                value={transcript}
-                onChange={(e) => setTranscript(e.target.value)}
-                placeholder="Example: 9am–12pm deep work, lunch 12–1, meetings 2–4."
-                className="voice-check-in-textarea"
-              />
-            </div>
-
+          <div className="form-group">
+            <label htmlFor="voice-check-in-transcript">Activities and times</label>
+            <p className="voice-check-in-helper">
+              Type directly, or record and then review before saving.
+            </p>
+            <textarea
+              id="voice-check-in-transcript"
+              value={transcript}
+              onChange={(e) => setTranscript(e.target.value)}
+              placeholder="Example: 9am–12pm deep work, lunch 12–1, meetings 2–4."
+              className="voice-check-in-textarea"
+            />
             <div className="voice-check-in-actions">
               <MicButton onTranscriptReady={handleVoiceDraftReady} />
               <button
                 type="button"
-                className="btn btn-primary"
+                className="btn btn-primary voice-check-in-parse"
                 onClick={() => handleParseTranscript(transcript)}
                 disabled={isLoading || !transcript.trim()}
               >
