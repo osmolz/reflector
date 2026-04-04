@@ -2,8 +2,7 @@ import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.1'
 import Anthropic from 'https://esm.sh/@anthropic-ai/sdk@0.80.0'
 import type { ToolResult } from './types.ts'
 import { updateUserMemory } from './memory.ts'
-import { inferredTimeToIso } from '../_shared/inferred-time-to-iso.ts'
-import { normalizeActivities, parseTranscriptToActivities } from '../_shared/parse-transcript-activities.ts'
+import { parseTranscriptToActivities } from '../_shared/parse-transcript-activities.ts'
 
 export const TOOL_DEFINITIONS = [
   {
@@ -91,36 +90,6 @@ export const TOOL_DEFINITIONS = [
         },
       },
       required: ['text'],
-    },
-  },
-  {
-    name: 'commit_timeline_activities',
-    description:
-      'Save parsed activities to the user timeline: creates a check_in and time_entries. Only call after the user clearly confirms (e.g. yes, add those). Pass the same activities array from preview (or user-corrected list).',
-    input_schema: {
-      type: 'object',
-      properties: {
-        activities: {
-          type: 'array',
-          description: 'Normalized activities: activity, duration_minutes, start_time_inferred; optional category, notes',
-          items: {
-            type: 'object',
-            properties: {
-              activity: { type: 'string' },
-              duration_minutes: { type: 'number' },
-              start_time_inferred: { type: 'string', description: 'e.g. "7:45 AM"' },
-              category: { type: 'string' },
-              notes: { type: 'string' },
-            },
-            required: ['activity', 'duration_minutes', 'start_time_inferred'],
-          },
-        },
-        source_text: {
-          type: 'string',
-          description: 'Optional original user text stored on the check_in transcript',
-        },
-      },
-      required: ['activities'],
     },
   },
 ]
@@ -345,79 +314,6 @@ async function previewTimelineFromText(toolInput: Record<string, unknown>): Prom
   }
 }
 
-async function commitTimelineActivities(
-  supabase: ReturnType<typeof createClient>,
-  userId: string,
-  toolInput: Record<string, unknown>,
-): Promise<ToolResult> {
-  const raw = toolInput.activities
-  if (!Array.isArray(raw)) {
-    return { status: 'error', message: 'commit_timeline_activities requires an activities array.' }
-  }
-
-  let normalized
-  try {
-    normalized = normalizeActivities(raw)
-  } catch (e) {
-    const m = e instanceof Error ? e.message : String(e)
-    return {
-      status: 'error',
-      message: m.includes('PARSE_OUTPUT_INVALID')
-        ? 'No valid activities to save. Each item needs activity, duration_minutes, and start_time_inferred.'
-        : `Invalid activities: ${m}`,
-    }
-  }
-
-  const sourceRaw = toolInput.source_text
-  const transcript =
-    typeof sourceRaw === 'string' && sourceRaw.trim().length > 0 ? sourceRaw.trim() : '(from chat)'
-
-  const now = new Date().toISOString()
-
-  const { data: checkInData, error: checkInError } = await supabase
-    .from('check_ins')
-    .insert([
-      {
-        user_id: userId,
-        transcript,
-        parsed_activities: normalized,
-        created_at: now,
-      },
-    ])
-    .select('id')
-
-  if (checkInError) {
-    return { status: 'error', message: checkInError.message }
-  }
-  if (!checkInData?.[0]?.id) {
-    return { status: 'error', message: 'Failed to create check-in record.' }
-  }
-
-  const checkInId = checkInData[0].id as string
-
-  const timeEntries = normalized.map((activity) => ({
-    user_id: userId,
-    activity_name: activity.activity,
-    duration_minutes: activity.duration_minutes,
-    category: activity.category ?? null,
-    start_time: inferredTimeToIso(activity.start_time_inferred),
-    check_in_id: checkInId,
-    created_at: now,
-    updated_at: now,
-  }))
-
-  const { error: entriesError } = await supabase.from('time_entries').insert(timeEntries)
-
-  if (entriesError) {
-    return { status: 'error', message: entriesError.message }
-  }
-
-  return {
-    status: 'ok',
-    data: { check_in_id: checkInId, entries_created: normalized.length },
-  }
-}
-
 export async function executeTool(
   supabase: ReturnType<typeof createClient>,
   userId: string,
@@ -473,9 +369,6 @@ export async function executeTool(
 
       case 'preview_timeline_from_text':
         return await previewTimelineFromText(toolInput)
-
-      case 'commit_timeline_activities':
-        return await commitTimelineActivities(supabase, userId, toolInput)
 
       default:
         return { status: 'error', message: `Unknown tool: ${toolName}` }
