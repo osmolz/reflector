@@ -7,7 +7,7 @@ import { buildSystemPrompt } from './system-prompt.ts'
 import { stripMarkdownArtifacts, stripMarkdownStreamDelta } from './markdown.ts'
 import { extractFirstSentence } from './thinking-summary.ts'
 import { loadConversationContext, saveMessage, maybeSetSessionTitle, createSession } from './memory.ts'
-import type { SSEEvent } from './types.ts'
+import type { ParsedTimelineActivity, SSEEvent } from './types.ts'
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -152,6 +152,48 @@ Deno.serve(async (req) => {
 
     const encoder = new TextEncoder()
 
+    // Shared with ReadableStream.cancel when the client disconnects (e.g. switches away from Chat).
+    const streamAccum = { finalText: '', fullThinking: '' }
+    let assistantPersistDone = false
+    let assistantSavePromise: Promise<void> | null = null
+
+    async function persistAssistantReplyIfNeeded(): Promise<void> {
+      if (assistantPersistDone) return
+      if (!assistantSavePromise) {
+        assistantSavePromise = (async () => {
+          try {
+            const persistedText = streamAccum.finalText ? stripMarkdownArtifacts(streamAccum.finalText) : ''
+            const textToSave = persistedText || (streamAccum.finalText ? streamAccum.finalText.trim() : '')
+            if (!textToSave) return
+            const thinkingSummary = extractFirstSentence(streamAccum.fullThinking)
+            await saveMessage(
+              supabase,
+              userId,
+              'assistant',
+              textToSave,
+              sessionId,
+              thinkingSummary || null,
+            )
+            await maybeSetSessionTitle(supabase, sessionId, message)
+            assistantPersistDone = true
+          } finally {
+            assistantSavePromise = null
+          }
+        })()
+      }
+      await assistantSavePromise
+    }
+
+    function schedulePersistOnClientDisconnect(): void {
+      const p = persistAssistantReplyIfNeeded()
+      const edge = (globalThis as { EdgeRuntime?: { waitUntil: (q: Promise<unknown>) => void } }).EdgeRuntime
+      if (edge?.waitUntil) {
+        edge.waitUntil(p)
+      } else {
+        void p.catch((err) => console.error('[chat] Disconnect persistence failed:', err))
+      }
+    }
+
     // Create SSE stream response
     const readable = new ReadableStream({
       async start(controller) {
@@ -171,8 +213,6 @@ Deno.serve(async (req) => {
           const anthropic = new Anthropic({ apiKey: Deno.env.get('ANTHROPIC_API_KEY') })
 
           let maxHops = 5
-          let finalText = ''
-          let fullThinking = ''
           let currentMessages = [...contextMessages, { role: 'user' as const, content: message }]
 
           // Set 55-second timeout (Vercel limit is 60s)
@@ -201,13 +241,13 @@ Deno.serve(async (req) => {
 
                   // Attach listeners BEFORE awaiting
                   stream.on('thinking', (delta: string) => {
-                    fullThinking += delta
+                    streamAccum.fullThinking += delta
                     emit({ type: 'thinking', text: delta })
                   })
 
                   stream.on('text', (delta: string) => {
                     const cleaned = stripMarkdownStreamDelta(delta)
-                    finalText += cleaned
+                    streamAccum.finalText += cleaned
                     emit({ type: 'text', text: cleaned })
                   })
 
@@ -248,6 +288,35 @@ Deno.serve(async (req) => {
                     })
                   )
 
+                  for (let i = 0; i < toolUseBlocks.length; i++) {
+                    const block = toolUseBlocks[i]
+                    const tr = toolResults[i]
+                    if (tr.type !== 'tool_result') continue
+                    let parsed: unknown
+                    try {
+                      parsed = JSON.parse(tr.content)
+                    } catch {
+                      continue
+                    }
+                    if (
+                      typeof parsed !== 'object' ||
+                      parsed === null ||
+                      (parsed as { status?: string }).status !== 'ok'
+                    ) {
+                      continue
+                    }
+                    if (block.name !== 'preview_timeline_from_text') continue
+                    const data = (parsed as { data?: { activities?: unknown } }).data
+                    if (!data || !Array.isArray(data.activities) || data.activities.length === 0) {
+                      continue
+                    }
+                    emit({
+                      type: 'timeline_preview_pending',
+                      source_text: typeof block.input?.text === 'string' ? block.input.text : '',
+                      activities: data.activities as ParsedTimelineActivity[],
+                    })
+                  }
+
                   // Append to conversation and continue loop
                   currentMessages = [
                     ...currentMessages,
@@ -268,21 +337,9 @@ Deno.serve(async (req) => {
             }
           }
 
-          // Save assistant message before closing stream
-          const persistedText = finalText ? stripMarkdownArtifacts(finalText) : ''
-          const thinkingSummary = extractFirstSentence(fullThinking)
-          if (persistedText) {
-            await saveMessage(
-              supabase,
-              userId,
-              'assistant',
-              persistedText,
-              sessionId,
-              thinkingSummary || null,
-            )
-            await maybeSetSessionTitle(supabase, sessionId, message)
-          }
+          await persistAssistantReplyIfNeeded()
 
+          const thinkingSummary = extractFirstSentence(streamAccum.fullThinking)
           emit({
             type: 'done',
             ...(thinkingSummary ? { thinkingSummary } : {}),
@@ -296,6 +353,10 @@ Deno.serve(async (req) => {
         } finally {
           controller.close()
         }
+      },
+
+      cancel(_reason) {
+        schedulePersistOnClientDisconnect()
       },
     })
 

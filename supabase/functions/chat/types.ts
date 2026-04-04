@@ -30,13 +30,24 @@ export interface ChatMessage {
 }
 
 export interface SSEEvent {
-  type: 'status' | 'thinking' | 'tool_use' | 'text' | 'done' | 'error'
+  type:
+    | 'status'
+    | 'thinking'
+    | 'tool_use'
+    | 'text'
+    | 'done'
+    | 'error'
+    | 'timeline_preview_pending'
   status?: 'thinking'
   text?: string
   tool?: string
   message?: string
   /** Present on `done` when extended thinking produced a one-line summary */
   thinkingSummary?: string
+  /** Source excerpt passed to preview (when `type` is `timeline_preview_pending`) */
+  source_text?: string
+  /** Parsed activities for the in-app Save UI (when `type` is `timeline_preview_pending`) */
+  activities?: ParsedTimelineActivity[]
 }
 
 export interface IntentMatch {
