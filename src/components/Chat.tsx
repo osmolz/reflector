@@ -8,7 +8,14 @@ import { AppHeader } from './AppHeader'
 import { ChatInputBar } from './chat/ChatInputBar'
 import { ChatWelcomePanel } from './chat/ChatWelcomePanel'
 import { getDisplayName, resolveWelcomePrompts, type WelcomePrompt, writeRecentWelcomeTopicHint } from './chat/chatWelcome'
+import { ActivityReview } from './ActivityReview'
+import { saveTimelineCheckIn } from '../lib/saveTimelineCheckIn'
 import './Chat.css'
+
+function localDateYmd() {
+  const n = new Date()
+  return `${n.getFullYear()}-${String(n.getMonth() + 1).padStart(2, '0')}-${String(n.getDate()).padStart(2, '0')}`
+}
 
 const SIDEBAR_LS_KEY = 'chat-sidebar-open'
 const CHAT_MODEL_LS_KEY = 'chat-model'
@@ -114,7 +121,14 @@ function IconClose() {
   )
 }
 
-export default function Chat({ views, currentView, onViewChange, user: userProp, onSignOut }) {
+export default function Chat({
+  views,
+  currentView,
+  onViewChange,
+  user: userProp,
+  onSignOut,
+  onTimelineSaved,
+}) {
   const storeUser = useAuthStore((s) => s.user)
   const user = userProp ?? storeUser
   const { saveUserMessage } = useChatPersistence()
@@ -145,6 +159,44 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
   const searchFieldRef = useRef(null)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const textareaRef = useRef<HTMLTextAreaElement | null>(null)
+  const timelinePreviewDialogRef = useRef(null)
+  const [pendingTimelinePreview, setPendingTimelinePreview] = useState(null)
+  const [timelinePreviewKey, setTimelinePreviewKey] = useState(0)
+
+  const dismissTimelinePreview = useCallback(() => {
+    timelinePreviewDialogRef.current?.close()
+    setPendingTimelinePreview(null)
+  }, [])
+
+  const handleTimelinePreviewSave = useCallback(
+    async (editedActivities) => {
+      if (!pendingTimelinePreview) return
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
+      if (!session?.access_token) {
+        throw new Error('Not authenticated')
+      }
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone
+      await saveTimelineCheckIn(
+        session.access_token,
+        pendingTimelinePreview.sourceText?.trim() || '(from chat)',
+        editedActivities,
+        { logDateYmd: localDateYmd(), clientTimeZone: tz },
+      )
+      dismissTimelinePreview()
+      onTimelineSaved?.()
+    },
+    [pendingTimelinePreview, dismissTimelinePreview, onTimelineSaved],
+  )
+
+  useEffect(() => {
+    if (!pendingTimelinePreview || !timelinePreviewDialogRef.current) return
+    const el = timelinePreviewDialogRef.current
+    if (!el.open) {
+      el.showModal()
+    }
+  }, [pendingTimelinePreview])
 
   useEffect(() => {
     return () => {
@@ -152,13 +204,17 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
     }
   }, [imagePreview])
 
-  const applyNewSession = useCallback((data) => {
-    setSessions((prev) => [data, ...prev])
-    setSessionId(data.id)
-    setMessages([])
-    setError(null)
-    if (user?.id) writeActiveChatSessionId(user.id, data.id)
-  }, [user?.id])
+  const applyNewSession = useCallback(
+    (data) => {
+      dismissTimelinePreview()
+      setSessions((prev) => [data, ...prev])
+      setSessionId(data.id)
+      setMessages([])
+      setError(null)
+      if (user?.id) writeActiveChatSessionId(user.id, data.id)
+    },
+    [user?.id, dismissTimelinePreview],
+  )
 
   const insertChatSessionRow = useCallback(async () => {
     if (!user?.id) throw new Error('Not signed in')
@@ -463,6 +519,7 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
   }
 
   const switchSession = (sid) => {
+    dismissTimelinePreview()
     setSessionId(sid)
     setError(null)
     if (user?.id) writeActiveChatSessionId(user.id, sid)
@@ -609,6 +666,14 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
                 }))
               } else if (event.type === 'tool_use') {
                 // Tool names not shown in transcript
+              } else if (event.type === 'timeline_preview_pending') {
+                if (Array.isArray(event.activities) && event.activities.length > 0) {
+                  setTimelinePreviewKey((k) => k + 1)
+                  setPendingTimelinePreview({
+                    sourceText: typeof event.source_text === 'string' ? event.source_text : '',
+                    activities: event.activities,
+                  })
+                }
               } else if (event.type === 'text') {
                 updateStreaming((m) => ({
                   ...m,
@@ -766,6 +831,34 @@ export default function Chat({ views, currentView, onViewChange, user: userProp,
 
   return (
     <div className="chat-viewport chat-container">
+      <dialog
+        ref={timelinePreviewDialogRef}
+        className="chat-timeline-preview-dialog"
+        aria-labelledby="chat-timeline-preview-title"
+        onCancel={(e) => {
+          e.preventDefault()
+          dismissTimelinePreview()
+        }}
+      >
+        <div className="chat-timeline-preview-dialog-panel">
+          <h2 id="chat-timeline-preview-title" className="chat-timeline-preview-heading">
+            Save to timeline
+          </h2>
+          <p className="chat-timeline-preview-lead">
+            Review and save, or discard. Nothing is logged until you save.
+          </p>
+          {pendingTimelinePreview ? (
+            <ActivityReview
+              key={timelinePreviewKey}
+              activities={pendingTimelinePreview.activities}
+              isLoading={false}
+              onSave={handleTimelinePreviewSave}
+              onDiscard={dismissTimelinePreview}
+            />
+          ) : null}
+        </div>
+      </dialog>
+
       <h1 className="sr-only">Chat</h1>
       <main className="chat-main" role="main">
         <div className="chat-layout">

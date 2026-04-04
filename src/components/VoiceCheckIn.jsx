@@ -2,11 +2,17 @@ import { useState } from 'react';
 import { MicButton } from './MicButton';
 import { ActivityReview } from './ActivityReview';
 import { parseTranscript } from '../lib/anthropic';
+import { saveTimelineCheckIn } from '../lib/saveTimelineCheckIn';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../store/authStore';
 import './VoiceCheckIn.css';
 
-export function VoiceCheckIn({ onActivitiesSaved }) {
+function localDateYmd() {
+  const n = new Date();
+  return `${n.getFullYear()}-${String(n.getMonth() + 1).padStart(2, '0')}-${String(n.getDate()).padStart(2, '0')}`;
+}
+
+export function VoiceCheckIn({ onActivitiesSaved, logDateYmd = localDateYmd() }) {
   const [transcript, setTranscript] = useState('');
   const [parsedActivities, setParsedActivities] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -56,47 +62,19 @@ export function VoiceCheckIn({ onActivitiesSaved }) {
         throw new Error('User not authenticated');
       }
 
-      // 1. Create a check_in record
-      const { data: checkInData, error: checkInError } = await supabase
-        .from('check_ins')
-        .insert([
-          {
-            user_id: user.id,
-            transcript: transcript.trim(),
-            parsed_activities: activities, // JSONB
-            created_at: new Date().toISOString(),
-          },
-        ])
-        .select();
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) {
+        throw new Error('Not authenticated. Please log in again.');
+      }
 
-      if (checkInError) throw checkInError;
-      if (!checkInData || checkInData.length === 0) throw new Error('Failed to create check_in');
-
-      const checkInId = checkInData[0].id;
-
-      // 2. Create time_entries for each activity
-      const timeEntries = activities.map((activity) => {
-        // Parse start_time_inferred (HH:MM AM/PM) to ISO timestamp
-        const startTime = parseTimeString(activity.start_time_inferred);
-
-        return {
-          user_id: user.id,
-          activity_name: activity.activity,
-          duration_minutes: activity.duration_minutes,
-          category: activity.category || null,
-          start_time: startTime,
-          check_in_id: checkInId,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-        };
+      const clientTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      await saveTimelineCheckIn(session.access_token, transcript.trim(), activities, {
+        logDateYmd,
+        clientTimeZone,
       });
 
-      const { error: entriesError } = await supabase.from('time_entries').insert(timeEntries);
-
-      if (entriesError) throw entriesError;
-
       // #region agent log
-      fetch('http://127.0.0.1:7272/ingest/9a054363-0560-4f2a-a7fd-71d649a23059',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'773e28'},body:JSON.stringify({sessionId:'773e28',location:'VoiceCheckIn.jsx:handleSaveActivities',message:'save success path',data:{checkInId},timestamp:Date.now(),hypothesisId:'B'})}).catch(()=>{});
+      fetch('http://127.0.0.1:7272/ingest/9a054363-0560-4f2a-a7fd-71d649a23059',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'773e28'},body:JSON.stringify({sessionId:'773e28',location:'VoiceCheckIn.jsx:handleSaveActivities',message:'save success path',data:{},timestamp:Date.now(),hypothesisId:'B'})}).catch(()=>{});
       // #endregion
       setIsLoading(false);
       setStage('saved');
@@ -108,33 +86,6 @@ export function VoiceCheckIn({ onActivitiesSaved }) {
       setError(err.message || 'Failed to save activities. Please try again.');
       setIsLoading(false);
       throw err;
-    }
-  };
-
-  // Helper function to parse "HH:MM AM/PM" to ISO timestamp
-  const parseTimeString = (timeStr) => {
-    if (!timeStr) return new Date().toISOString();
-
-    try {
-      // Parse "HH:MM AM/PM" format
-      const match = timeStr.match(/(\d{1,2}):(\d{2})\s*(AM|PM)/i);
-      if (!match) return new Date().toISOString();
-
-      let hours = parseInt(match[1], 10);
-      const minutes = parseInt(match[2], 10);
-      const period = match[3].toUpperCase();
-
-      // Convert to 24-hour format
-      if (period === 'PM' && hours !== 12) hours += 12;
-      if (period === 'AM' && hours === 12) hours = 0;
-
-      // Create date for today with the specified time
-      const now = new Date();
-      const date = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes, 0);
-
-      return date.toISOString();
-    } catch {
-      return new Date().toISOString();
     }
   };
 

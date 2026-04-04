@@ -56,7 +56,12 @@ Deno.serve(async (req) => {
       })
     }
 
-    let body: { transcript?: unknown; activities?: unknown }
+    let body: {
+      transcript?: unknown
+      activities?: unknown
+      log_date_ymd?: unknown
+      client_time_zone?: unknown
+    }
     try {
       body = await req.json()
     } catch {
@@ -66,7 +71,12 @@ Deno.serve(async (req) => {
       })
     }
 
-    const { transcript, activities } = body
+    const { transcript, activities, log_date_ymd: logDateRaw, client_time_zone: tzRaw } = body
+    const logDateYmd =
+      typeof logDateRaw === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(logDateRaw.trim())
+        ? logDateRaw.trim()
+        : undefined
+    const clientTimeZone = typeof tzRaw === 'string' && tzRaw.trim().length > 0 ? tzRaw.trim() : undefined
 
     if (!transcript || typeof transcript !== 'string' || transcript.trim().length === 0) {
       return new Response(JSON.stringify({ error: 'Transcript must be a non-empty string' }), {
@@ -83,7 +93,15 @@ Deno.serve(async (req) => {
     }
 
     try {
-      const result = await saveTimelineCheckIn(supabase, user.id, transcript.trim(), activities)
+      const saveOpts =
+        logDateYmd && clientTimeZone ? { logDateYmd, clientTimeZone } : undefined
+      const result = await saveTimelineCheckIn(
+        supabase,
+        user.id,
+        transcript.trim(),
+        activities,
+        saveOpts,
+      )
       return new Response(JSON.stringify(result), {
         status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

@@ -45,6 +45,7 @@ function App() {
               onViewChange={setCurrentView}
               user={user}
               onSignOut={handleSignOut}
+              onTimelineSaved={handleActivitiesSaved}
             />
           </div>
         ) : (
